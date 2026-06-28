@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hồ sơ bệnh án</title>
+    <link rel="stylesheet" th:href="@{/css/medical-records.css}">
+</head>
+<body>
+    <h1>Hồ sơ bệnh án của tôi</h1>
+
+
+    <div class="empty" th:if="${#lists.isEmpty(records)}">
+        Chưa có hồ sơ bệnh án nào.
+    </div>
+
+
+    <div class="record" th:each="record : ${records}">
+        <div class="record-header">
+            <strong>Lần khám</strong>
+            <span class="date" th:text="${record.visitDate}">2026-01-01</span>
+        </div>
+
+        <div class="info-row">
+            <span class="label">Triệu chứng:</span>
+            <span th:text="${record.symptom}">...</span>
+        </div>
+        <div class="info-row">
+            <span class="label">Chẩn đoán:</span>
+            <span th:text="${record.diagnosis}">...</span>
+        </div>
+        <div class="info-row">
+            <span class="label">Lời dặn:</span>
+            <span th:text="${record.note}">...</span>
+        </div>
+
+        <h4>Đơn thuốc</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Thuốc</th>
+                    <th>Đơn vị</th>
+                    <th>Số lượng</th>
+                    <th>Liều</th>
+                    <th>Tần suất</th>
+                    <th>Số ngày</th>
+                    <th>Ghi chú</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="p : ${record.prescriptions}">
+                    <td th:text="${p.medicineName}">Paracetamol</td>
+                    <td th:text="${p.unit}">viên</td>
+                    <td th:text="${p.quantity}">20</td>
+                    <td th:text="${p.dosage}">1 viên/lần</td>
+                    <td th:text="${p.frequency}">2 lần/ngày</td>
+                    <td th:text="${p.durationDays}">10</td>
+                    <td th:text="${p.note}">Uống sau ăn</td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(record.prescriptions)}">
+                    <td colspan="7" class="no-medicine">Không có đơn thuốc.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
