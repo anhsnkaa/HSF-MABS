@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PrescriptionResponse {
+public class PrescriptionDto {
     private String medicineName;
     private String unit;
     private Integer quantity;
