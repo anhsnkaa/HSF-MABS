@@ -6,6 +6,7 @@
    Nghiệp vụ    : Bệnh nhân đặt lịch khám với bác sĩ -> bác sĩ ghi chẩn đoán,
                   kê đơn thuốc -> bệnh nhân xem hồ sơ bệnh án.
 
+   Khóa chính dùng INT IDENTITY(1,1) (tự tăng 1,2,3...).
    Script này idempotent: chạy lại sẽ tạo mới database MABS từ đầu.
    ============================================================================ */
 
@@ -41,7 +42,7 @@ GO
    ============================================================================ */
 CREATE TABLE dbo.users
 (
-    id              UNIQUEIDENTIFIER NOT NULL CONSTRAINT df_users_id DEFAULT (NEWID()),
+    id              INT              IDENTITY(1,1) NOT NULL,
     full_name       NVARCHAR(150)    NOT NULL,
     email           VARCHAR(150)     NOT NULL,
     phone           VARCHAR(20)      NULL,
@@ -66,7 +67,7 @@ GO
    ============================================================================ */
 CREATE TABLE dbo.specialty
 (
-    id          UNIQUEIDENTIFIER NOT NULL CONSTRAINT df_specialty_id DEFAULT (NEWID()),
+    id          INT              IDENTITY(1,1) NOT NULL,
     name        NVARCHAR(150)    NOT NULL,
     description NVARCHAR(MAX)    NULL,
     CONSTRAINT pk_specialty PRIMARY KEY CLUSTERED (id),
@@ -79,9 +80,9 @@ GO
    ============================================================================ */
 CREATE TABLE dbo.doctor
 (
-    id               UNIQUEIDENTIFIER NOT NULL CONSTRAINT df_doctor_id DEFAULT (NEWID()),
-    user_id          UNIQUEIDENTIFIER NOT NULL,
-    specialty_id     UNIQUEIDENTIFIER NOT NULL,
+    id               INT              IDENTITY(1,1) NOT NULL,
+    user_id          INT              NOT NULL,
+    specialty_id     INT              NOT NULL,
     title            NVARCHAR(100)    NULL,          -- học hàm/học vị: BS, ThS.BS, PGS.TS...
     bio              NVARCHAR(MAX)    NULL,
     consultation_fee DECIMAL(12, 0)   NOT NULL CONSTRAINT df_doctor_fee DEFAULT (0),
@@ -101,8 +102,8 @@ GO
    ============================================================================ */
 CREATE TABLE dbo.working_schedule
 (
-    id          UNIQUEIDENTIFIER NOT NULL CONSTRAINT df_ws_id DEFAULT (NEWID()),
-    doctor_id   UNIQUEIDENTIFIER NOT NULL,
+    id          INT              IDENTITY(1,1) NOT NULL,
+    doctor_id   INT              NOT NULL,
     work_date   DATE             NOT NULL,
     start_time  TIME(0)          NOT NULL,
     end_time    TIME(0)          NOT NULL,
@@ -122,10 +123,10 @@ GO
    ============================================================================ */
 CREATE TABLE dbo.appointment
 (
-    id               UNIQUEIDENTIFIER NOT NULL CONSTRAINT df_appt_id DEFAULT (NEWID()),
-    patient_id       UNIQUEIDENTIFIER NOT NULL,
-    doctor_id        UNIQUEIDENTIFIER NOT NULL,
-    schedule_id      UNIQUEIDENTIFIER NOT NULL,
+    id               INT              IDENTITY(1,1) NOT NULL,
+    patient_id       INT              NOT NULL,
+    doctor_id        INT              NOT NULL,
+    schedule_id      INT              NOT NULL,
     appointment_time DATETIME2(0)     NOT NULL,      -- thời điểm khám đã chọn trong ca
     status           VARCHAR(20)      NOT NULL CONSTRAINT df_appt_status DEFAULT ('pending'),
     reason           NVARCHAR(500)    NULL,          -- lý do khám / triệu chứng
@@ -142,10 +143,10 @@ GO
    ============================================================================ */
 CREATE TABLE dbo.medical_record
 (
-    id             UNIQUEIDENTIFIER NOT NULL CONSTRAINT df_mr_id DEFAULT (NEWID()),
-    appointment_id UNIQUEIDENTIFIER NOT NULL,
-    doctor_id      UNIQUEIDENTIFIER NOT NULL,
-    patient_id     UNIQUEIDENTIFIER NOT NULL,
+    id             INT              IDENTITY(1,1) NOT NULL,
+    appointment_id INT              NOT NULL,
+    doctor_id      INT              NOT NULL,
+    patient_id     INT              NOT NULL,
     symptoms       NVARCHAR(MAX)    NULL,            -- triệu chứng
     diagnosis      NVARCHAR(MAX)    NOT NULL,        -- chẩn đoán
     notes          NVARCHAR(MAX)    NULL,            -- lời dặn của bác sĩ
@@ -161,7 +162,7 @@ GO
    ============================================================================ */
 CREATE TABLE dbo.medicine
 (
-    id          UNIQUEIDENTIFIER NOT NULL CONSTRAINT df_med_id DEFAULT (NEWID()),
+    id          INT              IDENTITY(1,1) NOT NULL,
     name        NVARCHAR(150)    NOT NULL,
     unit        NVARCHAR(50)     NULL,               -- viên, vỉ, chai...
     description NVARCHAR(MAX)    NULL,
@@ -176,9 +177,9 @@ GO
    ============================================================================ */
 CREATE TABLE dbo.prescription
 (
-    id                UNIQUEIDENTIFIER NOT NULL CONSTRAINT df_pre_id DEFAULT (NEWID()),
-    medical_record_id UNIQUEIDENTIFIER NOT NULL,
-    medicine_id       UNIQUEIDENTIFIER NOT NULL,
+    id                INT              IDENTITY(1,1) NOT NULL,
+    medical_record_id INT              NOT NULL,
+    medicine_id       INT              NOT NULL,
     quantity          INT              NOT NULL CONSTRAINT df_pre_qty DEFAULT (1),
     dosage            NVARCHAR(100)    NOT NULL,      -- liều: 1 viên/lần
     frequency         NVARCHAR(100)    NOT NULL,      -- tần suất: 2 lần/ngày
@@ -195,8 +196,8 @@ GO
    ============================================================================ */
 CREATE TABLE dbo.test_result
 (
-    id             UNIQUEIDENTIFIER NOT NULL CONSTRAINT df_tr_id DEFAULT (NEWID()),
-    appointment_id UNIQUEIDENTIFIER NOT NULL,
+    id             INT              IDENTITY(1,1) NOT NULL,
+    appointment_id INT              NOT NULL,
     file_name      NVARCHAR(255)    NULL,
     file_url       VARCHAR(500)     NOT NULL,
     file_type      VARCHAR(20)      NULL,            -- pdf, jpg, png...
@@ -210,10 +211,10 @@ GO
    ============================================================================ */
 CREATE TABLE dbo.review
 (
-    id             UNIQUEIDENTIFIER NOT NULL CONSTRAINT df_rev_id DEFAULT (NEWID()),
-    appointment_id UNIQUEIDENTIFIER NOT NULL,
-    patient_id     UNIQUEIDENTIFIER NOT NULL,
-    doctor_id      UNIQUEIDENTIFIER NOT NULL,
+    id             INT              IDENTITY(1,1) NOT NULL,
+    appointment_id INT              NOT NULL,
+    patient_id     INT              NOT NULL,
+    doctor_id      INT              NOT NULL,
     rating         INT              NOT NULL,
     comment        NVARCHAR(1000)   NULL,
     created_at     DATETIME2(7)     NOT NULL CONSTRAINT df_rev_created DEFAULT (SYSUTCDATETIME()),
@@ -228,8 +229,8 @@ GO
    ============================================================================ */
 CREATE TABLE dbo.notification
 (
-    id         UNIQUEIDENTIFIER NOT NULL CONSTRAINT df_noti_id DEFAULT (NEWID()),
-    user_id    UNIQUEIDENTIFIER NOT NULL,
+    id         INT              IDENTITY(1,1) NOT NULL,
+    user_id    INT              NOT NULL,
     type       VARCHAR(30)      NOT NULL,
     message    NVARCHAR(500)    NOT NULL,
     is_read    BIT              NOT NULL CONSTRAINT df_noti_read DEFAULT (0),
@@ -243,9 +244,9 @@ GO
    ============================================================================ */
 CREATE TABLE dbo.account_status_log
 (
-    id         UNIQUEIDENTIFIER NOT NULL CONSTRAINT df_asl_id DEFAULT (NEWID()),
-    user_id    UNIQUEIDENTIFIER NOT NULL,
-    changed_by UNIQUEIDENTIFIER NOT NULL,
+    id         INT              IDENTITY(1,1) NOT NULL,
+    user_id    INT              NOT NULL,
+    changed_by INT              NOT NULL,
     action     VARCHAR(20)      NOT NULL,
     reason     NVARCHAR(500)    NULL,
     created_at DATETIME2(7)     NOT NULL CONSTRAINT df_asl_created DEFAULT (SYSUTCDATETIME()),
@@ -400,68 +401,100 @@ GO
    SEED DATA - dữ liệu mẫu để chạy thử ngay
    Mật khẩu của TẤT CẢ tài khoản mẫu: "admin123"
    (BCrypt hash, tương thích Spring Security BCryptPasswordEncoder)
+
+   Vì khóa chính là IDENTITY (tự tăng), ta dùng SCOPE_IDENTITY() để lấy id
+   vừa sinh ra sau mỗi câu INSERT, rồi dùng cho các bảng con.
    ============================================================================ */
 DECLARE @pwd VARCHAR(255) = '$2b$10$y3rzRbhPJwYOFnD4a0z5t.5l2ei4v8/1DRmxYZkFBtHb2tR/wHp9u';
 
--- Chuyên khoa
-DECLARE @sp_cardio UNIQUEIDENTIFIER = NEWID();
-DECLARE @sp_derma  UNIQUEIDENTIFIER = NEWID();
-DECLARE @sp_pedia  UNIQUEIDENTIFIER = NEWID();
-DECLARE @sp_neuro  UNIQUEIDENTIFIER = NEWID();
+/* ---- Chuyên khoa ---- */
+DECLARE @sp_cardio INT, @sp_derma INT, @sp_pedia INT, @sp_neuro INT;
 
-INSERT INTO dbo.specialty (id, name, description) VALUES
-    (@sp_cardio, N'Tim mạch',  N'Khám và điều trị các bệnh về tim, mạch máu'),
-    (@sp_derma,  N'Da liễu',   N'Khám và điều trị các bệnh về da'),
-    (@sp_pedia,  N'Nhi khoa',  N'Khám và điều trị cho trẻ em'),
-    (@sp_neuro,  N'Thần kinh', N'Khám và điều trị các bệnh về thần kinh');
+INSERT INTO dbo.specialty (name, description) VALUES (N'Tim mạch', N'Khám và điều trị các bệnh về tim, mạch máu');
+SET @sp_cardio = SCOPE_IDENTITY();
+INSERT INTO dbo.specialty (name, description) VALUES (N'Da liễu', N'Khám và điều trị các bệnh về da');
+SET @sp_derma = SCOPE_IDENTITY();
+INSERT INTO dbo.specialty (name, description) VALUES (N'Nhi khoa', N'Khám và điều trị cho trẻ em');
+SET @sp_pedia = SCOPE_IDENTITY();
+INSERT INTO dbo.specialty (name, description) VALUES (N'Thần kinh', N'Khám và điều trị các bệnh về thần kinh');
+SET @sp_neuro = SCOPE_IDENTITY();
 
--- Admin
-DECLARE @admin_id UNIQUEIDENTIFIER = NEWID();
-INSERT INTO dbo.users (id, full_name, email, phone, password_hash, role, gender)
-VALUES (@admin_id, N'Quản trị viên', 'admin@mabs.vn', '0900000000', @pwd, 'admin', 'male');
+/* ---- Admin ---- */
+INSERT INTO dbo.users (full_name, email, phone, password_hash, role, gender)
+VALUES (N'Quản trị viên', 'admin@mabs.vn', '0900000000', @pwd, 'admin', 'male');
 
--- Bác sĩ (mỗi bác sĩ = 1 user role doctor + 1 dòng doctor)
-DECLARE @u_doc1 UNIQUEIDENTIFIER = NEWID();
-DECLARE @u_doc2 UNIQUEIDENTIFIER = NEWID();
-DECLARE @doc1 UNIQUEIDENTIFIER = NEWID();
-DECLARE @doc2 UNIQUEIDENTIFIER = NEWID();
+/* ---- Bác sĩ (mỗi bác sĩ = 1 user role doctor + 1 dòng doctor) ---- */
+DECLARE @u_doc1 INT, @u_doc2 INT, @doc1 INT, @doc2 INT;
 
-INSERT INTO dbo.users (id, full_name, email, phone, password_hash, role, gender) VALUES
-    (@u_doc1, N'BS. Nguyễn Văn An', 'an.doctor@mabs.vn', '0900000001', @pwd, 'doctor', 'male'),
-    (@u_doc2, N'BS. Trần Thị Bình', 'binh.doctor@mabs.vn', '0900000002', @pwd, 'doctor', 'female');
+INSERT INTO dbo.users (full_name, email, phone, password_hash, role, gender)
+VALUES (N'BS. Nguyễn Văn An', 'an.doctor@mabs.vn', '0900000001', @pwd, 'doctor', 'male');
+SET @u_doc1 = SCOPE_IDENTITY();
 
-INSERT INTO dbo.doctor (id, user_id, specialty_id, title, bio, consultation_fee, experience_years) VALUES
-    (@doc1, @u_doc1, @sp_cardio, N'ThS.BS', N'Chuyên gia tim mạch hơn 10 năm kinh nghiệm', 300000, 10),
-    (@doc2, @u_doc2, @sp_derma,  N'BS.CKI', N'Bác sĩ da liễu tận tâm', 250000, 7);
+INSERT INTO dbo.users (full_name, email, phone, password_hash, role, gender)
+VALUES (N'BS. Trần Thị Bình', 'binh.doctor@mabs.vn', '0900000002', @pwd, 'doctor', 'female');
+SET @u_doc2 = SCOPE_IDENTITY();
 
--- Bệnh nhân
-DECLARE @pat1 UNIQUEIDENTIFIER = NEWID();
-INSERT INTO dbo.users (id, full_name, email, phone, password_hash, role, gender, date_of_birth)
-VALUES (@pat1, N'Lê Thị Cẩm', 'cam.patient@mabs.vn', '0911111111', @pwd, 'patient', 'female', '1995-04-20');
+INSERT INTO dbo.doctor (user_id, specialty_id, title, bio, consultation_fee, experience_years)
+VALUES (@u_doc1, @sp_cardio, N'ThS.BS', N'Chuyên gia tim mạch hơn 10 năm kinh nghiệm', 300000, 10);
+SET @doc1 = SCOPE_IDENTITY();
 
--- Ca làm việc mẫu cho bác sĩ 1 (hôm nay + ngày mai, sáng)
-DECLARE @sched1 UNIQUEIDENTIFIER = NEWID();
-INSERT INTO dbo.working_schedule (id, doctor_id, work_date, start_time, end_time, slot_minutes, status)
-VALUES (@sched1, @doc1, CAST(SYSDATETIME() AS DATE), '08:00', '11:30', 30, 'open');
+INSERT INTO dbo.doctor (user_id, specialty_id, title, bio, consultation_fee, experience_years)
+VALUES (@u_doc2, @sp_derma, N'BS.CKI', N'Bác sĩ da liễu tận tâm', 250000, 7);
+SET @doc2 = SCOPE_IDENTITY();
 
-INSERT INTO dbo.working_schedule (id, doctor_id, work_date, start_time, end_time, slot_minutes, status) VALUES
-    (NEWID(), @doc1, DATEADD(DAY, 1, CAST(SYSDATETIME() AS DATE)), '08:00', '11:30', 30, 'open'),
-    (NEWID(), @doc2, CAST(SYSDATETIME() AS DATE), '13:30', '17:00', 30, 'open');
+/* ---- Bệnh nhân ---- */
+DECLARE @pat1 INT;
+INSERT INTO dbo.users (full_name, email, phone, password_hash, role, gender, date_of_birth)
+VALUES (N'Lê Thị Cẩm', 'cam.patient@mabs.vn', '0911111111', @pwd, 'patient', 'female', '1995-04-20');
+SET @pat1 = SCOPE_IDENTITY();
 
--- Danh mục thuốc
+/* ---- Ca làm việc mẫu ---- */
+DECLARE @sched1 INT;
+INSERT INTO dbo.working_schedule (doctor_id, work_date, start_time, end_time, slot_minutes, status)
+VALUES (@doc1, CAST(SYSDATETIME() AS DATE), '08:00', '11:30', 30, 'open');
+SET @sched1 = SCOPE_IDENTITY();
+
+INSERT INTO dbo.working_schedule (doctor_id, work_date, start_time, end_time, slot_minutes, status) VALUES
+    (@doc1, DATEADD(DAY, 1, CAST(SYSDATETIME() AS DATE)), '08:00', '11:30', 30, 'open'),
+    (@doc2, CAST(SYSDATETIME() AS DATE), '13:30', '17:00', 30, 'open');
+
+/* ---- Danh mục thuốc ---- */
 INSERT INTO dbo.medicine (name, unit, description) VALUES
     (N'Paracetamol 500mg', N'viên', N'Hạ sốt, giảm đau'),
     (N'Amoxicillin 500mg',  N'viên', N'Kháng sinh'),
     (N'Vitamin C 1000mg',   N'viên', N'Bổ sung vitamin C'),
     (N'Loratadin 10mg',     N'viên', N'Kháng histamin, chống dị ứng');
 
--- Một lịch hẹn mẫu (bệnh nhân đặt với bác sĩ 1, slot 08:00 hôm nay)
-DECLARE @appt1 UNIQUEIDENTIFIER = NEWID();
-INSERT INTO dbo.appointment (id, patient_id, doctor_id, schedule_id, appointment_time, status, reason)
-VALUES (@appt1, @pat1, @doc1, @sched1,
+/* ---- Một lịch hẹn mẫu (bệnh nhân đặt với bác sĩ 1, slot 08:00 hôm nay) ---- */
+DECLARE @appt1 INT;
+INSERT INTO dbo.appointment (patient_id, doctor_id, schedule_id, appointment_time, status, reason)
+VALUES (@pat1, @doc1, @sched1,
         DATEADD(HOUR, 8, CAST(CAST(SYSDATETIME() AS DATE) AS DATETIME2(0))),
         'confirmed', N'Đau ngực, khó thở khi gắng sức');
+SET @appt1 = SCOPE_IDENTITY();
+
+/* ---- Một hồ sơ bệnh án mẫu (phục vụ test UC05) ---- */
+DECLARE @mr1 INT;
+INSERT INTO dbo.medical_record (appointment_id, doctor_id, patient_id, symptoms, diagnosis, notes)
+VALUES (@appt1, @doc1, @pat1,
+        N'Đau ngực, khó thở khi gắng sức',
+        N'Thiếu máu cơ tim nhẹ, theo dõi huyết áp',
+        N'Hạn chế vận động mạnh, tái khám sau 2 tuần');
+SET @mr1 = SCOPE_IDENTITY();
+
+/* ---- Đơn thuốc mẫu cho hồ sơ trên ---- */
+DECLARE @med_para INT = (SELECT id FROM dbo.medicine WHERE name = N'Paracetamol 500mg');
+DECLARE @med_vitc INT = (SELECT id FROM dbo.medicine WHERE name = N'Vitamin C 1000mg');
+
+INSERT INTO dbo.prescription (medical_record_id, medicine_id, quantity, dosage, frequency, duration_days, note) VALUES
+    (@mr1, @med_para, 20, N'1 viên/lần', N'2 lần/ngày', 10, N'Uống sau ăn'),
+    (@mr1, @med_vitc, 30, N'1 viên/lần', N'1 lần/ngày', 30, N'Uống buổi sáng');
 GO
 
 PRINT N'>>> MABS database đã tạo xong. Tài khoản mẫu mật khẩu: admin123';
 GO
+
+
+
+
+
