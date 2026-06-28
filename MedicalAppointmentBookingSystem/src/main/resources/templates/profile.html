@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Hồ sơ cá nhân - MABS</title>
+</head>
+<body>
+
+<div layout:fragment="content" class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white text-center py-3">
+                    <h4 class="mb-0">Hồ Sơ Của Tôi</h4>
+                </div>
+                <div class="card-body p-4">
+
+                    <div th:if="${param.success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong>Thành công!</strong> Hồ sơ của bạn đã được cập nhật.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+
+                    <form th:action="@{/profile}" th:object="${userProfile}" method="POST">
+
+                        <div class="mb-3">
+                            <label for="fullName" class="form-label fw-bold">Họ và tên <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" id="fullName" th:field="*{fullName}"
+                                   class="form-control"
+                                   th:classappend="${#fields.hasErrors('fullName')} ? 'is-invalid' : ''" required>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('fullName')}"
+                                 th:errors="*{fullName}"></div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="phone" class="form-label fw-bold">Số điện thoại</label>
+                                <input type="text" id="phone" th:field="*{phone}" placeholder="Ví dụ: 0912345678"
+                                       class="form-control"
+                                       th:classappend="${#fields.hasErrors('phone')} ? 'is-invalid' : ''">
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('phone')}"
+                                     th:errors="*{phone}"></div>
+                            </div>
+
+                            <div class="col-md-6 mt-3 mt-md-0">
+                                <label class="form-label fw-bold">Giới tính <span class="text-danger">*</span></label>
+                                <select th:field="*{gender}" class="form-select"
+                                        th:classappend="${#fields.hasErrors('gender')} ? 'is-invalid' : ''" required>
+                                    <option value="" disabled>-- Chọn giới tính --</option>
+                                    <option value="male">Nam</option>
+                                    <option value="female">Nữ</option>
+                                    <option value="other">Khác</option>
+                                </select>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('gender')}"
+                                     th:errors="*{gender}"></div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="dob" class="form-label fw-bold">Ngày sinh</label>
+                            <input type="date" id="dob" th:field="*{dob}"
+                                   class="form-control"
+                                   th:classappend="${#fields.hasErrors('dob')} ? 'is-invalid' : ''">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('dob')}" th:errors="*{dob}"></div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="address" class="form-label fw-bold">Địa chỉ liên hệ</label>
+                            <textarea id="address" th:field="*{address}" rows="3"
+                                      placeholder="Nhập địa chỉ đầy đủ của bạn..."
+                                      class="form-control"
+                                      th:classappend="${#fields.hasErrors('address')} ? 'is-invalid' : ''"></textarea>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('address')}"
+                                 th:errors="*{address}"></div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">Lưu Thay Đổi</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
