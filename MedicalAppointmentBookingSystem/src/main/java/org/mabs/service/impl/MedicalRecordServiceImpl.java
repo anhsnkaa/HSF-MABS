@@ -1,8 +1,8 @@
 package org.mabs.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.mabs.dto.MedicalRecordRequest;
-import org.mabs.dto.PrescriptionRequest;
+import org.mabs.dto.MedicalRecordResponse;
+import org.mabs.dto.PrescriptionResponse;
 import org.mabs.entity.MedicalRecord;
 import org.mabs.entity.Medicine;
 import org.mabs.entity.Prescription;
@@ -23,31 +23,31 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     private final MedicineRepository medicineRepository;
 
     @Override
-    public List<MedicalRecordRequest> getMedicalRecordsByPatient(Integer patientId) {
+    public List<MedicalRecordResponse> getMedicalRecordsByPatient(Integer patientId) {
         List<MedicalRecord> records = medicalRecordRepository.findByPatientIdOrderByVisitDate(patientId);
-        List<MedicalRecordRequest> results = new ArrayList<>();
+        List<MedicalRecordResponse> results = new ArrayList<>();
 
         for (MedicalRecord record : records) {
             List<Prescription> prescriptions = prescriptionRepository.findByMedicalRecordId(record.getId());
-            List<PrescriptionRequest> prescriptionRequests = new ArrayList<>();
+            List<PrescriptionResponse> prescriptionResponses = new ArrayList<>();
             for (Prescription p : prescriptions) {
                 Medicine medicine = medicineRepository.findById(p.getMedicineId()).orElse(null);
                 String medicineName = (medicine != null) ? medicine.getName() : "Medicine name not available !";
                 String unit = (medicine != null) ? medicine.getUnit() : "Medicine unit not available !";
-                prescriptionRequests.add(new PrescriptionRequest(
+                prescriptionResponses.add(new PrescriptionResponse(
                         medicineName, unit, p.getQuantity(), p.getDosage(),
                         p.getFrequency(), p.getDurationDays(), p.getNote()
                 ));
 
             }
 
-            MedicalRecordRequest dto = new MedicalRecordRequest(
+            MedicalRecordResponse dto = new MedicalRecordResponse(
                     record.getId(),
                     record.getSymptoms(),
                     record.getDiagnosis(),
                     record.getNotes(),
                     record.getVisitDate(),
-                    prescriptionRequests
+                    prescriptionResponses
             );
             results.add(dto);
         }

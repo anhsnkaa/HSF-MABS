@@ -17,13 +17,13 @@ public class Medicine {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "name", length = 150, nullable = false)
+    @Column(length = 150, nullable = false)
     private String name;
 
-    @Column(name = "unit", length = 50)
+    @Column(length = 50)
     private String unit;
 
-    @Column(name = "description", columnDefinition = "nvarchar(max)")
+    @Column(columnDefinition = "nvarchar(max)")
     private String description;
 
     @Column(name = "is_active")

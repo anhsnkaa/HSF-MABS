@@ -12,11 +12,11 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MedicalRecordRequest {
+public class MedicalRecordResponse {
     private Integer id;
     private String symptom;
     private String diagnosis;
     private String note;
     private LocalDate visitDate;
-    private List<PrescriptionRequest> prescriptions;
+    private List<PrescriptionResponse> prescriptions;
 }
