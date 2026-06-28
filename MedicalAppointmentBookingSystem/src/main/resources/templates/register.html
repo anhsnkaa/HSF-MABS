@@ -9,15 +9,27 @@
         <form th:action="@{/register}" th:object="${user}" method="POST">
             <div class="mb-3">
                 <label>Họ tên</label>
-                <input type="text" th:field="*{fullName}" class="form-control" required>
+                <input type="text" th:field="*{fullName}" class="form-control">
+                <p class="text-danger small mt-1 mb-0"
+                   th:if="${#fields.hasErrors('fullName')}"
+                   th:errors="*{fullName}">
+                </p>
             </div>
             <div class="mb-3">
                 <label>Email</label>
-                <input type="email" th:field="*{email}" class="form-control" required>
+                <input type="email" th:field="*{email}" class="form-control">
+                <p class="text-danger small mt-1 mb-0"
+                   th:if="${#fields.hasErrors('email')}"
+                   th:errors="*{email}">
+                </p>
             </div>
             <div class="mb-3">
                 <label>Mật khẩu</label>
-                <input type="password" th:field="*{password}" class="form-control" required>
+                <input type="password" th:field="*{password}" class="form-control">
+                <p class="text-danger small mt-1 mb-0"
+                   th:if="${#fields.hasErrors('password')}"
+                   th:errors="*{password}">
+                </p>
             </div>
             <button type="submit" class="btn btn-success w-100">Đăng ký ngay</button>
         </form>
