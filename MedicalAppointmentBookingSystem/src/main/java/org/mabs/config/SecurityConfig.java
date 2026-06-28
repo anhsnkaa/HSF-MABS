@@ -16,6 +16,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/home", "/login", "/register", "/css/**", "/js/**").permitAll()
+                        .requestMatchers("/profile").authenticated() // Only authenticated users can access /profile
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -23,7 +24,13 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/home", true)
                         .permitAll()
                 )
-                .logout(logout -> logout.permitAll());
+                .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout")
+                .invalidateHttpSession(true) // Xóa session trong server
+                .clearAuthentication(true)  // Xóa context bảo mật
+                .deleteCookies("JSESSIONID") // Xóa cookie của trình duyệt
+                .permitAll());
 
         return http.build();
     }

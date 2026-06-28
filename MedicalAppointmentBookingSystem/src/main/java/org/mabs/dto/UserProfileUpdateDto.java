@@ -32,7 +32,7 @@ public class UserProfileUpdateDto {
     // Ngày sinh: Phải là một ngày trong quá khứ
     @Past(message = "Ngày sinh phải là một ngày trong quá khứ")
     @DateTimeFormat(pattern = "yyyy-MM-dd") // Spring Boot hiểu input type="date" từ HTML
-    private LocalDate dob;
+    private LocalDate dateOfBirth;
 
     @Size(max = 255, message = "Địa chỉ quá dài")
     private String address;
