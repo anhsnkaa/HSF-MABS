@@ -3,7 +3,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
 <body>
-<div layout:fragment="content" class="container mt-5">
+<div layout:fragment="content" class="container py-5">
     <div class="card col-md-4 mx-auto p-4">
         <h2 class="text-center">Đăng ký</h2>
         <form th:action="@{/register}" th:object="${user}" method="POST">

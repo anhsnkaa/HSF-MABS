@@ -1,5 +1,6 @@
 package org.mabs.service;
 
+import org.mabs.dto.UserProfileUpdateDto;
 import org.mabs.dto.UserRegistrationDto;
 import org.mabs.entity.User;
 import org.mabs.repository.UserRepository;
@@ -30,6 +31,19 @@ public class UserServiceImpl implements UserService {
         user.setRole("patient");
         user.setStatus("active");
         user.setCreatedAt(LocalDateTime.now());
+
+        userRepository.save(user);
+    }
+
+    @Override
+    public void updateProfile(String email, UserProfileUpdateDto dto) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Không tìm thấy tài khoản!"));
+
+        user.setFullName(dto.getFullName());
+        user.setPhone(dto.getPhone());
+        user.setGender(dto.getGender());
+        user.setDateOfBirth(dto.getDateOfBirth());
+        user.setAddress(dto.getAddress());
 
         userRepository.save(user);
     }
