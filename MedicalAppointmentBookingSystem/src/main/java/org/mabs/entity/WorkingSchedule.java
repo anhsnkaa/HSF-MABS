@@ -28,6 +28,6 @@ public class WorkingSchedule {
     private LocalTime startTime;
     private LocalTime endTime;
 
-    private Long slotMinutes;
+    private Integer slotMinutes;
     private String status;
 }

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kết quả xét nghiệm</title>
+</head>
+<body>
+<div layout:fragment="content" class="container py-4">
+    <h1 class="text-primary mb-4 border-bottom pb-2">Kết quả xét nghiệm</h1>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <strong>Tải lên kết quả xét nghiệm</strong>
+        </div>
+        <div class="card-body">
+            <form th:action="@{/test-results/upload}" method="post" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label class="form-label">Chọn lịch hẹn:</label>
+                    <select name="appointmentId" class="form-select" required>
+                        <option value="" disabled selected>-- Chọn lịch hẹn --</option>
+                        <option th:each="apt : ${appointments}"
+                                th:value="${apt.id}"
+                                th:text="'Lịch #' + ${apt.id} + ' - ' + ${apt.appointmentTime}">
+                        </option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Chọn file:</label>
+                    <input type="file" name="file" class="form-control" required
+                           accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+                </div>
+                <button type="submit" class="btn btn-primary">Tải lên</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-light">
+            <strong>Các file đã tải lên</strong>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-info" th:if="${#lists.isEmpty(testResults)}">
+                Chưa có kết quả xét nghiệm nào.
+            </div>
+            <table class="table table-hover" th:unless="${#lists.isEmpty(testResults)}">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Tên file</th>
+                        <th>Loại</th>
+                        <th>Ngày tải</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="tr, iter : ${testResults}">
+                        <td th:text="${iter.count}">1</td>
+                        <td th:text="${tr.fileName}">file.pdf</td>
+                        <td th:text="${tr.fileType}">application/pdf</td>
+                        <td th:text="${tr.uploadedAt}">2026-06-28</td>
+                        <td>
+                            <a class="btn btn-sm btn-outline-primary"
+                               th:href="${tr.fileUrl}" target="_blank">Xem</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,4 +1,4 @@
-package org.mabs.service;
+package org.mabs.service.impl;
 
 import org.mabs.entity.User;
 import org.mabs.repository.UserRepository;
@@ -22,12 +22,12 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
-        // Check user status (e.g. if the user status is active or blocked)
+
         if (user.getStatus() != null && !user.getStatus().equalsIgnoreCase("active")) {
             throw new UsernameNotFoundException("User account is not active");
         }
 
-        // Format role as ROLE_ROLE_NAME (Spring Security standard)
+
         String roleName = user.getRole();
         if (roleName == null) {
             roleName = "PATIENT";

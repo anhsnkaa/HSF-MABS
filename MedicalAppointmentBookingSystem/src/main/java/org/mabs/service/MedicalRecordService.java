@@ -1,9 +1,9 @@
 package org.mabs.service;
 
-import org.mabs.dto.MedicalRecordResponse;
+import org.mabs.dto.MedicalRecordDto;
 
 import java.util.List;
 
 public interface MedicalRecordService {
-    List<MedicalRecordResponse> getMedicalRecordsByPatient(Long patientId);
+    List<MedicalRecordDto> getMedicalRecordsByPatient(Long patientId);
 }
