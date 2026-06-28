@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface MedicalRecordRepository extends JpaRepository<MedicalRecord, Integer> {
 
-    @Query("from MedicalRecord mr where mr.patientId =:id order by mr.visitDate desc")
+    @Query("from MedicalRecord mr where mr.patient.id = :id order by mr.visitDate desc")
     List<MedicalRecord> findByPatientIdOrderByVisitDate(@Param("id") Integer id);
 }
