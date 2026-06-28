@@ -17,7 +17,7 @@ import lombok.Setter;
 public class Specialty {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // BIGINT IDENTITY SQL
+    private Long id;
 
     private String name;
 

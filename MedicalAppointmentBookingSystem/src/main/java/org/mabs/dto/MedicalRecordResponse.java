@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MedicalRecordResponse {
-    private Integer id;
+    private Long id;
     private String symptom;
     private String diagnosis;
     private String note;

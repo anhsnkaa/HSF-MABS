@@ -24,7 +24,7 @@ public class PasswordResetToken {
     private LocalDateTime expiryDate;
     private boolean isUsed;
 
-    // Thiết lập mối quan hệ N-1 với bảng User
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

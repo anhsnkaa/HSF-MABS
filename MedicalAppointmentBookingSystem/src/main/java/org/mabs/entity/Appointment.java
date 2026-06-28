@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 public class Appointment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id", nullable = false)
@@ -41,7 +41,7 @@ public class Appointment {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    // Tự động gán thời gian lúc mới tạo tài khoản
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
@@ -50,7 +50,6 @@ public class Appointment {
         }
     }
 
-    // Tự động cập nhật thời gian khi có chỉnh sửa profile
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();

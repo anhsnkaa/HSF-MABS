@@ -7,8 +7,8 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface MedicalRecordRepository extends JpaRepository<MedicalRecord, Integer> {
+public interface MedicalRecordRepository extends JpaRepository<MedicalRecord, Long> {
 
     @Query("from MedicalRecord mr where mr.patient.id = :id order by mr.visitDate desc")
-    List<MedicalRecord> findByPatientIdOrderByVisitDate(@Param("id") Integer id);
+    List<MedicalRecord> findByPatientIdOrderByVisitDate(@Param("id") Long id);
 }

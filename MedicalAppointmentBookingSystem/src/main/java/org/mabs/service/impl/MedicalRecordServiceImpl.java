@@ -23,7 +23,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<MedicalRecordResponse> getMedicalRecordsByPatient(Integer patientId) {
+    public List<MedicalRecordResponse> getMedicalRecordsByPatient(Long patientId) {
         List<MedicalRecord> records = medicalRecordRepository.findByPatientIdOrderByVisitDate(patientId);
         List<MedicalRecordResponse> results = new ArrayList<>();
 
