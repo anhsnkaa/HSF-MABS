@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Danh sach bac si</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <table>
+            <thead>
+                <th>#</th>
+                <th>Name</th>
+                <th>Specialty</th>
+                <th>Title</th>
+                <th>Bio</th>
+                <th>Consultation fee</th>
+                <th>Rating average</th>
+                <th>Rating count</th>
+                <th>Years of experience</th>
+            </thead>
+            <tbody>
+                <tr th:each="doctor : ${doctorList}">
+                    <td th:text="${doctor.id}"></td>
+                    <td th:text="${doctor.user.fullName}"></td>
+                    <td th:text="${doctor.specialty.name}"></td>
+                    <td th:text="${doctor.title}"></td>
+                    <td th:text="${doctor.bio}"></td>
+                    <td th:text="${doctor.consultationFee}"></td>
+                    <td th:text="${doctor.ratingAvg}"></td>
+                    <td th:text="${doctor.ratingCount}"></td>
+                    <td th:text="${doctor.experienceYears}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="" async defer></script>
+</body>
+
+</html>
