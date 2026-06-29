@@ -22,7 +22,18 @@ public class SecurityConfig {
                 )
                 .formLogin(form -> form
                         .loginPage("/login") // Use own login page(not spring security login default)
-                        .defaultSuccessUrl("/home", true)
+                        .successHandler((request, response, authentication) -> {
+                            String role = authentication.getAuthorities().stream()
+                                    .map(a -> a.getAuthority())
+                                    .filter(a -> a.startsWith("ROLE_"))
+                                    .findFirst().orElse("ROLE_PATIENT");
+                            String redirectUrl = switch (role) {
+                                case "ROLE_ADMIN" -> "/home/admin";
+                                // add other cases
+                                default -> "/home";
+                            };
+                            response.sendRedirect(redirectUrl);
+                        })
                         .permitAll()
                 )
                 .logout(logout -> logout
