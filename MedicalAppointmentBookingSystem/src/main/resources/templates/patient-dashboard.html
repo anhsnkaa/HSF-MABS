@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>HealthSync - Dashboard</title>
+    <title>MABS - Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 </head>
@@ -27,16 +27,18 @@
                 <p class="text-secondary mb-5 fs-5">
                     Tìm kiếm bác sĩ chuyên khoa và đặt lịch hẹn tư vấn chỉ trong vài giây.
                 </p>
-                <form th:action="@{/patient/doctors}" method="get" class="bg-body border rounded-4 p-2 d-flex align-items-center mb-4 shadow-sm gap-2">
-<!--                    <span class="material-symbols-outlined text-secondary mx-2">search</span>-->
-                    <input name="keyword" class="form-control border-0 bg-transparent shadow-none flex-grow-1"
-                           placeholder="Tìm tên bác sĩ, chuyên khoa..." type="text"/>
-                    <div class="d-none d-md-block" style="height: 2rem;"></div>
-                    <select name="specialtyId" class="form-select border-0 bg-transparent shadow-none w-auto d-none d-md-inline-block">
-                        <option value="">Tất cả khoa</option>
-                        <option th:each="s : ${specialties}" th:value="${s.id}" th:text="${s.name}"></option>
-                    </select>
-                    <button type="submit" class="btn px-4 py-2 fw-semibold text-white text-nowrap rounded-3 btn-primary">Tìm kiếm</button>
+                <form th:action="@{/patient/doctors}" method="get" class="bg-body border rounded-4 p-3 mb-4 shadow-sm">
+                    <div class="mb-2">
+                        <input name="keyword" class="form-control"
+                               placeholder="Tìm tên bác sĩ, chuyên khoa..." type="text"/>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <select name="specialtyId" class="form-select w-auto flex-grow-1">
+                            <option value="">Tất cả khoa</option>
+                            <option th:each="s : ${specialties}" th:value="${s.id}" th:text="${s.name}"></option>
+                        </select>
+                        <button type="submit" class="btn btn-primary px-4 fw-semibold text-nowrap">Tìm kiếm</button>
+                    </div>
                 </form>
 
                 <div class="d-flex flex-wrap align-items-center gap-2">
@@ -69,7 +71,7 @@
         </div>
     </section>
 
-    <!-- Specialties Grid -->
+    
     <section class="mb-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="fw-bold fs-4 m-0">Chuyên khoa</h2>

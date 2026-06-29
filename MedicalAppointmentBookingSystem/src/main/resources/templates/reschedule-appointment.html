@@ -14,7 +14,7 @@
                     <h4 class="fw-bold mb-0">Dời lịch hẹn</h4>
                 </div>
                 <div class="card-body">
-                    <!-- Current Appointment Info -->
+                    
                     <div class="bg-light rounded-3 p-3 mb-4">
                         <h6 class="fw-bold text-muted mb-2">Lịch hẹn hiện tại</h6>
                         <div class="row">
@@ -39,7 +39,7 @@
 
                     <hr/>
 
-                    <!-- Reschedule Form -->
+                    
                     <form th:action="@{/appointments/{id}/reschedule(id=${appointment.id})}"
                           th:object="${rescheduleRequest}" method="post">
                         <div class="mb-3">
@@ -70,3 +70,4 @@
 </main>
 </body>
 </html>
+
