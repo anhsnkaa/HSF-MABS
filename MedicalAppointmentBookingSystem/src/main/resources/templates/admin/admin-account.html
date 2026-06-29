@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
 
 <head>
     <meta charset="utf-8">
@@ -11,38 +11,41 @@
 </head>
 
 <body>
-    <table>
-        <thead>
-            <th>#</th>
-            <th>Avatar</th>
-            <th>Full name</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>Role</th>
-            <th>Status</th>
-            <th>Gender</th>
-            <th>Date of birth</th>
-            <th>Address</th>
-            <th>Created at</th>
-            <th>Updated at</th>
-        </thead>
-        <tbody>
-            <tr th:each="account : ${accountList}">
-                <td th:text="${account.id}"></td>
-                <td th:text="${account.avatarUrl}"></td>
-                <td th:text="${account.fullName}"></td>
-                <td th:text="${account.email}"></td>
-                <td th:text="${account.phone}"></td>
-                <td th:text="${account.role}"></td>
-                <td th:text="${account.status}"></td>
-                <td th:text="${account.gender}"></td>
-                <td th:text="${account.dateOfBirth}"></td>
-                <td th:text="${account.address}"></td>
-                <td th:text="${account.createdAt}"></td>
-                <td th:text="${account.updatedAt}"></td>
-            </tr>
-        </tbody>
-    </table>
+    <div layout:fragment="content">
+        <table>
+            <thead>
+                <th>#</th>
+                <th>Avatar</th>
+                <th>Full name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Gender</th>
+                <th>Date of birth</th>
+                <th>Address</th>
+                <th>Created at</th>
+                <th>Updated at</th>
+            </thead>
+            <tbody>
+                <tr th:each="account : ${accountList}">
+                    <td th:text="${account.id}"></td>
+                    <td th:text="${account.avatarUrl}"></td>
+                    <td th:text="${account.fullName}"></td>
+                    <td th:text="${account.email}"></td>
+                    <td th:text="${account.phone}"></td>
+                    <td th:text="${account.role}"></td>
+                    <td th:text="${account.status}"></td>
+                    <td th:text="${account.gender}"></td>
+                    <td th:text="${account.dateOfBirth}"></td>
+                    <td th:text="${account.address}"></td>
+                    <td th:text="${account.createdAt}"></td>
+                    <td th:text="${account.updatedAt}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
     <script src="" async defer></script>
 </body>
 
