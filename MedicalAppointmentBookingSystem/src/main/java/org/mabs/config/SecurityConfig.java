@@ -15,8 +15,13 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/home", "/login", "/register", "/css/**", "/js/**").permitAll()
-                        .requestMatchers("/profile").authenticated() // Only authenticated users can access /profile
+                        .requestMatchers("/", "/login", "/register", "/css/**", "/js/**", "/error").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/doctor/**").hasRole("DOCTOR")
+                        .requestMatchers("/patient/**").hasRole("PATIENT")
+                        .requestMatchers("/profile", "/home").authenticated() //Common page
+
+                        //Other link -> need authenticated
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
