@@ -3,7 +3,6 @@ package org.mabs.controller;
 import jakarta.validation.Valid;
 import org.mabs.dto.UserProfileUpdateDto;
 import org.mabs.entity.User;
-import org.mabs.repository.UserRepository;
 import org.mabs.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,13 +11,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 
 @Controller
 public class UserController {
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private UserService userService;
@@ -33,7 +31,7 @@ public class UserController {
         //Principal(Spring Security)
         String email = principal.getName();
 
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Không tìm thấy tài khoản!"));
+        User user = userService.getUserByEmail(email);
 
         UserProfileUpdateDto dto = new UserProfileUpdateDto();
         dto.setFullName(user.getFullName());
@@ -49,13 +47,24 @@ public class UserController {
     @PostMapping("/profile")
     public String updateProfile(@Valid @ModelAttribute("userProfile") UserProfileUpdateDto dto,
                                 BindingResult result,
-                                Principal principal) {
+                                Principal principal,
+                                Model model,
+                                RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             return "profile";
         }
 
-        userService.updateProfile(principal.getName(), dto);
+        try{
+            userService.updateProfile(principal.getName(), dto);
 
-        return "redirect:/profile?success"; //flag success -> display notification to UI
+            //Notification: "Update succcess"
+            redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thông tin thành công!");
+
+            return "redirect:/home";
+        } catch (Exception e){
+            //Notification: "Update failed"
+            model.addAttribute("error", "Có lỗi xảy ra, vui lòng thử lại sau!");
+            return "profile";
+        }
     }
 }
