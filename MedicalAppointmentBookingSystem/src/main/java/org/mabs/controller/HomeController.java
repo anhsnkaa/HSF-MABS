@@ -13,6 +13,11 @@ public class HomeController {
         return "home";
     }
 
+    @GetMapping("/home/admin")
+    public String homeAdmin() {
+        return "admin/admin-home";
+    }
+
     @GetMapping("/about")
     public String about() {
         return "about";
