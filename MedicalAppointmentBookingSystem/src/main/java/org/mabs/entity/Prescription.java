@@ -25,7 +25,7 @@ public class Prescription {
     @JoinColumn(name = "medicine_id", nullable = false)
     private Medicine medicine;
 
-    private Integer quantity;
+    private int quantity;
 
     @Column(length = 100, nullable = false)
     private String dosage;
@@ -34,7 +34,7 @@ public class Prescription {
     private String frequency;
 
     @Column(name = "duration_days")
-    private Integer durationDays;
+    private int durationDays;
 
     @Column(length = 255)
     private String note;
