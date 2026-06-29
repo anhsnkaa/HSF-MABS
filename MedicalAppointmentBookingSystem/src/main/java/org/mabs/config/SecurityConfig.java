@@ -15,7 +15,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/home", "/login", "/register", "/css/**", "/js/**").permitAll()
+                        .requestMatchers("/", "/home", "/login", "/register", "/css/**", "/js/**").permitAll().requestMatchers("/doctor/**").hasRole("doctor")
                         .requestMatchers("/profile").authenticated() // Only authenticated users can access /profile
                         .anyRequest().authenticated()
                 )
