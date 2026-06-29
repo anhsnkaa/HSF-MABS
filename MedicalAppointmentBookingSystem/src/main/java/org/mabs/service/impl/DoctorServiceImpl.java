@@ -17,4 +17,9 @@ public class DoctorServiceImpl implements DoctorService {
     public List<Doctor> getAllDoctors() {
         return repository.findAllDoctors();
     }
+
+    @Override
+    public Doctor createDoctor(Doctor doctor) {
+        return repository.save(doctor);
+    }
 }

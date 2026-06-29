@@ -13,7 +13,11 @@ public interface UserService {
 
     List<User> getAllUsers();
 
+    List<User> getRoleDoctor();
+
     User addUser(User user);
+
+    User findById(Long id);
 
 //    String registerUser(@ModelAttribute("user") UserRegistrationDto registrationDto);
     void saveUser(UserRegistrationDto registrationDto);

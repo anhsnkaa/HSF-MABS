@@ -26,12 +26,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> getRoleDoctor() {
+        return userRepository.findByRole("doctor");
+    }
+
+    @Override
     public User addUser(User user) {
         user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
         if (user.getCreatedAt() == null) {
             user.setCreatedAt(LocalDateTime.now());
         }
         return userRepository.save(user);
+    }
+
+    @Override
+    public User findById(Long id) {
+        return userRepository.findById(id).orElse(null);
     }
 
     @Override

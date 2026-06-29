@@ -12,6 +12,7 @@
 
 <body>
     <div layout:fragment="content">
+        <button><a th:href="@{/doctors/add}">Add doctor</a></button>
         <table>
             <thead>
                 <th>#</th>
@@ -20,8 +21,6 @@
                 <th>Title</th>
                 <th>Bio</th>
                 <th>Consultation fee</th>
-                <th>Rating average</th>
-                <th>Rating count</th>
                 <th>Years of experience</th>
             </thead>
             <tbody>
@@ -32,8 +31,6 @@
                     <td th:text="${doctor.title}"></td>
                     <td th:text="${doctor.bio}"></td>
                     <td th:text="${doctor.consultationFee}"></td>
-                    <td th:text="${doctor.ratingAvg}"></td>
-                    <td th:text="${doctor.ratingCount}"></td>
                     <td th:text="${doctor.experienceYears}"></td>
                 </tr>
             </tbody>

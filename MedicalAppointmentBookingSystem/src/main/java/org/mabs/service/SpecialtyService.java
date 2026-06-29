@@ -10,4 +10,6 @@ public interface SpecialtyService {
     List<Specialty> getALlSpecialties();
 
     Specialty createSpecialty(Specialty specialty);
+
+    Specialty findById(Long id);
 }
