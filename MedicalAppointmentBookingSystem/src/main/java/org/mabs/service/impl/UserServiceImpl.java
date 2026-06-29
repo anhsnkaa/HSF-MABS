@@ -26,6 +26,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User addUser(User user) {
+        user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
+        if (user.getCreatedAt() == null) {
+            user.setCreatedAt(LocalDateTime.now());
+        }
+        return userRepository.save(user);
+    }
+
+    @Override
     public void saveUser(UserRegistrationDto dto) {
         User user = new User();
         user.setFullName(dto.getFullName());

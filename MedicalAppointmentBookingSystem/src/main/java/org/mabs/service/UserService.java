@@ -13,6 +13,8 @@ public interface UserService {
 
     List<User> getAllUsers();
 
+    User addUser(User user);
+
 //    String registerUser(@ModelAttribute("user") UserRegistrationDto registrationDto);
     void saveUser(UserRegistrationDto registrationDto);
 

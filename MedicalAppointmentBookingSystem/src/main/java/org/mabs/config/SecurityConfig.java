@@ -17,7 +17,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/home", "/login", "/register", "/css/**", "/js/**").permitAll()
                         .requestMatchers("/profile").authenticated() // Only authenticated users can access /profile
+                        .requestMatchers("/home/admin").hasRole("ADMIN")
                         .requestMatchers("/accounts").hasRole("ADMIN")
+                        .requestMatchers("/accounts/add").hasRole("ADMIN")
+                        .requestMatchers("/specialites").hasRole("ADMIN")
+                        .requestMatchers("/doctors").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

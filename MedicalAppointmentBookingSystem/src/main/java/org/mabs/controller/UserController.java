@@ -23,12 +23,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/accounts")
-    public String viewAllAccounts(Model model) {
-        model.addAttribute("accountList", userService.getAllUsers());
-        return "admin/admin-account";
-    }
-
     @GetMapping("/profile")
     public String showProfile(Principal principal, Model model) {
         //Not login yet -> req login
