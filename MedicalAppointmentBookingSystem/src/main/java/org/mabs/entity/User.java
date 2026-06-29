@@ -17,32 +17,51 @@ import java.time.LocalDateTime;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // BIGINT IDENTITY SQL
+    @Column(name = "id")
+    private Long id;
 
+    @Column(name = "full_name", nullable = false)
     private String fullName;
+
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
+
+    @Column(name = "phone")
     private String phone;
+
+    @Column(name = "password_hash", nullable = false)
     private String passwordHash;
+
+    @Column(name = "role", nullable = false)
     private String role;
+
+    @Column(name = "status", nullable = false)
     private String status;
+
+    @Column(name = "gender")
     private String gender;
+
+    @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
+
+    @Column(name = "address")
     private String address;
+
+    @Column(name = "avatar_url", length = 500)
     private String avatarUrl;
 
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    // Tự động gán thời gian lúc mới tạo tài khoản
     @PrePersist
     protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        if (this.status == null) {
-            this.status = "active";
-        }
+        if (this.createdAt == null) this.createdAt = LocalDateTime.now();
+        if (this.status == null) this.status = "active";
     }
 
-    // Tự động cập nhật thời gian khi có chỉnh sửa profile
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();

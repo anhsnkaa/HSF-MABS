@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 public class Appointment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -50,19 +51,15 @@ public class Appointment {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-
     @PrePersist
     protected void onCreate() {
-        if (this.createdAt == null)
-            this.createdAt = LocalDateTime.now();
-        if (this.status == null)
-            this.status = "pending";
+        if (this.createdAt == null) this.createdAt = LocalDateTime.now();
+        if (this.status == null) this.status = "pending";
     }
 
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
-
 
 }

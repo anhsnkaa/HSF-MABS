@@ -16,8 +16,10 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class WorkingSchedule {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -41,9 +43,8 @@ public class WorkingSchedule {
 
     @PrePersist
     protected void onCreate() {
-        if (this.slotMinutes == null)
-            this.slotMinutes = 30;
-        if (this.status == null)
-            this.status = "open";
+        if (this.slotMinutes == null) this.slotMinutes = 30;
+        if (this.status == null) this.status = "open";
     }
+
 }

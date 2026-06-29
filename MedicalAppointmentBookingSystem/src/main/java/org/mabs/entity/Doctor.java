@@ -9,9 +9,7 @@ import java.math.BigDecimal;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
-@ToString(exclude = {"user", "speciality"})
+@ToString(exclude = {"user", "specialty"})
 @Entity
 @Table(name = "doctor")
 public class Doctor{
