@@ -18,9 +18,8 @@ public class SecurityConfig {
                         .requestMatchers("/", "/home", "/login", "/register", "/css/**", "/js/**").permitAll()
                         .requestMatchers("/profile").authenticated() // Only authenticated users can access /profile
                         .requestMatchers("/home/admin").hasRole("ADMIN")
-                        .requestMatchers("/accounts").hasRole("ADMIN")
-                        .requestMatchers("/accounts/add").hasRole("ADMIN")
-                        .requestMatchers("/specialites").hasRole("ADMIN")
+                        .requestMatchers("/accounts/**").hasRole("ADMIN")
+                        .requestMatchers("/specialties/**").hasRole("ADMIN")
                         .requestMatchers("/doctors").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )

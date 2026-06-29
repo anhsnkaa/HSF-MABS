@@ -17,4 +17,9 @@ public class SpecialtyServiceImpl implements SpecialtyService {
     public List<Specialty> getALlSpecialties() {
         return repository.findAll();
     }
+
+    @Override
+    public Specialty createSpecialty(Specialty specialty) {
+        return repository.save(specialty);
+    }
 }

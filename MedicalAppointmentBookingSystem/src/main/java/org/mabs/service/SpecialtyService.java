@@ -8,4 +8,6 @@ import java.util.List;
 public interface SpecialtyService {
 
     List<Specialty> getALlSpecialties();
+
+    Specialty createSpecialty(Specialty specialty);
 }
