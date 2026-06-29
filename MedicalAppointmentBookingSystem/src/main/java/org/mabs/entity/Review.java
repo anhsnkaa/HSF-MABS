@@ -31,7 +31,7 @@ public class Review {
     @JoinColumn(name = "doctor_id", nullable = false)
     private Doctor doctor;
 
-    private int rating;
+    private Integer rating;
 
     private String comment;
 

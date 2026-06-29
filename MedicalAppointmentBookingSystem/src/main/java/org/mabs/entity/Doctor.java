@@ -40,8 +40,8 @@ public class Doctor {
     private BigDecimal ratingAvg;
 
     @Column(name = "rating_count")
-    private int ratingCount;
+    private Integer ratingCount;
 
     @Column(name = "experience_years")
-    private int experienceYears;
+    private Integer experienceYears;
 }
