@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Lịch hẹn của tôi - MABS</title>
+</head>
+<body>
+<main layout:fragment="content" class="container py-5">
+
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show shadow-sm mb-4" role="alert">
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show shadow-sm mb-4" role="alert">
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+            <h2 class="fw-bold">Lịch hẹn của tôi</h2>
+            <a href="/book-appointment" class="btn btn-primary">+ Đặt lịch mới</a>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <div th:if="${#lists.isEmpty(appointments)}" class="text-center py-5 text-muted">
+                <p class="fs-5">Bạn chưa có lịch hẹn nào.</p>
+                <a href="/book-appointment" class="btn btn-primary">Đặt lịch ngay</a>
+            </div>
+
+            <div th:unless="${#lists.isEmpty(appointments)}" class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                    <tr>
+                        <th>Bác sĩ</th>
+                        <th>Chuyên khoa</th>
+                        <th>Thời gian</th>
+                        <th>Lý do</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="appointment : ${appointments}">
+                        <td>
+                            <span class="fw-bold" th:text="${appointment.doctor.title + ' ' + appointment.doctor.user.fullName}">BS. Name</span>
+                        </td>
+                        <td th:text="${appointment.doctor.specialty.name}">Chuyên khoa</td>
+                        <td th:text="${#temporals.format(appointment.appointmentTime, 'dd/MM/yyyy HH:mm')}">Time</td>
+                        <td th:text="${appointment.reason}">Reason</td>
+                        <td>
+                                <span class="badge"
+                                      th:classappend="${appointment.status == 'confirmed' ? 'bg-success' :
+                                                      (appointment.status == 'pending' ? 'bg-warning text-dark' :
+                                                      (appointment.status == 'cancelled' ? 'bg-secondary' : 'bg-info'))}"
+                                      th:text="${appointment.status == 'confirmed' ? 'Đã xác nhận' :
+                                                (appointment.status == 'pending' ? 'Chờ xác nhận' :
+                                                (appointment.status == 'cancelled' ? 'Đã hủy' : 'Hoàn thành'))}">
+                        </td>
+                        <td>
+                            <div th:if="${appointment.status == 'pending' or appointment.status == 'confirmed'}">
+                                <button class="btn btn-outline-danger btn-sm me-1"
+                                        onclick="showCancelModal(${appointment.id})">Hủy</button>
+                                <a th:href="@{/book-appointment(appointmentId=${appointment.id})}"
+                                   class="btn btn-outline-primary btn-sm">Dời lịch</a>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cancel Modal -->
+    <div class="modal fade" id="cancelModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form th:action="@{/appointments/{id}/cancel(id=${cancelAppointmentId})}" method="post" id="cancelForm">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Hủy lịch hẹn</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Lý do hủy</label>
+                            <textarea name="cancelReason" class="form-control" rows="3" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-danger">Xác nhận hủy</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var cancelAppointmentId = null;
+        function showCancelModal(appointmentId) {
+            cancelAppointmentId = appointmentId;
+            var form = document.getElementById('cancelForm');
+            form.action = '/appointments/' + appointmentId + '/cancel';
+            var modal = new bootstrap.Modal(document.getElementById('cancelModal'));
+            modal.show();
+        }
+    </script>
+</main>
+</body>
+</html>

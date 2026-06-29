@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Đặt lịch khám - MABS</title>
+</head>
+<body>
+<main layout:fragment="content" class="container py-5">
+
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show shadow-sm mb-4" role="alert">
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white py-3">
+                    <h4 class="fw-bold mb-0">Đặt lịch khám</h4>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/book-appointment}" th:object="${bookingRequest}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Bác sĩ</label>
+                            <select th:field="*{doctorId}" class="form-select" id="doctorSelect" required>
+                                <option value="">-- Chọn bác sĩ --</option>
+                                <option th:each="doctor : ${doctors}"
+                                        th:value="${doctor.id}"
+                                        th:text="${doctor.title + ' ' + doctor.user.fullName + ' - ' + doctor.specialty.name}"
+                                        th:selected="${selectedDoctorId != null && selectedDoctorId == doctor.id}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Lịch làm việc</label>
+                            <select th:field="*{scheduleId}" class="form-select" id="scheduleSelect" required>
+                                <option value="">-- Chọn ngày --</option>
+                                <option th:each="schedule : ${schedules}"
+                                        th:value="${schedule.id}"
+                                        th:text="${#temporals.format(schedule.workDate, 'dd/MM/yyyy') + ' (' + #temporals.format(schedule.startTime, 'HH:mm') + ' - ' + #temporals.format(schedule.endTime, 'HH:mm') + ')'}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Thời gian khám</label>
+                            <input type="datetime-local" th:field="*{appointmentTime}" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Lý do khám</label>
+                            <textarea th:field="*{reason}" class="form-control" rows="3" placeholder="Nhập triệu chứng hoặc lý do khám..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">Xác nhận đặt lịch</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('doctorSelect').addEventListener('change', function() {
+            var doctorId = this.value;
+            if (doctorId) {
+                window.location.href = '/book-appointment?doctorId=' + doctorId;
+            }
+        });
+    </script>
+</main>
+</body>
+</html>
