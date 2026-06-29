@@ -6,28 +6,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
+
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
+@Table(name = "specialty")
 @Getter
 @Setter
-@Table(name = "medicine")
-public class Medicine {
+@NoArgsConstructor
+@AllArgsConstructor
+public class Specialty {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 150, nullable = false)
     private String name;
 
-    @Column(length = 50)
-    private String unit;
-
-    @Column(columnDefinition = "nvarchar(max)")
+    @Column(columnDefinition = "NVARCHAR(MAX)")
     private String description;
-
-    @Column(name = "is_active")
-    private Boolean isActive;
-
-
 }

@@ -17,7 +17,7 @@ public class MedicalRecordController {
 
     @GetMapping("/medical-records")
     public String viewMedicalRecords(Model model) {
-        Integer patientId = 4;
+        Long patientId = 4L;
 
         List<MedicalRecordResponse> records = medicalRecordService.getMedicalRecordsByPatient(patientId);
         model.addAttribute("records", records);
