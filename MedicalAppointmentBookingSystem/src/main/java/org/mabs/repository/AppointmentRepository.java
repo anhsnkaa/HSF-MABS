@@ -11,7 +11,7 @@ import java.util.List;
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
 
     @Query("""
-        SELECT a FROM Appointment a 
+        FROM Appointment a 
         WHERE a.doctor.id = :doctorId
             and a.appointmentTime BETWEEN :start and :end
                 order by a.appointmentTime asc
@@ -23,10 +23,13 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             );
 
     @Query("""
-    SELECT a from Appointment a
+    from Appointment a
     where a.patient.id = :patientId
     and a.status = 'completed'
     order by a.appointmentTime desc
 """)
     List<Appointment> findCompletedByPatient(@Param("patientId") Long patientId);
+
+    @Query("from Appointment ap where ap.patient.id = :id")
+    List<Appointment> findByPatientId(@Param("id") Long id);
 }
