@@ -8,6 +8,5 @@ import lombok.Setter;
 public class DoctorSearch {
     private Long specialtyId;
     private String keyword;
-    private Double minRating;
     private String sortBy;
 }

@@ -4,6 +4,7 @@
       layout:decorate="~{layout}">
 <head>
     <title>Đặt lịch khám - MABS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 </head>
 <body>
 <main layout:fragment="content" class="container py-5">
@@ -13,60 +14,168 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-white py-3">
-                    <h4 class="fw-bold mb-0">Đặt lịch khám</h4>
-                </div>
-                <div class="card-body">
-                    <form th:action="@{/book-appointment}" th:object="${bookingRequest}" method="post">
-                        <div class="mb-3">
-                            <label class="form-label">Bác sĩ</label>
-                            <select th:field="*{doctorId}" class="form-select" id="doctorSelect" required>
-                                <option value="">-- Chọn bác sĩ --</option>
-                                <option th:each="doctor : ${doctors}"
-                                        th:value="${doctor.id}"
-                                        th:text="${doctor.title + ' ' + doctor.user.fullName + ' - ' + doctor.specialty.name}"
-                                        th:selected="${selectedDoctorId != null && selectedDoctorId == doctor.id}">
-                                </option>
-                            </select>
-                        </div>
+    <div class="row g-4">
+        <!-- Left: Form -->
+        <div class="col-lg-7">
+            <div class="mb-3">
+                <h2 class="fw-bold mb-1">Hoàn tất đặt lịch hẹn</h2>
+                <p class="text-muted">Vui lòng kiểm tra thông tin chi tiết bên dưới trước khi xác nhận.</p>
+            </div>
 
-                        <div class="mb-3">
-                            <label class="form-label">Lịch làm việc</label>
-                            <select th:field="*{scheduleId}" class="form-select" id="scheduleSelect" required>
-                                <option value="">-- Chọn ngày --</option>
-                                <option th:each="schedule : ${schedules}"
-                                        th:value="${schedule.id}"
-                                        th:text="${#temporals.format(schedule.workDate, 'dd/MM/yyyy') + ' (' + #temporals.format(schedule.startTime, 'HH:mm') + ' - ' + #temporals.format(schedule.endTime, 'HH:mm') + ')'}">
-                                </option>
-                            </select>
-                        </div>
+            <!-- Form Card -->
+            <div class="card border rounded-3 shadow-sm">
+                <div class="card-body p-4">
+                    <form th:action="@{/book-appointment}" th:object="${bookingRequest}" method="post" id="bookingForm">
 
-                        <div class="mb-3">
-                            <label class="form-label">Thời gian khám</label>
-                            <input type="datetime-local" th:field="*{appointmentTime}" class="form-control" required>
-                        </div>
+                        <!-- Step 1: Booking Info -->
+                        <section class="mb-4">
+                            <h5 class="fw-semibold mb-3 d-flex align-items-center gap-2">
+                                <span class="material-symbols-outlined text-primary">person</span>
+                                Thông tin đặt lịch
+                            </h5>
+                            <div class="mb-3">
+                                <label class="form-label">Bác sĩ</label>
+                                <select th:field="*{doctorId}" class="form-select" id="doctorSelect" required>
+                                    <option value="">-- Chọn bác sĩ --</option>
+                                    <option th:each="doctor : ${doctors}"
+                                            th:value="${doctor.id}"
+                                            th:text="${doctor.title + ' ' + doctor.user.fullName + ' - ' + doctor.specialty.name}">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Ngày khám</label>
+                                    <select th:field="*{scheduleId}" class="form-select" id="scheduleSelect">
+                                        <option value="">-- Chọn ngày --</option>
+                                        <option th:each="schedule : ${schedules}"
+                                                th:value="${schedule.id}"
+                                                th:text="${#temporals.format(schedule.workDate, 'dd/MM/yyyy') + ' (' + #temporals.format(schedule.startTime, 'HH:mm') + ' - ' + #temporals.format(schedule.endTime, 'HH:mm') + ')'}">
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Giờ khám</label>
+                                    <input type="datetime-local" th:field="*{appointmentTime}" class="form-control">
+                                </div>
+                            </div>
+                        </section>
 
-                        <div class="mb-3">
-                            <label class="form-label">Lý do khám</label>
-                            <textarea th:field="*{reason}" class="form-control" rows="3" placeholder="Nhập triệu chứng hoặc lý do khám..."></textarea>
-                        </div>
+                        <hr class="my-4">
 
-                        <button type="submit" class="btn btn-primary w-100">Xác nhận đặt lịch</button>
+                        <!-- Step 2: Reason -->
+                        <section class="mb-4">
+                            <h5 class="fw-semibold mb-3 d-flex align-items-center gap-2">
+                                <span class="material-symbols-outlined text-primary">medical_information</span>
+                                Lý do thăm khám
+                            </h5>
+                            <div class="mb-3">
+                                <label class="form-label">Triệu chứng hoặc yêu cầu</label>
+                                <textarea th:field="*{reason}" class="form-control" rows="3" placeholder="Mô tả ngắn gọn tình trạng sức khỏe của bạn"></textarea>
+                            </div>
+                        </section>
+
+                        <hr class="my-4">
+
                     </form>
                 </div>
+            </div>
+        </div>
+
+        <!-- Right: Summary -->
+        <div class="col-lg-5">
+            <div class="sticky-top" style="top:100px;">
+                <div class="card border-start border-primary border-4 rounded-3 shadow-sm">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-3">Tóm tắt lịch hẹn</h5>
+
+                        <!-- Doctor -->
+                        <div th:if="${selectedDoctor != null}" class="d-flex align-items-start gap-3 p-3 bg-body-tertiary rounded-3 mb-3">
+                            <div class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width:48px;height:48px;">
+                                <span class="material-symbols-outlined text-primary">medical_services</span>
+                            </div>
+                            <div>
+                                <p class="small text-muted text-uppercase mb-0 fw-semibold" style="letter-spacing:0.05em;">Bác sĩ điều trị</p>
+                                <p class="fw-semibold mb-0" th:text="${selectedDoctor.title + ' ' + selectedDoctor.user.fullName}">BS. Nguyễn Văn An</p>
+                                <p class="small text-primary mb-0" th:text="${selectedDoctor.specialty.name}">Chuyên khoa Nội</p>
+                            </div>
+                        </div>
+                        <div th:if="${selectedDoctor == null}" class="d-flex align-items-start gap-3 p-3 bg-body-tertiary rounded-3 mb-3">
+                            <div class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width:48px;height:48px;">
+                                <span class="material-symbols-outlined text-primary">medical_services</span>
+                            </div>
+                            <div>
+                                <p class="small text-muted text-uppercase mb-0 fw-semibold" style="letter-spacing:0.05em;">Bác sĩ điều trị</p>
+                                <p class="fw-semibold mb-0 text-muted">Chưa chọn</p>
+                                <p class="small text-muted mb-0">Vui lòng chọn bác sĩ</p>
+                            </div>
+                        </div>
+
+                        <!-- Date & Time -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-6">
+                                <div class="p-3 bg-body-tertiary rounded-3">
+                                    <p class="small text-muted text-uppercase mb-1 fw-semibold" style="letter-spacing:0.05em;">Ngày hẹn</p>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="material-symbols-outlined text-primary" style="font-size:18px;">calendar_today</span>
+                                        <span class="fw-semibold" id="summaryDate">--/--/----</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-3 bg-body-tertiary rounded-3">
+                                    <p class="small text-muted text-uppercase mb-1 fw-semibold" style="letter-spacing:0.05em;">Giờ hẹn</p>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="material-symbols-outlined text-primary" style="font-size:18px;">schedule</span>
+                                        <span class="fw-semibold" id="summaryTime">--:--</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submit -->
+                        <button type="submit" form="bookingForm" class="btn btn-primary w-100 py-3 fw-semibold d-flex align-items-center justify-content-center gap-2 rounded-3">
+                            Đặt lịch ngay
+                            <span class="material-symbols-outlined">chevron_right</span>
+                        </button>
+                        <p class="text-center small text-muted mt-2 px-3">
+                            Bằng cách nhấn "Đặt lịch ngay", bạn đồng ý với Điều khoản và Chính sách bảo mật của chúng tôi.
+                        </p>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
 
     <script>
         document.getElementById('doctorSelect').addEventListener('change', function() {
-            var doctorId = this.value;
-            if (doctorId) {
-                window.location.href = '/book-appointment?doctorId=' + doctorId;
+            if (this.value) {
+                window.location.href = '/book-appointment?doctorId=' + this.value;
             }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var timeInput = document.querySelector('input[type="datetime-local"]');
+            var scheduleSelect = document.getElementById('scheduleSelect');
+            function updateSummary() {
+                if (timeInput.value) {
+                    var d = new Date(timeInput.value);
+                    var day = String(d.getDate()).padStart(2, '0');
+                    var month = String(d.getMonth() + 1).padStart(2, '0');
+                    var year = d.getFullYear();
+                    var hours = String(d.getHours()).padStart(2, '0');
+                    var minutes = String(d.getMinutes()).padStart(2, '0');
+                    document.getElementById('summaryDate').textContent = day + '/' + month + '/' + year;
+                    document.getElementById('summaryTime').textContent = hours + ':' + minutes;
+                }
+            }
+            timeInput.addEventListener('change', updateSummary);
+            scheduleSelect.addEventListener('change', function() {
+                var text = this.options[this.selectedIndex].text;
+                var match = text.match(/(\d{2}\/\d{2}\/\d{4})/);
+                if (match) document.getElementById('summaryDate').textContent = match[1];
+            });
         });
     </script>
 </main>

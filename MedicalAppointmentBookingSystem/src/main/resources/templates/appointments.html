@@ -54,18 +54,23 @@
                         <td>
                                 <span class="badge"
                                       th:classappend="${appointment.status == 'confirmed' ? 'bg-success' :
-                                                      (appointment.status == 'pending' ? 'bg-warning text-dark' :
-                                                      (appointment.status == 'cancelled' ? 'bg-secondary' : 'bg-info'))}"
+                                                      (appointment.status == 'cancelled' ? 'bg-secondary' :
+                                                      (appointment.status == 'completed' ? 'bg-info' : 'bg-warning'))}"
                                       th:text="${appointment.status == 'confirmed' ? 'Đã xác nhận' :
-                                                (appointment.status == 'pending' ? 'Chờ xác nhận' :
-                                                (appointment.status == 'cancelled' ? 'Đã hủy' : 'Hoàn thành'))}">
+                                                (appointment.status == 'cancelled' ? 'Đã hủy' :
+                                                (appointment.status == 'completed' ? 'Hoàn thành' : 'Chờ xác nhận'))}">
                         </td>
                         <td>
-                            <div th:if="${appointment.status == 'pending' or appointment.status == 'confirmed'}">
-                                <button class="btn btn-outline-danger btn-sm me-1"
-                                        onclick="showCancelModal(${appointment.id})">Hủy</button>
-                                <a th:href="@{/book-appointment(appointmentId=${appointment.id})}"
-                                   class="btn btn-outline-primary btn-sm">Dời lịch</a>
+                            <div th:if="${appointment.status == 'confirmed'}">
+                                <form th:action="@{/appointments/{id}/cancel(id=${appointment.id})}" method="post"
+                                      class="d-inline-flex align-items-center gap-1"
+                                      onsubmit="return confirm('Xác nhận hủy lịch hẹn này?')">
+                                    <input name="cancelReason" class="form-control form-control-sm"
+                                           placeholder="Lý do hủy..." required style="width:140px;">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">Hủy</button>
+                                </form>
+                                <a th:href="@{/appointments/{id}/reschedule(id=${appointment.id})}"
+                                   class="btn btn-outline-primary btn-sm ms-1">Dời lịch</a>
                             </div>
                         </td>
                     </tr>
@@ -74,41 +79,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Cancel Modal -->
-    <div class="modal fade" id="cancelModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form th:action="@{/appointments/{id}/cancel(id=${cancelAppointmentId})}" method="post" id="cancelForm">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Hủy lịch hẹn</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Lý do hủy</label>
-                            <textarea name="cancelReason" class="form-control" rows="3" required></textarea>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                        <button type="submit" class="btn btn-danger">Xác nhận hủy</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        var cancelAppointmentId = null;
-        function showCancelModal(appointmentId) {
-            cancelAppointmentId = appointmentId;
-            var form = document.getElementById('cancelForm');
-            form.action = '/appointments/' + appointmentId + '/cancel';
-            var modal = new bootstrap.Modal(document.getElementById('cancelModal'));
-            modal.show();
-        }
-    </script>
 </main>
 </body>
 </html>

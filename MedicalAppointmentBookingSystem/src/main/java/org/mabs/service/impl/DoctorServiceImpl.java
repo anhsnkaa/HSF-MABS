@@ -6,7 +6,6 @@ import org.mabs.entity.Doctor;
 import org.mabs.repository.DoctorRepository;
 import org.mabs.service.DoctorService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -14,14 +13,29 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class DoctorServiceImpl implements DoctorService {
 
-    private final DoctorRepository doctorRepository;
+    private final DoctorRepository repository;
+
+    @Override
+    public List<Doctor> getAllDoctors() {
+        return repository.findAllDoctors();
+    }
+
+    @Override
+    public Doctor getDoctorById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy bác sĩ"));
+    }
+
+    @Override
+    public Doctor createDoctor(Doctor doctor) {
+        return repository.save(doctor);
+    }
 
     @Override
     public List<Doctor> searchDoctors(DoctorSearch search) {
-        List<Doctor> doctors = doctorRepository.findAll();
+        List<Doctor> doctors = repository.findAllDoctors();
 
         if (search.getSpecialtyId() != null) {
             List<Doctor> specialtyFiltered = new ArrayList<>();
@@ -44,39 +58,14 @@ public class DoctorServiceImpl implements DoctorService {
             doctors = keywordFiltered;
         }
 
-        if (search.getMinRating() != null && search.getMinRating() > 0) {
-            List<Doctor> ratingFiltered = new ArrayList<>();
-            for (Doctor doctor : doctors) {
-                if (doctor.getRatingAvg() != null
-                        && doctor.getRatingAvg().doubleValue() >= search.getMinRating()) {
-                    ratingFiltered.add(doctor);
-                }
-            }
-            doctors = ratingFiltered;
-        }
-
         if (search.getSortBy() != null) {
-            if (search.getSortBy().equals("rating")) {
-                doctors.sort(new Comparator<Doctor>() {
-                    public int compare(Doctor doctor1, Doctor doctor2) {
-                        return doctor2.getRatingAvg().compareTo(doctor1.getRatingAvg());
-                    }
-                });
-            } else if (search.getSortBy().equals("experience")) {
-                doctors.sort(new Comparator<Doctor>() {
-                    public int compare(Doctor doctor1, Doctor doctor2) {
-                        return doctor2.getExperienceYears().compareTo(doctor1.getExperienceYears());
-                    }
-                });
+            if (search.getSortBy().equals("experience")) {
+                doctors.sort(Comparator.comparing(Doctor::getExperienceYears, Comparator.reverseOrder()));
             } else if (search.getSortBy().equals("fee")) {
-                doctors.sort(new Comparator<Doctor>() {
-                    public int compare(Doctor doctor1, Doctor doctor2) {
-                        return doctor1.getConsultationFee().compareTo(doctor2.getConsultationFee());
-                    }
-                });
+                doctors.sort(Comparator.comparing(Doctor::getConsultationFee));
             }
         }
 
         return doctors;
     }
-}
+        }

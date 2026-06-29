@@ -7,7 +7,9 @@ import org.mabs.dto.RescheduleRequest;
 import org.mabs.entity.Appointment;
 import org.mabs.entity.User;
 import org.mabs.entity.WorkingSchedule;
+import org.mabs.entity.Doctor;
 import org.mabs.service.AppointmentService;
+import org.mabs.service.DoctorService;
 import org.mabs.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,15 +25,22 @@ public class AppointmentController {
 
     private final AppointmentService appointmentService;
     private final UserService userService;
+    private final DoctorService doctorService;
 
     @GetMapping("/book-appointment")
     public String showBookForm(@RequestParam(required = false) Long doctorId, Model model) {
-        model.addAttribute("bookingRequest", new BookingRequest());
+        List<Doctor> doctors = doctorService.getAllDoctors();
+        model.addAttribute("doctors", doctors);
+
+        BookingRequest bookingRequest = new BookingRequest();
         if (doctorId != null) {
+            bookingRequest.setDoctorId(doctorId);
             List<WorkingSchedule> schedules = appointmentService.getWorkingSchedules(doctorId);
             model.addAttribute("schedules", schedules);
-            model.addAttribute("selectedDoctorId", doctorId);
+            Doctor selectedDoctor = doctorService.getDoctorById(doctorId);
+            model.addAttribute("selectedDoctor", selectedDoctor);
         }
+        model.addAttribute("bookingRequest", bookingRequest);
         return "book-appointment";
     }
 
@@ -76,6 +85,24 @@ public class AppointmentController {
             redirectAttributes.addFlashAttribute("errorMessage", "Hủy lịch thất bại: " + e.getMessage());
         }
         return "redirect:/appointments";
+    }
+
+    @GetMapping("/appointments/{id}/reschedule")
+    public String showRescheduleForm(@PathVariable Long id, Principal principal, Model model) {
+        if (principal == null) return "redirect:/login";
+        User user = userService.getUserByEmail(principal.getName());
+        Appointment appointment = appointmentService.findByIdAndPatientId(id, user.getId());
+
+        List<Doctor> doctors = doctorService.getAllDoctors();
+
+        model.addAttribute("appointment", appointment);
+        model.addAttribute("doctors", doctors);
+        model.addAttribute("rescheduleRequest", new RescheduleRequest());
+
+        List<WorkingSchedule> schedules = appointmentService.getWorkingSchedules(appointment.getDoctor().getId());
+        model.addAttribute("schedules", schedules);
+
+        return "reschedule-appointment";
     }
 
     @PostMapping("/appointments/{id}/reschedule")

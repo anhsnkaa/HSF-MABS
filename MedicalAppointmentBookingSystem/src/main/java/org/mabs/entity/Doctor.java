@@ -36,12 +36,6 @@ public class Doctor {
     @Column(name = "consultation_fee", precision = 12, scale = 0)
     private BigDecimal consultationFee;
 
-    @Column(name = "rating_avg", precision = 3, scale = 2)
-    private BigDecimal ratingAvg;
-
-    @Column(name = "rating_count")
-    private Integer ratingCount;
-
     @Column(name = "experience_years")
     private Integer experienceYears;
 }

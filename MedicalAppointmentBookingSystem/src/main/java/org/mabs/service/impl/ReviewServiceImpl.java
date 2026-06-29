@@ -64,25 +64,6 @@ public class ReviewServiceImpl implements ReviewService {
         review.setRating(dto.getRating());
         review.setComment(dto.getComment());
         reviewRepository.save(review);
-
-        // 7. Calculate and update Doctor's ratingAvg and ratingCount
-        Integer count = doctor.getRatingCount();
-        BigDecimal avg = doctor.getRatingAvg();
-
-        if (count == null || count == 0) {
-            count = 0;
-            avg = BigDecimal.ZERO;
-        }
-        if (avg == null) {
-            avg = BigDecimal.ZERO;
-        }
-
-        int newCount = count + 1;
-        double newTotal = (avg.doubleValue() * count) + dto.getRating();
-        BigDecimal newAvg = BigDecimal.valueOf(newTotal / newCount).setScale(2, RoundingMode.HALF_UP);
-
-        doctor.setRatingCount(newCount);
-        doctor.setRatingAvg(newAvg);
         doctorRepository.save(doctor);
     }
 }

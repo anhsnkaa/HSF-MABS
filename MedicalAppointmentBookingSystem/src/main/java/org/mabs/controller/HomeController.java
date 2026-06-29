@@ -14,6 +14,11 @@ public class HomeController {
     @Autowired
     private UserService userService;
 
+    @GetMapping("/home/admin")
+    public String homeAdmin() {
+        return "admin/admin-home";
+    }
+
     @GetMapping("/about")
     public String about() {
         return "about";

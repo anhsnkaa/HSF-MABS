@@ -36,6 +36,12 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    public Appointment findByIdAndPatientId(Long id, Long patientId) {
+        return appointmentRepository.findByIdAndPatientId(id, patientId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy lịch hẹn"));
+    }
+
+    @Override
     public void bookAppointment(BookingRequest request, Long patientId) {
         Doctor doctor = doctorRepository.findById(request.getDoctorId())
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy bác sĩ"));
@@ -49,7 +55,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
 
         boolean exists = appointmentRepository.existsByDoctorIdAndAppointmentTimeAndStatusIn(
-                request.getDoctorId(), request.getAppointmentTime(), List.of("pending", "confirmed"));
+                request.getDoctorId(), request.getAppointmentTime(), List.of("confirmed"));
         if (exists) {
             throw new RuntimeException("Slot này đã có người đặt, vui lòng chọn slot khác");
         }
@@ -60,7 +66,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointment.setWorkingSchedule(schedule);
         appointment.setAppointmentTime(request.getAppointmentTime());
         appointment.setReason(request.getReason());
-        appointment.setStatus("pending");
+        appointment.setStatus("confirmed");
 
         try {
             appointmentRepository.save(appointment);

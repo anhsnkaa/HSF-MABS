@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -18,6 +19,30 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    @Override
+    public List<User> getRoleDoctor() {
+        return userRepository.findByRole("doctor");
+    }
+
+    @Override
+    public User addUser(User user) {
+        user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
+        if (user.getCreatedAt() == null) {
+            user.setCreatedAt(LocalDateTime.now());
+        }
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User findById(Long id) {
+        return userRepository.findById(id).orElse(null);
+    }
 
     @Override
     public void saveUser(UserRegistrationDto dto) {
