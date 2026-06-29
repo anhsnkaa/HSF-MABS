@@ -40,11 +40,42 @@
                     <a href="/appointments" class="btn btn-sm btn-outline-primary">Xem tất cả</a>
                 </div>
                 <div class="card-body">
-                    <div class="text-center py-5 text-muted">
+                    <!-- Empty State -->
+                    <div th:if="${#lists.isEmpty(appointments)}" class="text-center py-5 text-muted">
                         <p class="mb-3">Bạn chưa có lịch hẹn nào sắp tới.</p>
                         <a href="/book-appointment" class="btn btn-primary">
                             + Đặt lịch khám ngay
                         </a>
+                    </div>
+
+                    <!-- List of appointments -->
+                    <div th:unless="${#lists.isEmpty(appointments)}" class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light text-success">
+                                <tr>
+                                    <th>Bác sĩ</th>
+                                    <th>Chuyên khoa</th>
+                                    <th>Thời gian khám</th>
+                                    <th>Lý do</th>
+                                    <th>Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="appt : ${appointments}">
+                                    <td>
+                                        <div class="fw-bold text-dark" th:text="${appt.doctor.title + ' ' + appt.doctor.user.fullName}">Dr. Name</div>
+                                    </td>
+                                    <td th:text="${appt.doctor.specialty.name}">Chuyên khoa</td>
+                                    <td class="fw-bold" th:text="${#temporals.format(appt.appointmentTime, 'dd/MM/yyyy HH:mm')}">Time</td>
+                                    <td th:text="${appt.reason}">Reason</td>
+                                    <td>
+                                        <span class="badge" 
+                                              th:classappend="${appt.status == 'confirmed' ? 'bg-success' : (appt.status == 'pending' || appt.status == 'active' ? 'bg-warning text-dark' : 'bg-primary')}"
+                                              th:text="${appt.status == 'confirmed' ? 'Đã xác nhận' : (appt.status == 'pending' ? 'Chờ xác nhận' : (appt.status == 'active' ? 'Hoạt động' : appt.status))}">Status</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

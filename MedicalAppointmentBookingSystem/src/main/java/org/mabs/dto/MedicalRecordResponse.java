@@ -19,4 +19,12 @@ public class MedicalRecordResponse {
     private String note;
     private LocalDate visitDate;
     private List<PrescriptionResponse> prescriptions;
+    
+    // Additional fields for Doctor information and Review status
+    private Long appointmentId;
+    private Long doctorId;
+    private String doctorName;
+    private boolean hasReview;
+    private Integer reviewRating;
+    private String reviewComment;
 }
