@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -18,6 +19,11 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
 
     @Override
     public void saveUser(UserRegistrationDto dto) {

@@ -17,6 +17,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/home", "/login", "/register", "/css/**", "/js/**").permitAll()
                         .requestMatchers("/profile").authenticated() // Only authenticated users can access /profile
+                        .requestMatchers("/accounts").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
