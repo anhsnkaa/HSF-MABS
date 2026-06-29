@@ -1,67 +1,225 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hồ sơ bệnh án</title>
+    <title>Hồ sơ bệnh án - MABS</title>
+    <!-- Use local css combined with Bootstrap -->
     <link rel="stylesheet" th:href="@{/css/medical-records.css}">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        .reviewed-stars {
+            color: #ffc107;
+            font-size: 1.2rem;
+        }
+        .empty-stars {
+            color: #ccc;
+            font-size: 1.2rem;
+        }
+    </style>
 </head>
 <body>
-    <h1>Hồ sơ bệnh án của tôi</h1>
+<main layout:fragment="content" class="container py-5">
 
-
-    <div class="empty" th:if="${#lists.isEmpty(records)}">
-        Chưa có hồ sơ bệnh án nào.
+    <!-- Flash Messages -->
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show shadow-sm mb-4" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show shadow-sm mb-4" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 
-
-    <div class="record" th:each="record : ${records}">
-        <div class="record-header">
-            <strong>Lần khám</strong>
-            <span class="date" th:text="${record.visitDate}">2026-01-01</span>
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="fw-bold"><i class="bi bi-journal-medical text-primary me-2"></i>Hồ sơ bệnh án của tôi</h2>
+            <p class="text-muted">Xem lịch sử khám bệnh, chẩn đoán, lời dặn của bác sĩ và đơn thuốc đi kèm.</p>
         </div>
-
-        <div class="info-row">
-            <span class="label">Triệu chứng:</span>
-            <span th:text="${record.symptom}">...</span>
-        </div>
-        <div class="info-row">
-            <span class="label">Chẩn đoán:</span>
-            <span th:text="${record.diagnosis}">...</span>
-        </div>
-        <div class="info-row">
-            <span class="label">Lời dặn:</span>
-            <span th:text="${record.note}">...</span>
-        </div>
-
-        <h4>Đơn thuốc</h4>
-        <table>
-            <thead>
-                <tr>
-                    <th>Thuốc</th>
-                    <th>Đơn vị</th>
-                    <th>Số lượng</th>
-                    <th>Liều</th>
-                    <th>Tần suất</th>
-                    <th>Số ngày</th>
-                    <th>Ghi chú</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="p : ${record.prescriptions}">
-                    <td th:text="${p.medicineName}">Paracetamol</td>
-                    <td th:text="${p.unit}">viên</td>
-                    <td th:text="${p.quantity}">20</td>
-                    <td th:text="${p.dosage}">1 viên/lần</td>
-                    <td th:text="${p.frequency}">2 lần/ngày</td>
-                    <td th:text="${p.durationDays}">10</td>
-                    <td th:text="${p.note}">Uống sau ăn</td>
-                </tr>
-                <tr th:if="${#lists.isEmpty(record.prescriptions)}">
-                    <td colspan="7" class="no-medicine">Không có đơn thuốc.</td>
-                </tr>
-            </tbody>
-        </table>
     </div>
+
+    <!-- Empty State -->
+    <div class="card shadow-sm border-0 text-center py-5" th:if="${#lists.isEmpty(records)}">
+        <div class="card-body">
+            <i class="bi bi-folder-x text-muted" style="font-size: 3rem;"></i>
+            <p class="mt-3 text-muted">Bạn chưa có hồ sơ bệnh án nào trong hệ thống.</p>
+        </div>
+    </div>
+
+    <!-- Records List -->
+    <div class="record card shadow-sm mb-4 border-0" th:each="record : ${records}">
+        <div class="card-body p-4">
+            <div class="record-header d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                <h5 class="fw-bold mb-0 text-primary">
+                    <i class="bi bi-person-fill-check me-2"></i>Bác sĩ khám: <span th:text="${record.doctorName}">...</span>
+                </h5>
+                <span class="badge bg-primary fs-6 px-3 py-2" th:text="${record.visitDate}">2026-01-01</span>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4 mb-2">
+                    <strong class="text-muted d-block">Triệu chứng:</strong>
+                    <span th:text="${record.symptom}">...</span>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <strong class="text-muted d-block">Chẩn đoán:</strong>
+                    <span th:text="${record.diagnosis}">...</span>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <strong class="text-muted d-block">Lời dặn bác sĩ:</strong>
+                    <span th:text="${record.note}">...</span>
+                </div>
+            </div>
+
+            <h6 class="fw-bold text-success mb-2"><i class="bi bi-capsule me-1"></i>Đơn thuốc đi kèm</h6>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light text-primary">
+                        <tr>
+                            <th>Thuốc</th>
+                            <th>Đơn vị</th>
+                            <th>Số lượng</th>
+                            <th>Liều lượng</th>
+                            <th>Tần suất</th>
+                            <th>Số ngày</th>
+                            <th>Ghi chú</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="p : ${record.prescriptions}">
+                            <td class="fw-bold" th:text="${p.medicineName}">Paracetamol</td>
+                            <td th:text="${p.unit}">viên</td>
+                            <td th:text="${p.quantity}">20</td>
+                            <td th:text="${p.dosage}">1 viên/lần</td>
+                            <td th:text="${p.frequency}">2 lần/ngày</td>
+                            <td th:text="${p.durationDays}">10</td>
+                            <td class="text-muted small" th:text="${p.note}">Uống sau ăn</td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(record.prescriptions)}">
+                            <td colspan="7" class="text-center text-muted py-3 fst-italic">Không có đơn thuốc nào được kê.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Review doctor section -->
+            <div class="mt-4 p-3 bg-light rounded d-flex flex-wrap justify-content-between align-items-center gap-3">
+                <div>
+                    <span class="fw-bold text-secondary">
+                        <i class="bi bi-star-fill text-warning me-1"></i>Đánh giá bác sĩ:
+                    </span>
+                    <span th:if="${record.hasReview}" class="ms-2">
+                        <span class="reviewed-stars">
+                            <th:block th:each="star : ${#numbers.sequence(1, record.reviewRating)}">★</th:block>
+                        </span>
+                        <span class="empty-stars" th:if="${record.reviewRating < 5}">
+                            <th:block th:each="star : ${#numbers.sequence(record.reviewRating + 1, 5)}">★</th:block>
+                        </span>
+                        <span class="ms-2 text-dark fst-italic" th:text="'&quot;' + ${record.reviewComment} + '&quot;'"></span>
+                    </span>
+                    <span th:unless="${record.hasReview}" class="ms-2 text-muted">Chưa có đánh giá</span>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-sm btn-primary px-3"
+                            th:unless="${record.hasReview}"
+                            th:data-appointment-id="${record.appointmentId}"
+                            th:data-doctor-id="${record.doctorId}"
+                            th:data-doctor-name="${record.doctorName}"
+                            onclick="openReviewModal(this)">
+                        <i class="bi bi-chat-left-heart me-1"></i>Đánh giá bác sĩ
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Review Modal -->
+    <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <form th:action="@{/patient/reviews}" method="post" class="w-100">
+                <div class="modal-content border-0 shadow-lg">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title fw-bold" id="reviewModalLabel">
+                            <i class="bi bi-star-fill me-2"></i>Đánh giá & Nhận xét
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <!-- Hidden inputs -->
+                        <input type="hidden" id="modalAppointmentId" name="appointmentId" />
+                        <input type="hidden" id="modalDoctorId" name="doctorId" />
+
+                        <div class="mb-3">
+                            <label class="form-label text-muted small uppercase fw-bold">Bác sĩ khám</label>
+                            <div class="h5 text-primary fw-bold" id="modalDoctorName">Bác sĩ</div>
+                        </div>
+
+                        <!-- Star Rating Selection -->
+                        <div class="mb-3">
+                            <label class="form-label text-muted small uppercase fw-bold d-block">Đánh giá số sao</label>
+                            <div class="rating-stars d-flex gap-2 fs-2 my-2">
+                                <span class="star-item" data-value="1" onclick="selectStars(1)" style="cursor: pointer; color: #ccc;">★</span>
+                                <span class="star-item" data-value="2" onclick="selectStars(2)" style="cursor: pointer; color: #ccc;">★</span>
+                                <span class="star-item" data-value="3" onclick="selectStars(3)" style="cursor: pointer; color: #ccc;">★</span>
+                                <span class="star-item" data-value="4" onclick="selectStars(4)" style="cursor: pointer; color: #ccc;">★</span>
+                                <span class="star-item" data-value="5" onclick="selectStars(5)" style="cursor: pointer; color: #ccc;">★</span>
+                            </div>
+                            <input type="hidden" id="modalRating" name="rating" value="5" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="modalComment" class="form-label text-muted small uppercase fw-bold">Nhận xét của bạn</label>
+                            <textarea class="form-control" id="modalComment" name="comment" rows="4" 
+                                      placeholder="Hãy chia sẻ trải nghiệm khám bệnh của bạn để giúp bác sĩ cải thiện dịch vụ..." required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-primary px-4">Gửi đánh giá</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</main>
+
+<th:block layout:fragment="script">
+    <script>
+        function openReviewModal(button) {
+            const appointmentId = button.getAttribute('data-appointment-id');
+            const doctorId = button.getAttribute('data-doctor-id');
+            const doctorName = button.getAttribute('data-doctor-name');
+
+            document.getElementById('modalAppointmentId').value = appointmentId;
+            document.getElementById('modalDoctorId').value = doctorId;
+            document.getElementById('modalDoctorName').innerText = doctorName;
+            
+            // Reset fields
+            document.getElementById('modalComment').value = '';
+            selectStars(5);
+
+            // Open Modal
+            const myModal = new bootstrap.Modal(document.getElementById('reviewModal'));
+            myModal.show();
+        }
+
+        function selectStars(rating) {
+            document.getElementById('modalRating').value = rating;
+            const stars = document.querySelectorAll('.star-item');
+            stars.forEach(star => {
+                const val = parseInt(star.getAttribute('data-value'));
+                if (val <= rating) {
+                    star.style.color = '#ffc107'; // bootstrap warning yellow
+                } else {
+                    star.style.color = '#ccc';
+                }
+            });
+        }
+    </script>
+</th:block>
 </body>
 </html>

@@ -6,20 +6,25 @@ import org.mabs.dto.PrescriptionResponse;
 import org.mabs.entity.MedicalRecord;
 import org.mabs.entity.Medicine;
 import org.mabs.entity.Prescription;
+import org.mabs.entity.Review;
 import org.mabs.repository.MedicalRecordRepository;
 import org.mabs.repository.PrescriptionRepository;
+import org.mabs.repository.ReviewRepository;
 import org.mabs.service.MedicalRecordService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class MedicalRecordServiceImpl implements MedicalRecordService {
 
     private final MedicalRecordRepository medicalRecordRepository;
     private final PrescriptionRepository prescriptionRepository;
+    private final ReviewRepository reviewRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -41,13 +46,29 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
 
             }
 
+            Long appointmentId = record.getAppointment().getId();
+            Long doctorId = record.getDoctor().getId();
+            String doctorName = record.getDoctor().getUser().getFullName();
+
+            // Check if review already exists for this appointment
+            Optional<Review> reviewOpt = reviewRepository.findByAppointmentId(appointmentId);
+            boolean hasReview = reviewOpt.isPresent();
+            Integer reviewRating = hasReview ? reviewOpt.get().getRating() : null;
+            String reviewComment = hasReview ? reviewOpt.get().getComment() : null;
+
             MedicalRecordResponse dto = new MedicalRecordResponse(
                     record.getId(),
                     record.getSymptoms(),
                     record.getDiagnosis(),
                     record.getNotes(),
                     record.getVisitDate(),
-                    prescriptionResponses
+                    prescriptionResponses,
+                    appointmentId,
+                    doctorId,
+                    doctorName,
+                    hasReview,
+                    reviewRating,
+                    reviewComment
             );
             results.add(dto);
         }

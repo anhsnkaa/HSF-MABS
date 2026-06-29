@@ -1,37 +1,32 @@
 package org.mabs.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.mabs.dto.MedicalRecordResponse;
 import org.mabs.entity.User;
-import org.mabs.service.MedicalRecordService;
 import org.mabs.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.security.Principal;
-import java.util.List;
 
 @Controller
+@RequestMapping("/doctor")
 @RequiredArgsConstructor
-public class MedicalRecordController {
+public class DoctorController {
 
-    private final MedicalRecordService medicalRecordService;
     private final UserService userService;
 
-    @GetMapping("/medical-records")
-    public String viewMedicalRecords(Principal principal, Model model) {
+    @GetMapping("/dashboard")
+    public String doctorDashboard(Principal principal, Model model) {
         if (principal == null) {
             return "redirect:/login";
         }
 
         String email = principal.getName();
         User user = userService.getUserByEmail(email);
-        Long patientId = user.getId();
+        model.addAttribute("user", user);
 
-        List<MedicalRecordResponse> records = medicalRecordService.getMedicalRecordsByPatient(patientId);
-        model.addAttribute("records", records);
-        return "medical-records";
-
+        return "doctor-dashboard";
     }
 }

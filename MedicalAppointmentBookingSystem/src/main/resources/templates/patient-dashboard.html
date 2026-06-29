@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Dashboard - MABS</title>
+</head>
+<body>
+<main layout:fragment="content" class="container py-5">
+
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show shadow-sm mb-4" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="fw-bold">Xin chào, <span th:text="${user.fullName}" class="text-primary">Bệnh nhân</span>! 👋</h2>
+            <p class="text-muted">Chào mừng bạn đến với Hệ thống Đặt lịch Khám bệnh (MABS).</p>
+        </div>
+    </div>
+
+    <div th:if="${!isProfileComplete}" class="alert alert-warning d-flex align-items-center shadow-sm mb-4"
+         role="alert">
+        <i class="bi bi-exclamation-triangle-fill fs-4 me-3"></i>
+        <div>
+            <strong>Hồ sơ của bạn chưa đầy đủ!</strong>
+            Vui lòng cập nhật số điện thoại và ngày sinh để các bác sĩ có thể liên hệ và chẩn đoán chính xác hơn.
+            <a href="/profile" class="alert-link ms-2">Cập nhật ngay ➔</a>
+        </div>
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-md-8">
+            <div class="card shadow-sm h-100 border-0">
+                <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-calendar-check text-success me-2"></i>Lịch Hẹn Sắp Tới</h5>
+                    <a href="/appointments" class="btn btn-sm btn-outline-primary">Xem tất cả</a>
+                </div>
+                <div class="card-body">
+                    <!-- Empty State -->
+                    <div th:if="${#lists.isEmpty(appointments)}" class="text-center py-5 text-muted">
+                        <p class="mb-3">Bạn chưa có lịch hẹn nào sắp tới.</p>
+                        <a href="/book-appointment" class="btn btn-primary">
+                            + Đặt lịch khám ngay
+                        </a>
+                    </div>
+
+                    <!-- List of appointments -->
+                    <div th:unless="${#lists.isEmpty(appointments)}" class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light text-success">
+                                <tr>
+                                    <th>Bác sĩ</th>
+                                    <th>Chuyên khoa</th>
+                                    <th>Thời gian khám</th>
+                                    <th>Lý do</th>
+                                    <th>Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="appt : ${appointments}">
+                                    <td>
+                                        <div class="fw-bold text-dark" th:text="${appt.doctor.title + ' ' + appt.doctor.user.fullName}">Dr. Name</div>
+                                    </td>
+                                    <td th:text="${appt.doctor.specialty.name}">Chuyên khoa</td>
+                                    <td class="fw-bold" th:text="${#temporals.format(appt.appointmentTime, 'dd/MM/yyyy HH:mm')}">Time</td>
+                                    <td th:text="${appt.reason}">Reason</td>
+                                    <td>
+                                        <span class="badge" 
+                                              th:classappend="${appt.status == 'confirmed' ? 'bg-success' : (appt.status == 'pending' || appt.status == 'active' ? 'bg-warning text-dark' : 'bg-primary')}"
+                                              th:text="${appt.status == 'confirmed' ? 'Đã xác nhận' : (appt.status == 'pending' ? 'Chờ xác nhận' : (appt.status == 'active' ? 'Hoạt động' : appt.status))}">Status</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100 border-0">
+                <div class="card-header bg-white border-bottom py-3">
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-person-badge text-info me-2"></i>Thẻ Bệnh Nhân</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span class="text-muted">Họ tên:</span>
+                            <strong th:text="${user.fullName}">...</strong>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span class="text-muted">Email:</span>
+                            <span th:text="${user.email}">...</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span class="text-muted">SĐT:</span>
+                            <span th:text="${user.phone != null ? user.phone : 'Chưa cập nhật'}"
+                                  th:classappend="${user.phone == null ? 'text-danger fst-italic' : ''}"></span>
+                        </li>
+                    </ul>
+                    <div class="mt-4 text-center">
+                        <a href="/profile" class="btn btn-outline-secondary w-100">Chỉnh sửa hồ sơ</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</main>
+</body>
+</html>

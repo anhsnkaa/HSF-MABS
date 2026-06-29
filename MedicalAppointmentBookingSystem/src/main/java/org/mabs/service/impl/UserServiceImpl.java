@@ -1,9 +1,10 @@
-package org.mabs.service;
+package org.mabs.service.impl;
 
 import org.mabs.dto.UserProfileUpdateDto;
 import org.mabs.dto.UserRegistrationDto;
 import org.mabs.entity.User;
 import org.mabs.repository.UserRepository;
+import org.mabs.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -46,5 +47,11 @@ public class UserServiceImpl implements UserService {
         user.setAddress(dto.getAddress());
 
         userRepository.save(user);
+    }
+
+    @Override
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
     }
 }
