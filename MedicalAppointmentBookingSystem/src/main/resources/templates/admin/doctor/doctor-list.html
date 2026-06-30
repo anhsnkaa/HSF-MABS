@@ -22,6 +22,7 @@
                 <th>Bio</th>
                 <th>Consultation fee</th>
                 <th>Years of experience</th>
+                <th>Edit</th>
             </thead>
             <tbody>
                 <tr th:each="doctor : ${doctorList}">
@@ -32,6 +33,7 @@
                     <td th:text="${doctor.bio}"></td>
                     <td th:text="${doctor.consultationFee}"></td>
                     <td th:text="${doctor.experienceYears}"></td>
+                    <td><a th:href="@{/doctors/update/{id}(id = ${doctor.id})}">Edit</a></td>
                 </tr>
             </tbody>
         </table>

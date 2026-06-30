@@ -35,7 +35,7 @@ public class AccountController {
     }
 
     @GetMapping("/update/{id}")
-    private String updateAccount(@PathVariable(name = "id") Long id,
+    public String updateAccount(@PathVariable(name = "id") Long id,
                                  Model model) {
         User user = userService.findById(id);
         AccountUpdateDto dto = new AccountUpdateDto();

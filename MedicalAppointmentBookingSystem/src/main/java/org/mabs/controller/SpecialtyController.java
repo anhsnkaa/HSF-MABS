@@ -62,7 +62,7 @@ public class SpecialtyController {
     }
 
     @PostMapping("/update/{id}")
-    private String updateSpecialty(@PathVariable(name = "id") Long id,
+    public String updateSpecialty(@PathVariable(name = "id") Long id,
                                    @Valid @ModelAttribute(name = "dto") SpecialtyUpdateDto dto,
                                    BindingResult bindingResult,
                                    RedirectAttributes redirectAttributes) {

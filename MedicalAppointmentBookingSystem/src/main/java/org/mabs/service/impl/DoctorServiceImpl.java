@@ -22,4 +22,13 @@ public class DoctorServiceImpl implements DoctorService {
     public Doctor createDoctor(Doctor doctor) {
         return repository.save(doctor);
     }
+
+    @Override
+    public Doctor updateDoctor(Doctor doctor) {
+        return repository.save(doctor);
+    }
+
+    public Doctor findById(Long id) {
+        return repository.findById(id).orElse(null);
+    }
 }
