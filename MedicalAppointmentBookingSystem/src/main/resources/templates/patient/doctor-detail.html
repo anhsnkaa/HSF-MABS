@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Chi Tiết Bác Sĩ - MABS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" th:href="@{/css/doctor-detail.css}"/>
+</head>
+<body>
+<main layout:fragment="content" class="container my-5" style="font-family: 'Inter', sans-serif;">
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card p-4 doctor-header-card shadow-sm border-0 rounded-4 mb-4">
+                <div class="mb-2" th:if="${doctor.title != null}">
+                    <span class="badge-specialty" th:text="${doctor.title}">Bác sĩ chuyên khoa II</span>
+                </div>
+                <h1 class="h3 fw-bold mb-2" th:text="${doctor.user.fullName}">BS. Nguyễn Văn An</h1>
+                <div class="text-muted d-flex flex-wrap gap-3 small">
+                    <span class="d-flex align-items-center gap-1">
+                        <span class="material-symbols-outlined fs-6">verified</span>
+                        <span th:text="${doctor.experienceYears + ' năm kinh nghiệm'}">25 năm kinh nghiệm</span>
+                    </span>
+                    <span class="d-flex align-items-center gap-1">
+                        <span class="material-symbols-outlined fs-6">stethoscope</span>
+                        <span th:text="${doctor.specialty.name}">Tim mạch</span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="card p-4 shadow-sm border-0 rounded-4 mb-4">
+                <h3 class="h5 fw-bold text-primary mb-3">Giới thiệu</h3>
+                <p class="text-muted mb-0" th:if="${doctor.bio != null}" th:text="${doctor.bio}">Bio</p>
+                <p class="text-muted mb-0" th:if="${doctor.bio == null}">
+                    Bác sĩ có nhiều năm kinh nghiệm trong lĩnh vực
+                    <span th:text="${doctor.specialty.name}">chuyên khoa</span>.
+                </p>
+            </div>
+
+
+            <div class="card p-4 shadow-sm border-0 rounded-4 mb-4">
+                <h3 class="h5 fw-bold text-primary mb-3">Phí tư vấn</h3>
+                <div class="h3 fw-bold text-danger mb-0"
+                     th:text="${#numbers.formatDecimal(doctor.consultationFee, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">500.000 VNĐ</div>
+            </div>
+        </div>
+
+
+        <div class="col-lg-4">
+            <div class="card p-4 shadow-sm border-0 rounded-4 sticky-lg-top" style="top: 100px;">
+                <h3 class="h5 fw-bold mb-4 d-flex align-items-center gap-2">
+                    <span class="material-symbols-outlined text-primary">calendar_today</span>
+                    Đặt lịch hẹn
+                </h3>
+                <a th:href="@{/book-appointment(doctorId=${doctor.id})}"
+                   class="btn btn-primary w-100 py-3 mb-3 d-flex align-items-center justify-content-center gap-2 text-decoration-none">
+                    Đặt lịch ngay
+                    <span class="material-symbols-outlined fs-5">arrow_forward</span>
+                </a>
+                <div class="text-center">
+                    <span class="text-muted small">Phí khám dự kiến: <strong th:text="${#numbers.formatDecimal(doctor.consultationFee, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">500.000 VNĐ</strong></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

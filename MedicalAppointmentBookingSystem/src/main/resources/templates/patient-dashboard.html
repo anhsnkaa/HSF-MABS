@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>MABS - Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+</head>
+<body>
+<main layout:fragment="content" class="container-xxl my-5" style="font-family: 'Inter', sans-serif;">
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show shadow-sm mb-4 rounded-4" role="alert">
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show shadow-sm mb-4 rounded-4" role="alert">
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <section class="rounded-4 p-4 p-md-5 mb-5 bg-body-tertiary border">
+        <div class="row">
+            <div class="col-lg-9">
+                <p class="text-secondary mb-5 fs-5">
+                    Tìm kiếm bác sĩ chuyên khoa và đặt lịch hẹn tư vấn chỉ trong vài giây.
+                </p>
+                <form th:action="@{/patient/doctors}" method="get" class="bg-body border rounded-4 p-3 mb-4 shadow-sm">
+                    <div class="mb-2">
+                        <input name="keyword" class="form-control"
+                               placeholder="Tìm tên bác sĩ, chuyên khoa..." type="text"/>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <select name="specialtyId" class="form-select w-auto flex-grow-1">
+                            <option value="">Tất cả khoa</option>
+                            <option th:each="s : ${specialties}" th:value="${s.id}" th:text="${s.name}"></option>
+                        </select>
+                        <button type="submit" class="btn btn-primary px-4 fw-semibold text-nowrap">Tìm kiếm</button>
+                    </div>
+                </form>
+
+                <div class="d-flex flex-wrap align-items-center gap-2">
+                    <span class="text-secondary small">Gợi ý:</span>
+                    <a th:each="s : ${specialties}" th:if="${sStat.index < 4}"
+                       th:href="@{/patient/doctors(keyword=${s.name})}"
+                       class="btn btn-sm rounded-pill px-3 py-1 bg-primary bg-opacity-10 text-primary small fw-medium text-decoration-none border-0"
+                       th:text="${s.name}">Chuyên khoa</a>
+                </div>
+            </div>
+
+            <div class="col-lg-5 mt-4 mt-lg-0" th:if="${!#lists.isEmpty(appointments)}">
+                <div class="rounded-4 p-4 text-white bg-primary shadow-sm">
+                    <h6 class="fw-semibold mb-3">Lịch hẹn sắp tới</h6>
+                    <div th:each="appt : ${appointments}" th:if="${apptStat.index < 2}" class="d-flex align-items-center gap-3 mb-3">
+                        <div class="bg-white bg-opacity-25 rounded-3 p-2 text-center" style="min-width: 50px;">
+                            <div class="fw-bold fs-5" th:text="${#temporals.format(appt.appointmentTime, 'dd')}">28</div>
+                            <div class="small" th:text="${#temporals.format(appt.appointmentTime, 'MM')}">06</div>
+                        </div>
+                        <div>
+                            <div class="fw-semibold" th:text="${appt.doctor.title + ' ' + appt.doctor.user.fullName}">BS. Name</div>
+                            <small class="opacity-75" th:text="${appt.doctor.specialty.name}">Specialty</small>
+                        </div>
+                        <span class="ms-auto badge bg-white rounded-pill text-primary"
+                              th:text="${appt.status == 'confirmed' ? 'Đã xác nhận' : (appt.status == 'completed' ? 'Hoàn thành' : (appt.status == 'cancelled' ? 'Đã hủy' : 'Chờ xác nhận'))}">Status</span>
+                    </div>
+                    <a href="/appointments" class="text-white text-decoration-none small opacity-75">Xem tất cả →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    <section class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold fs-4 m-0">Chuyên khoa</h2>
+            <a class="fw-semibold small d-flex align-items-center gap-1 text-decoration-none" href="/patient/doctors">
+                Xem tất cả <span class="material-symbols-outlined fs-6">arrow_forward</span>
+            </a>
+        </div>
+        <div class="row g-3">
+            <div class="col-md-4 col-lg-3" th:each="specialty : ${specialties}" th:if="${specialtyStat.index < 6}">
+                <a th:href="@{/patient/doctors(specialtyId=${specialty.id})}" class="text-decoration-none">
+                    <div class="card border-0 shadow-sm rounded-4 p-3 h-100">
+                        <h5 class="fw-bold mb-1 text-dark" th:text="${specialty.name}">Tim mạch</h5>
+                        <p class="text-secondary small mb-0" th:if="${specialty.description != null}" th:text="${specialty.description}">Mô tả</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="rounded-4 p-4 p-md-5 mb-5 text-white bg-primary shadow-sm">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="d-flex align-items-center gap-4 mb-3">
+                    <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center fw-bold fs-3"
+                         style="width: 60px; height: 60px; color: #0070ea;" th:text="${#strings.substring(user.fullName, 0, 1)}">T</div>
+                    <div>
+                        <h3 class="fw-bold mb-0" th:text="${user.fullName}">Bệnh nhân</h3>
+                        <small class="opacity-75" th:text="${user.email}">email@example.com</small>
+                    </div>
+                </div>
+                <p class="fs-5 opacity-90 mb-0">Quản lý lịch hẹn, hồ sơ bệnh án và kết quả xét nghiệm dễ dàng.</p>
+            </div>
+            <div class="col-lg-4 mt-3 mt-lg-0">
+                <div class="d-flex gap-2">
+                    <a href="/appointments" class="btn btn-light rounded-3 px-4 py-3 fw-bold flex-fill">Lịch hẹn</a>
+                    <a href="/profile" class="btn btn-outline-light rounded-3 px-4 py-3 fw-bold flex-fill">Hồ sơ</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+</body>
+</html>
