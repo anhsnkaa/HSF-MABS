@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout}">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Cập nhật hồ sơ bác sĩ</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+</head>
+
+<body>
+    <div layout:fragment="content" class="container py-5">
+        <div class="card col-md-8 mx-auto p-4">
+            <form th:action="@{/doctors/update/{id}(id = ${dto.id})}" th:object="${dto}" method="post">
+                <div class="mb-3">
+                    <label>User</label>
+                    <select th:field="*{userId}" class="form-control">
+                        <option value="">-- Select User --</option>
+                        <option th:each="user : ${doctorRoleList}" th:value="${user.id}" th:text="${user.fullName}"></option>
+                    </select>
+                    <p class="text-danger small mt-1 mb-0" th:if="${#fields.hasErrors('userId')}" th:errors="*{userId}"></p>
+                </div>
+                <div class="mb-3">
+                    <label>Specialty</label>
+                    <select th:field="*{specialtyId}" class="form-control">
+                        <option value="">-- Select Specialty --</option>
+                        <option th:each="specialty : ${specialtyList}" th:value="${specialty.id}" th:text="${specialty.name}"></option>
+                    </select>
+                    <p class="text-danger small mt-1 mb-0" th:if="${#fields.hasErrors('specialtyId')}" th:errors="*{specialtyId}"></p>
+                </div>
+                <div class="mb-3">
+                    <label>Title</label>
+                    <input type="text" th:field="*{title}" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label>Bio</label>
+                    <input type="text" th:field="*{bio}" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label>Consultation fee</label>
+                    <input type="text" th:field="*{consultationFee}" class="form-control">
+                    <p class="text-danger small mt-1 mb-0" th:if="${#fields.hasErrors('consultationFee')}" th:errors="*{consultationFee}"></p>
+                </div>
+                <div class="mb-3">
+                    <label>Year of experience</label>
+                    <input type="text" th:field="*{experienceYears}" class="form-control">
+                </div>
+                <button type="submit">Update</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="" async defer></script>
+</body>
+
+</html>

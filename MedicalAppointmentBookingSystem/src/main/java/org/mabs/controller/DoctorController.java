@@ -3,6 +3,7 @@ package org.mabs.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.mabs.dto.DoctorCreationDto;
+import org.mabs.dto.DoctorUpdateDto;
 import org.mabs.entity.Doctor;
 import org.mabs.entity.User;
 import org.mabs.service.DoctorService;
@@ -25,24 +26,43 @@ public class DoctorController {
     private final SpecialtyService specialtyService;
 
     @GetMapping
-    private String getAllDoctors(Model model) {
+    public String getAllDoctors(Model model) {
         model.addAttribute("doctorList", doctorService.getAllDoctors());
         return "/admin/doctor/doctor-list";
     }
 
     @GetMapping("/add")
-    private String addDoctor(Model model) {
+    public String addDoctor(Model model) {
         model.addAttribute("dto", new DoctorCreationDto());
         model.addAttribute("doctorRoleList", userService.getRoleDoctor());
         model.addAttribute("specialtyList", specialtyService.getALlSpecialties());
         return "/admin/doctor/doctor-add";
     }
 
+    @GetMapping("/update/{id}")
+    public String updateDoctor(@PathVariable(name = "id") Long id,
+                               Model model) {
+        Doctor doctor = doctorService.findById(id);
+        DoctorUpdateDto dto = new DoctorUpdateDto();
+        dto.setId(doctor.getId());
+        dto.setUserId(doctor.getUser().getId());
+        dto.setSpecialtyId(doctor.getSpecialty().getId());
+        dto.setTitle(doctor.getTitle());
+        dto.setBio(doctor.getBio());
+        dto.setConsultationFee(doctor.getConsultationFee());
+        dto.setExperienceYears(doctor.getExperienceYears());
+
+        model.addAttribute("dto", dto);
+        model.addAttribute("doctorRoleList", userService.getRoleDoctor());
+        model.addAttribute("specialtyList", specialtyService.getALlSpecialties());
+        return "/admin/doctor/doctor-update";
+    }
+
     @PostMapping("/add")
-    private String addDoctor(@Valid @ModelAttribute("dto") DoctorCreationDto dto,
-                             BindingResult bindingResult,
-                             Model model,
-                             RedirectAttributes redirectAttributes) {
+    public String addDoctor(@Valid @ModelAttribute("dto") DoctorCreationDto dto,
+                            BindingResult bindingResult,
+                            Model model,
+                            RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("doctorRoleList", userService.getRoleDoctor());
             model.addAttribute("specialtyList", specialtyService.getALlSpecialties());
@@ -59,6 +79,31 @@ public class DoctorController {
 
         doctorService.createDoctor(doctor);
         redirectAttributes.addFlashAttribute("message", "Added successfully");
+        return "redirect:/doctors";
+    }
+
+    @PostMapping("/update/{id}")
+    public String updateDoctor(@PathVariable(name = "id") Long id,
+                               @Valid @ModelAttribute(name = "dto") DoctorUpdateDto dto,
+                               BindingResult bindingResult,
+                               Model model,
+                               RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("doctorRoleList", userService.getRoleDoctor());
+            model.addAttribute("specialtyList", specialtyService.getALlSpecialties());
+            return "/admin/doctor/doctor-update";
+        }
+
+        Doctor doctor = doctorService.findById(id);
+        doctor.setUser(userService.findById(dto.getUserId()));
+        doctor.setSpecialty(specialtyService.findById(dto.getSpecialtyId()));
+        doctor.setTitle(dto.getTitle());
+        doctor.setBio(dto.getBio());
+        doctor.setConsultationFee(dto.getConsultationFee());
+        doctor.setExperienceYears(dto.getExperienceYears());
+
+        doctorService.updateDoctor(doctor);
+        redirectAttributes.addFlashAttribute("message", "Updated successfully");
         return "redirect:/doctors";
     }
     @GetMapping("/dashboard")

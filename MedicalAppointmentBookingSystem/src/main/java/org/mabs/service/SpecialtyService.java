@@ -11,5 +11,7 @@ public interface SpecialtyService {
 
     Specialty createSpecialty(Specialty specialty);
 
+    Specialty updateSpecialty(Specialty specialty);
+
     Specialty findById(Long id);
 }

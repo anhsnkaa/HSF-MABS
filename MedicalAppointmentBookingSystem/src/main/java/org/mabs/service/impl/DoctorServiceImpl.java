@@ -34,6 +34,16 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
+    public Doctor updateDoctor(Doctor doctor) {
+        return repository.save(doctor);
+    }
+
+    public Doctor findById(Long id) {
+        return repository.findById(id).orElse(null);
+    }
+}
+
+    @Override
     public List<Doctor> searchDoctors(DoctorSearch search) {
         List<Doctor> doctors = repository.findAllDoctors();
 
