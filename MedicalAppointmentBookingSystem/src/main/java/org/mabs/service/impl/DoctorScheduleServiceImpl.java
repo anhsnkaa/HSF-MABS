@@ -32,6 +32,7 @@ public class DoctorScheduleServiceImpl implements DoctorScheduleService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public AppointmentDTO getAppointmentDetail(Long appointmentId) {
          Appointment a = appointmentRepository.findById(appointmentId).orElseThrow(() -> new IllegalArgumentException("Không tìm thấy lịch hẹn!"));
          return AppointmentDTO.fromEntity(a,formatSchedule(a.getWorkingSchedule()));

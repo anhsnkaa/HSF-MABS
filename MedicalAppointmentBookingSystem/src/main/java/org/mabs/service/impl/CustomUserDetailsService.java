@@ -30,11 +30,11 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         String roleName = user.getRole();
         if (roleName == null) {
-            roleName = "PATIENT";
+            roleName = "patient";
         }
         String authority = roleName.toUpperCase().startsWith("ROLE_")
-                ? roleName.toUpperCase()
-                : "ROLE_" + roleName.toUpperCase();
+                ? roleName
+                : "ROLE_" + roleName;
 
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
