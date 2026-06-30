@@ -41,7 +41,7 @@ public class DoctorServiceImpl implements DoctorService {
     public Doctor findById(Long id) {
         return repository.findById(id).orElse(null);
     }
-}
+
 
     @Override
     public List<Doctor> searchDoctors(DoctorSearch search) {
