@@ -18,12 +18,14 @@
                 <th>#</th>
                 <th>Name</th>
                 <th>Description</th>
+                <th>Edit</th>
             </thead>
             <tbody>
                 <tr th:each="specialty : ${specialtyList}">
                     <td th:text="${specialty.id}"></td>
                     <td th:text="${specialty.name}"></td>
                     <td th:text="${specialty.description}"></td>
+                    <td><a th:href="@{/specialties/update/{id}(id = ${specialty.id})}">Edit</a></td>
                 </tr>
             </tbody>
         </table>
