@@ -49,24 +49,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-5 mt-4 mt-lg-0" th:if="${!#lists.isEmpty(appointments)}">
-                <div class="rounded-4 p-4 text-white bg-primary shadow-sm">
-                    <h6 class="fw-semibold mb-3">Lịch hẹn sắp tới</h6>
-                    <div th:each="appt : ${appointments}" th:if="${apptStat.index < 2}" class="d-flex align-items-center gap-3 mb-3">
-                        <div class="bg-white bg-opacity-25 rounded-3 p-2 text-center" style="min-width: 50px;">
-                            <div class="fw-bold fs-5" th:text="${#temporals.format(appt.appointmentTime, 'dd')}">28</div>
-                            <div class="small" th:text="${#temporals.format(appt.appointmentTime, 'MM')}">06</div>
-                        </div>
-                        <div>
-                            <div class="fw-semibold" th:text="${appt.doctor.title + ' ' + appt.doctor.user.fullName}">BS. Name</div>
-                            <small class="opacity-75" th:text="${appt.doctor.specialty.name}">Specialty</small>
-                        </div>
-                        <span class="ms-auto badge bg-white rounded-pill text-primary"
-                              th:text="${appt.status == 'confirmed' ? 'Đã xác nhận' : (appt.status == 'completed' ? 'Hoàn thành' : (appt.status == 'cancelled' ? 'Đã hủy' : 'Chờ xác nhận'))}">Status</span>
-                    </div>
-                    <a href="/appointments" class="text-white text-decoration-none small opacity-75">Xem tất cả →</a>
-                </div>
-            </div>
+
         </div>
     </section>
 
