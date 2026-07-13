@@ -9,6 +9,7 @@
     </option>
   </component>
   <component name="ProjectRootManager" version="2" project-jdk-name="homebrew-21" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>
