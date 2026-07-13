@@ -40,6 +40,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User updateUser(User user) {
+        if (user.getPasswordHash() != null && !user.getPasswordHash().isBlank()) {
+            user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
+        }
+        user.setUpdatedAt(LocalDateTime.now());
+        return userRepository.save(user);
+    }
+
+    @Override
     public User findById(Long id) {
         return userRepository.findById(id).orElse(null);
     }
@@ -72,5 +81,11 @@ public class UserServiceImpl implements UserService {
         user.setAddress(dto.getAddress());
 
         userRepository.save(user);
+    }
+
+    @Override
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
     }
 }

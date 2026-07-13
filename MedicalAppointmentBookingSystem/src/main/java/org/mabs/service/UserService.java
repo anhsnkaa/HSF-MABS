@@ -17,10 +17,14 @@ public interface UserService {
 
     User addUser(User user);
 
+    User updateUser(User user);
+
     User findById(Long id);
 
 //    String registerUser(@ModelAttribute("user") UserRegistrationDto registrationDto);
     void saveUser(UserRegistrationDto registrationDto);
 
     void updateProfile(String email, UserProfileUpdateDto dto);
+
+    User getUserByEmail(String email);
 }

@@ -37,11 +37,4 @@ public class Doctor{
 
     @Column(name = "experience_years")
     private Integer experienceYears;
-
-    @PrePersist
-    protected void onCreate() {
-        if (this.consultationFee == null) this.consultationFee = BigDecimal.ZERO;
-        if (this.experienceYears == null) this.experienceYears = 0;
-    }
-
 }

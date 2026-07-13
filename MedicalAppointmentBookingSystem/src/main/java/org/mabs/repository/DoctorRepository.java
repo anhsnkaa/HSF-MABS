@@ -3,8 +3,14 @@ package org.mabs.repository;
 import org.mabs.entity.Doctor;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
+import java.util.List;
+public interface DoctorRepository extends JpaRepository<Doctor, Long> {
+    List<Doctor> findAllDoctors();
 
-public interface DoctorRepository extends JpaRepository<Doctor,Long> {
-    Optional<Doctor> findByUserId(Long userId);
+    List<Doctor> findByUserFullNameContaining(String keyword);
+    List<Doctor> findBySpecialtyId(Long specialtyId);
+    List<Doctor> findBySpecialtyIdAndUserFullNameContaining(Long specialtyId, String keyword);
+    List<Doctor> findBySpecialtyIdOrUserFullNameContainingOrTitleContainingOrBioContaining(
+            Long specialtyId, String fullName, String title, String bio);
+
 }

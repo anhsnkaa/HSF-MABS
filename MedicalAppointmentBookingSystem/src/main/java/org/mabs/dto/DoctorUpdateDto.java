@@ -9,7 +9,9 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
-public class DoctorCreationDto {
+public class DoctorUpdateDto {
+
+    private Long id;
 
     @NotNull(message = "Vui lòng chọn người dùng")
     private Long userId;
