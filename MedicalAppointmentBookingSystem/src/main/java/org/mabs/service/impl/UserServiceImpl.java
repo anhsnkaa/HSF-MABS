@@ -3,6 +3,7 @@ package org.mabs.service.impl;
 import org.mabs.dto.UserProfileUpdateDto;
 import org.mabs.dto.UserRegistrationDto;
 import org.mabs.entity.User;
+import org.mabs.exception.DuplicateEmailException;
 import org.mabs.repository.UserRepository;
 import org.mabs.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User addUser(User user) {
+        if (existsByEmail(user.getEmail())) {
+            throw new DuplicateEmailException(user.getEmail());
+        }
         user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
         if (user.getCreatedAt() == null) {
             user.setCreatedAt(LocalDateTime.now());
@@ -41,6 +45,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(User user) {
+        User existing = userRepository.findByEmail(user.getEmail()).orElse(null);
+        if (existing != null && !existing.getId().equals(user.getId())) {
+            throw new DuplicateEmailException(user.getEmail());
+        }
         if (user.getPasswordHash() != null && !user.getPasswordHash().isBlank()) {
             user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
         }
@@ -51,6 +59,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findById(Long id) {
         return userRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
     }
 
     @Override

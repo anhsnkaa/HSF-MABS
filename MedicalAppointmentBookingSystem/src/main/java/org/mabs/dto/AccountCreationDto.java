@@ -11,6 +11,8 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class AccountCreationDto {
+
+    @NotBlank(message = "Tên không được để trống")
     private String fullName;
 
     @NotBlank(message = "Email không được để trống")
