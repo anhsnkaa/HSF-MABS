@@ -6,8 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 public interface DoctorRepository extends JpaRepository<Doctor, Long> {
-    List<Doctor> findAllDoctors();
-
     List<Doctor> findByUserFullNameContaining(String keyword);
     List<Doctor> findBySpecialtyId(Long specialtyId);
     List<Doctor> findBySpecialtyIdAndUserFullNameContaining(Long specialtyId, String keyword);

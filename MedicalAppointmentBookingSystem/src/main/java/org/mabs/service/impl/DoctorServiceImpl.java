@@ -19,7 +19,7 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     public List<Doctor> getAllDoctors() {
-        return repository.findAllDoctors();
+        return repository.findAll();
     }
 
     @Override
@@ -45,7 +45,7 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     public List<Doctor> searchDoctors(DoctorSearch search) {
-        List<Doctor> doctors = repository.findAllDoctors();
+        List<Doctor> doctors = repository.findAll();
 
         if (search.getSpecialtyId() != null) {
             List<Doctor> specialtyFiltered = new ArrayList<>();
