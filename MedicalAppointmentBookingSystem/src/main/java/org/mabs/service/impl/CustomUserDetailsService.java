@@ -30,7 +30,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         String roleName = user.getRole();
         if (roleName == null) {
-            roleName = "PATIENT";
+            roleName = "patient";
         }
         String authority = roleName.toUpperCase().startsWith("ROLE_")
                 ? roleName.toUpperCase()
