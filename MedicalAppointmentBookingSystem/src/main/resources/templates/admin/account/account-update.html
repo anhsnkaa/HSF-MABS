@@ -22,6 +22,7 @@
                 <div class="mb-3">
                     <label>Full name</label>
                     <input type="text" th:field="*{fullName}" class="form-control">
+                    <p class="text-danger small mt-1 mb-0" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></p>
                 </div>
                 <div class="mb-3">
                     <label>Email</label>
