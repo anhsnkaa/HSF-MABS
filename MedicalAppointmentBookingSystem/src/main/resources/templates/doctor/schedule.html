@@ -84,7 +84,7 @@
                         <a th:href="@{/doctor/schedule(action='detail', id=${appt.id})}"
                            class="btn btn-sm btn-outline-secondary">Chi tiết</a>
 
-                        <a th:if="${appt.status == 'confirmed'}"
+                        <a th:if="${appt.status == 'confirmed' or appt.status == 'pending'}"
                            th:href="@{/doctor/record(action='create', appointmentId=${appt.id})}"
                            class="btn btn-sm btn-primary">Ghi chẩn đoán</a>
 

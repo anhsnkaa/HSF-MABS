@@ -16,6 +16,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/doctor/record")
 @RequiredArgsConstructor
@@ -107,18 +109,29 @@ public class DoctorRecordController {
         if (mr == null || !mr.getDoctor().getId().equals(doctorId)) {
             return "redirect:/doctor/schedule?error=record_not_found";
         }
-        model.addAttribute("record", medicalRecordService  // reuse mapper
-                .getMedicalRecordsByPatient(mr.getPatient().getId())
-                .stream().filter(r -> r.getId().equals(id)).findFirst().orElse(null));
+        // Tìm record trong danh sách medical_records của bệnh nhân
+        List<MedicalRecordDto> allRecords = medicalRecordService.getMedicalRecordsByPatient(mr.getPatient().getId());
+        MedicalRecordDto targetRecord = null;
+        for (MedicalRecordDto r : allRecords) {
+            if (r.getId().equals(id)) {
+                targetRecord = r;
+                break;
+            }
+        }
+        model.addAttribute("record", targetRecord);
         return "doctor/record-detail";
     }
 
     private Long resolveDoctorId(Authentication auth) {
         String email = auth.getName();
-        return userRepository.findByEmail(email)
-                .flatMap(u -> doctorRepository.findByUserId(u.getId()))
-                .map(Doctor::getId)
-                .orElseThrow(() -> new IllegalStateException(
-                        "Tài khoản không phải bác sĩ: " + email));
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user == null) {
+            throw new IllegalStateException("Tài khoản không phải bác sĩ: " + email);
+        }
+        Doctor doctor = doctorRepository.findByUserId(user.getId()).orElse(null);
+        if (doctor == null) {
+            throw new IllegalStateException("Tài khoản không phải bác sĩ: " + email);
+        }
+        return doctor.getId();
     }
 }

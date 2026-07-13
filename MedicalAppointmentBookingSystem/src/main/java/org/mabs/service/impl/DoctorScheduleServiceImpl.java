@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 @Service
 @RequiredArgsConstructor
@@ -24,18 +25,40 @@ public class DoctorScheduleServiceImpl implements DoctorScheduleService {
         LocalDateTime startOfDay = date.atStartOfDay();
         LocalDateTime endOfDay = date.atTime(23,59,59);
 
-        List<Appointment> appointments = appointmentRepository.findByDoctorAndDateRange(doctorId,startOfDay,endOfDay);
-        if(statusFilter != null && !statusFilter.isBlank()){
-            appointments = appointments.stream().filter(a -> statusFilter.equals(a.getStatus())).toList();
+        List<Appointment> all = appointmentRepository.findByDoctorAndDateRange(doctorId, startOfDay, endOfDay);
+
+        // Lọc theo status nếu có filter
+        List<Appointment> filtered = new ArrayList<>();
+        if (statusFilter != null && !statusFilter.isBlank()) {
+            for (Appointment a : all) {
+                if (statusFilter.equals(a.getStatus())) {
+                    filtered.add(a);
+                }
+            }
+        } else {
+            filtered = all;
         }
-        return appointments.stream().map(a -> AppointmentDTO.fromEntity(a, formatSchedule(a.getWorkingSchedule()))).toList();
+
+        // Convert sang DTO
+        List<AppointmentDTO> dtos = new ArrayList<>();
+        for (Appointment a : filtered) {
+            String slotTimeRange = formatSchedule(a.getWorkingSchedule());
+            dtos.add(AppointmentDTO.fromEntity(a, slotTimeRange));
+        }
+        return dtos;
     }
 
     @Override
     @Transactional(readOnly = true)
     public AppointmentDTO getAppointmentDetail(Long appointmentId) {
-         Appointment a = appointmentRepository.findById(appointmentId).orElseThrow(() -> new IllegalArgumentException("Không tìm thấy lịch hẹn!"));
-         return AppointmentDTO.fromEntity(a,formatSchedule(a.getWorkingSchedule()));
+        Appointment a = null;
+        if (appointmentRepository.findById(appointmentId).isPresent()) {
+            a = appointmentRepository.findById(appointmentId).get();
+        }
+        if (a == null) {
+            throw new IllegalArgumentException("Không tìm thấy lịch hẹn!");
+        }
+        return AppointmentDTO.fromEntity(a, formatSchedule(a.getWorkingSchedule()));
     }
 
     private String formatSchedule(WorkingSchedule schedule) {

@@ -1,16 +1,15 @@
 package org.mabs.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PrescriptionDto {
-    private Long id;
-    private String medicineName;
-    private String unit;
+public class PrescriptionRequestDto {
+    private Long medicalRecordId;
+    private Long medicineId;
     private Integer quantity;
     private String dosage;
     private String frequency;
