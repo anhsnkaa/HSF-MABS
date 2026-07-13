@@ -15,11 +15,12 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     public List<Doctor> getAllDoctors() {
-        return repository.findAllDoctors();
+        return repository.findAll();
     }
 
     @Override
     public Doctor createDoctor(Doctor doctor) {
+
         return repository.save(doctor);
     }
 }

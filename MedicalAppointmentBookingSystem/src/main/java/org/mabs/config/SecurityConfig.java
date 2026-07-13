@@ -32,7 +32,6 @@ public class SecurityConfig {
                                     .findFirst().orElse("ROLE_PATIENT");
                             String redirectUrl = switch (role) {
                                 case "ROLE_ADMIN" -> "/home/admin";
-                                // add other cases
                                 default -> "/home";
                             };
                             response.sendRedirect(redirectUrl);
@@ -42,9 +41,9 @@ public class SecurityConfig {
                 .logout(logout -> logout
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/login?logout")
-                .invalidateHttpSession(true) // Xóa session trong server
-                .clearAuthentication(true)  // Xóa context bảo mật
-                .deleteCookies("JSESSIONID") // Xóa cookie của trình duyệt
+                .invalidateHttpSession(true)
+                .clearAuthentication(true)
+                .deleteCookies("JSESSIONID")
                 .permitAll());
 
         return http.build();
