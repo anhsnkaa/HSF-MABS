@@ -2,8 +2,6 @@ package org.mabs.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.mabs.dto.AccountCreationDto;
-import org.mabs.dto.AccountUpdateDto;
 import org.mabs.dto.SpecialtyCreationDto;
 import org.mabs.dto.SpecialtyUpdateDto;
 import org.mabs.entity.Specialty;

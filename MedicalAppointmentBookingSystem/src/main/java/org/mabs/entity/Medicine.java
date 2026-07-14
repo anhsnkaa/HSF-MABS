@@ -15,24 +15,19 @@ import lombok.Setter;
 public class Medicine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
-    @Column(name = "name", nullable = false, unique = true, length = 150)
+    @Column(length = 150, nullable = false)
     private String name;
 
-    @Column(name = "unit", length = 50)
+    @Column(length = 50)
     private String unit;
 
-    @Column(name = "description", columnDefinition = "nvarchar(max)")
+    @Column(columnDefinition = "nvarchar(max)")
     private String description;
 
-    @Column(name = "is_active", nullable = false)
+    @Column(name = "is_active")
     private Boolean isActive;
 
-    @PrePersist
-    protected void onCreate() {
-        if (this.isActive == null) this.isActive = true;
-    }
 
 }

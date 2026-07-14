@@ -18,24 +18,14 @@ import java.time.LocalDateTime;
 public class PasswordResetToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+    private Long id; // BIGINT IDENTITY SQL
 
-    @Column(name = "token", nullable = false, unique = true, length = 100)
     private String token;
-
-    @Column(name = "expiry_date", nullable = false)
     private LocalDateTime expiryDate;
+    private boolean isUsed;
 
-    @Column(name = "is_used", nullable = false)
-    private Boolean isUsed;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
-
-    @PrePersist
-    protected void onCreate() {
-        if (this.isUsed == null) this.isUsed = false;
-    }
 }
