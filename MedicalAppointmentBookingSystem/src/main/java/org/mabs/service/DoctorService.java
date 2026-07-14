@@ -17,6 +17,8 @@ public interface DoctorService {
 
     Doctor updateDoctor(Doctor doctor);
 
+    void deleteDoctor(Long id);
+
     Doctor findById(Long id);
 
     boolean existsBySpecialty(Specialty specialty);

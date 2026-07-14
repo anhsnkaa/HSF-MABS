@@ -40,6 +40,12 @@
                             <button>Edit</button>
                         </form>
                     </td>
+                    <td>
+                        <form th:action="@{/doctors/delete}" method="post">
+                            <input type="hidden" name="id" th:value="${doctor.id}">
+                            <button>Delete</button>
+                        </form>
+                    </td>
                 </tr>
             </tbody>
         </table>

@@ -105,6 +105,7 @@ public class DoctorController {
         redirectAttributes.addFlashAttribute("message", "Updated successfully");
         return "redirect:/doctors";
     }
+
     @GetMapping("/dashboard")
     public String doctorDashboard(Principal principal, Model model) {
         if (principal == null) {
@@ -116,6 +117,14 @@ public class DoctorController {
         model.addAttribute("user", user);
 
         return "doctor-dashboard";
+    }
+
+    @PostMapping("/delete")
+    public String deleteDoctor(@RequestParam(name = "id") Long id,
+                               RedirectAttributes redirectAttributes) {
+        doctorService.deleteDoctor(id);
+        redirectAttributes.addFlashAttribute("message", "Deleted successfully");
+        return "redirect:/doctors";
     }
 
 }
