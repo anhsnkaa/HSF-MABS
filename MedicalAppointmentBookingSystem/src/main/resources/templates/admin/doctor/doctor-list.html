@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout}">
 
 <head>
     <meta charset="utf-8">
@@ -33,7 +34,12 @@
                     <td th:text="${doctor.bio}"></td>
                     <td th:text="${doctor.consultationFee}"></td>
                     <td th:text="${doctor.experienceYears}"></td>
-                    <td><a th:href="@{/doctors/update/{id}(id = ${doctor.id})}">Edit</a></td>
+                    <td>
+                        <form th:action="@{/doctors/update-form}" method="post">
+                            <input type="hidden" name="id" th:value="${doctor.id}">
+                            <button>Edit</button>
+                        </form>
+                    </td>
                 </tr>
             </tbody>
         </table>

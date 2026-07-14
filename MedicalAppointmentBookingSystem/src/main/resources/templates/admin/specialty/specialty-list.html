@@ -25,7 +25,18 @@
                     <td th:text="${specialty.id}"></td>
                     <td th:text="${specialty.name}"></td>
                     <td th:text="${specialty.description}"></td>
-                    <td><a th:href="@{/specialties/update/{id}(id = ${specialty.id})}">Edit</a></td>
+                    <td>
+                        <form th:action="@{/specialties/update-form}" method="post">
+                            <input type="hidden" name="id" th:value="${specialty.id}">
+                            <button>Edit</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form th:action="@{/specialties/delete}" method="post">
+                            <input type="hidden" name="id" th:value="${specialty.id}">
+                            <button>Delete</button>
+                        </form>
+                    </td>
                 </tr>
             </tbody>
         </table>
