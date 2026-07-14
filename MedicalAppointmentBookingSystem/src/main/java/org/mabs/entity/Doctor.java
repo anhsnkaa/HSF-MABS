@@ -1,35 +1,36 @@
 package org.mabs.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 
-@Data
-@Builder
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = {"user", "specialty"})
 @Entity
 @Table(name = "doctor")
-public class Doctor{
+public class Doctor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "specialty_id", nullable = false)
     private Specialty specialty;
 
-    @Column(name = "title", length = 100)
+    @Column(length = 100)
     private String title;
 
-    @Column(name = "bio", columnDefinition = "nvarchar(max)")
+    @Column(columnDefinition = "nvarchar(max)")
     private String bio;
 
     @Column(name = "consultation_fee", precision = 12, scale = 0)

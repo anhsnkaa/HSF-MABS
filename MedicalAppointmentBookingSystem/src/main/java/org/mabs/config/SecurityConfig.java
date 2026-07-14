@@ -15,7 +15,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/home", "/login", "/register", "/css/**", "/js/**").permitAll().requestMatchers("/doctor/**").hasRole("doctor")
+                        .requestMatchers("/", "/home", "/login", "/register", "/css/**", "/js/**").permitAll()
                         .requestMatchers("/profile").authenticated() // Only authenticated users can access /profile
                         .requestMatchers("/home/admin").hasRole("ADMIN")
                         .requestMatchers("/accounts/**").hasRole("ADMIN")
@@ -32,6 +32,7 @@ public class SecurityConfig {
                                     .findFirst().orElse("ROLE_PATIENT");
                             String redirectUrl = switch (role) {
                                 case "ROLE_ADMIN" -> "/home/admin";
+                                // add other cases
                                 default -> "/home";
                             };
                             response.sendRedirect(redirectUrl);
@@ -41,9 +42,9 @@ public class SecurityConfig {
                 .logout(logout -> logout
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/login?logout")
-                .invalidateHttpSession(true)
-                .clearAuthentication(true)
-                .deleteCookies("JSESSIONID")
+                .invalidateHttpSession(true) // Xóa session trong server
+                .clearAuthentication(true)  // Xóa context bảo mật
+                .deleteCookies("JSESSIONID") // Xóa cookie của trình duyệt
                 .permitAll());
 
         return http.build();

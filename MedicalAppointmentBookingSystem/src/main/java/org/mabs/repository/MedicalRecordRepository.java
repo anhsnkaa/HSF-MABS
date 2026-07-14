@@ -12,6 +12,5 @@ public interface MedicalRecordRepository extends JpaRepository<MedicalRecord, Lo
     @Query("from MedicalRecord mr where mr.patient.id =:id order by mr.visitDate desc")
     List<MedicalRecord> findByPatientIdOrderByVisitDate(@Param("id") Long id);
 
-    boolean existsByAppointment_Id(Long appointmentId);
-
+    boolean existsByAppointmentId(Long appointmentId);
 }
