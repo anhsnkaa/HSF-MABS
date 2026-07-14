@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -39,10 +40,8 @@ public class PrescriptionServiceImpl implements PrescriptionService {
             throw new IllegalArgumentException("Vui lòng nhập tần suất");
 
         // 2. Load MedicalRecord (lazy fields OK vì @Transactional)
-        MedicalRecord record = null;
-        if (medicalRecordRepo.findById(dto.getMedicalRecordId()).isPresent()) {
-            record = medicalRecordRepo.findById(dto.getMedicalRecordId()).get();
-        }
+        Optional<MedicalRecord> recordOpt = medicalRecordRepo.findById(dto.getMedicalRecordId());
+        MedicalRecord record = recordOpt.orElse(null);
         if (record == null) {
             throw new IllegalArgumentException("Không tìm thấy hồ sơ với ID: " + dto.getMedicalRecordId());
         }
@@ -52,10 +51,8 @@ public class PrescriptionServiceImpl implements PrescriptionService {
             throw new IllegalStateException("Bạn không có quyền kê đơn cho hồ sơ này");
 
         // 4. Load Medicine
-        Medicine medicine = null;
-        if (medicineRepo.findById(dto.getMedicineId()).isPresent()) {
-            medicine = medicineRepo.findById(dto.getMedicineId()).get();
-        }
+        Optional<Medicine> medicineOpt = medicineRepo.findById(dto.getMedicineId());
+        Medicine medicine = medicineOpt.orElse(null);
         if (medicine == null) {
             throw new IllegalArgumentException("Không tìm thấy thuốc");
         }
@@ -90,10 +87,8 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     @Override
     @Transactional
     public void removePrescription(Long prescriptionId, Long doctorId) {
-        Prescription p = null;
-        if (prescriptionRepo.findById(prescriptionId).isPresent()) {
-            p = prescriptionRepo.findById(prescriptionId).get();
-        }
+        Optional<Prescription> pOpt = prescriptionRepo.findById(prescriptionId);
+        Prescription p = pOpt.orElse(null);
         if (p == null) {
             throw new IllegalArgumentException("Không tìm thấy thuốc trong đơn");
         }
