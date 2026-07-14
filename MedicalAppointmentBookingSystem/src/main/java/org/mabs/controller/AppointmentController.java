@@ -41,7 +41,7 @@ public class AppointmentController {
             model.addAttribute("selectedDoctor", selectedDoctor);
         }
         model.addAttribute("bookingRequest", bookingRequest);
-        return "book-appointment";
+        return "patient/book-appointment";
     }
 
     @PostMapping("/book-appointment")
@@ -65,7 +65,7 @@ public class AppointmentController {
         User user = userService.getUserByEmail(principal.getName());
         List<Appointment> appointments = appointmentService.getPatientAppointments(user.getId());
         model.addAttribute("appointments", appointments);
-        return "appointments";
+        return "patient/appointments";
     }
 
     @PostMapping("/appointments/{id}/cancel")
@@ -102,7 +102,7 @@ public class AppointmentController {
         List<WorkingSchedule> schedules = appointmentService.getWorkingSchedules(appointment.getDoctor().getId());
         model.addAttribute("schedules", schedules);
 
-        return "reschedule-appointment";
+        return "patient/reschedule-appointment";
     }
 
     @PostMapping("/appointments/{id}/reschedule")

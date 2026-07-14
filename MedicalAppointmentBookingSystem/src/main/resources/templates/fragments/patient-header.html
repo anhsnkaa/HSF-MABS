@@ -1,4 +1,5 @@
-<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm py-3">
+<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm py-3"
+     xmlns:sec="http://www.w3.org/1999/xhtml">
     <div class="container">
         <a class="navbar-brand fw-bold fs-3" href="/">MABS</a>
 
@@ -17,7 +18,7 @@
 
             <div class="d-flex align-items-center gap-2">
                 <div class="d-flex align-items-center gap-2">
-                    <span class="text-white small">
+                    <span class="text-white">
                         Xin chào, <strong sec:authentication="name">User</strong>
                     </span>
                     <a href="/profile" class="btn btn-light text-primary btn-sm">Hồ sơ</a>

@@ -4,10 +4,10 @@ body {
     color: #151c22;
 }
 
-.material-symbols-outlined {
-    vertical-align: middle;
-    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-}
+/*.material-symbols-outlined {*/
+/*    vertical-align: middle;*/
+/*    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;*/
+/*}*/
 
 .doctor-header-card {
     border-left: 5px solid #006c4f;
@@ -24,8 +24,7 @@ body {
 }
 
 .badge-specialty {
-    background-color: #67fcc64d;
-    color: #00513a;
+    color: black;
     font-weight: 700;
     font-size: 0.75rem;
     padding: 0.35rem 0.75rem;
