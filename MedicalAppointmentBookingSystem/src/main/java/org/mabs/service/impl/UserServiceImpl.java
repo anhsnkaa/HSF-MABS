@@ -45,13 +45,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(User user) {
-        User existing = userRepository.findByEmail(user.getEmail()).orElse(null);
-        if (existing != null && !existing.getId().equals(user.getId())) {
+        User existing = userRepository.findById(user.getId())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy tài khoản cần cập nhật!"));
+
+        // Kiểm tra trùng email với các tài khoản khác
+        User userWithSameEmail = userRepository.findByEmail(user.getEmail()).orElse(null);
+        if (userWithSameEmail != null && !userWithSameEmail.getId().equals(user.getId())) {
             throw new DuplicateEmailException(user.getEmail());
         }
+
+        // Chỉ mã hóa nếu mật khẩu mới được truyền vào và khác với mật khẩu cũ trong DB
         if (user.getPasswordHash() != null && !user.getPasswordHash().isBlank()) {
-            user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
+            if (!user.getPasswordHash().equals(existing.getPasswordHash())) {
+                user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
+            }
+        } else {
+            // Giữ lại mật khẩu cũ đã mã hóa
+            user.setPasswordHash(existing.getPasswordHash());
         }
+
         user.setUpdatedAt(LocalDateTime.now());
         return userRepository.save(user);
     }
@@ -70,7 +82,11 @@ public class UserServiceImpl implements UserService {
     public void saveUser(UserRegistrationDto dto) {
         User user = new User();
         user.setFullName(dto.getFullName());
-        user.setEmail(dto.getEmail());
+        if (!existsByEmail(dto.getEmail())) {
+            user.setEmail(dto.getEmail());
+        } else {
+            throw new DuplicateEmailException("Email đã tồn tại: " + dto.getEmail());
+        }
 
         // Encrypt password
         user.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
