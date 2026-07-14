@@ -1,7 +1,6 @@
 package org.mabs.service;
 
 import org.mabs.entity.Specialty;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -13,7 +12,7 @@ public interface SpecialtyService {
 
     Specialty updateSpecialty(Specialty specialty);
 
-    void deleteSpecialty(Specialty specialty);
+    void deleteSpecialty(Long id);
 
     Specialty findById(Long id);
 }

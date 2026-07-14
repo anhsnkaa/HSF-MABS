@@ -2,6 +2,9 @@ package org.mabs.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.mabs.entity.Specialty;
+import org.mabs.exception.ConflictException;
+import org.mabs.exception.ResourceNotFoundException;
+import org.mabs.repository.DoctorRepository;
 import org.mabs.repository.SpecialtyRepository;
 import org.mabs.service.SpecialtyService;
 import org.springframework.stereotype.Service;
@@ -12,6 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SpecialtyServiceImpl implements SpecialtyService {
     private final SpecialtyRepository repository;
+    private final DoctorRepository doctorRepository;
 
     @Override
     public List<Specialty> getALlSpecialties() {
@@ -34,7 +38,12 @@ public class SpecialtyServiceImpl implements SpecialtyService {
     }
 
     @Override
-    public void deleteSpecialty(Specialty specialty) {
-        repository.delete(specialty);
+    public void deleteSpecialty(Long id) {
+        Specialty specialty = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy chuyên khoa"));
+        if (doctorRepository.existsBySpecialtyId(id)) {
+            throw new ConflictException("Không thể xóa chuyên khoa đang có bác sĩ");
+        }
+        repository.deleteById(id);
     }
 }

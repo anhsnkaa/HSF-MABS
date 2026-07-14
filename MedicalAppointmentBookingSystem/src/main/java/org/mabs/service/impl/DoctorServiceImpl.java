@@ -3,6 +3,7 @@ package org.mabs.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.mabs.dto.DoctorSearch;
 import org.mabs.entity.Doctor;
+import org.mabs.entity.Specialty;
 import org.mabs.repository.DoctorRepository;
 import org.mabs.service.DoctorService;
 import org.springframework.stereotype.Service;
@@ -78,4 +79,9 @@ public class DoctorServiceImpl implements DoctorService {
 
         return doctors;
     }
-        }
+
+    @Override
+    public boolean existsBySpecialty(Specialty specialty) {
+        return repository.existsBySpecialtyId(specialty.getId());
+    }
+}

@@ -79,10 +79,12 @@ public class SpecialtyController {
         return "redirect:/specialties";
     }
 
-    //paused for fixing other
-//    @PostMapping("/update/{id}")
-//    public String deleteSpecialty() {
-//        return "redirect:/specialties";
-//    }
+    @PostMapping("/delete")
+    public String deleteSpecialty(@RequestParam(name = "id") Long id,
+                                  RedirectAttributes redirectAttributes) {
+        specialtyService.deleteSpecialty(id);
+        redirectAttributes.addFlashAttribute("message", "Deleted successfully");
+        return "redirect:/specialties";
+    }
 
 }
