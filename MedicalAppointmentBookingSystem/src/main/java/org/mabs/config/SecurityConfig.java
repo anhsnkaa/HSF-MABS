@@ -20,7 +20,7 @@ public class SecurityConfig {
                         .requestMatchers("/home/admin").hasRole("ADMIN")
                         .requestMatchers("/accounts/**").hasRole("ADMIN")
                         .requestMatchers("/specialties/**").hasRole("ADMIN")
-                        .requestMatchers("/doctors").hasRole("ADMIN")
+                        .requestMatchers("/doctors/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

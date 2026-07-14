@@ -14,5 +14,6 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long> {
     List<Doctor> findBySpecialtyIdAndUserFullNameContaining(Long specialtyId, String keyword);
     List<Doctor> findBySpecialtyIdOrUserFullNameContainingOrTitleContainingOrBioContaining(
             Long specialtyId, String fullName, String title, String bio);
+    boolean existsBySpecialtyId(Long specialtyId);
 
 }
