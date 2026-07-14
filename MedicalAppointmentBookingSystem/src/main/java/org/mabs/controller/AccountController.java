@@ -38,8 +38,10 @@ public class AccountController {
     @PostMapping("/add")
     public String addAccount(@Valid @ModelAttribute("dto") AccountCreationDto dto,
                              BindingResult bindingResult,
-                             RedirectAttributes redirectAttributes) {
+                             RedirectAttributes redirectAttributes,
+                             Model model) {
         if (bindingResult.hasErrors()) {
+            model.addAttribute("dto", dto);
             return "/admin/account/add-account";
         }
 
@@ -61,6 +63,7 @@ public class AccountController {
             return "redirect:/accounts";
         } catch (DuplicateEmailException e) {
             bindingResult.rejectValue("email", "error.email", e.getMessage());
+            model.addAttribute("dto", dto);
             return "/admin/account/add-account";
         }
 
@@ -68,7 +71,7 @@ public class AccountController {
 
     @PostMapping("/update-form")
     public String updateAccountForm(@RequestParam(name = "id") Long id,
-                                Model model) {
+                                    Model model) {
         User user = userService.findById(id);
         AccountUpdateDto dto = new AccountUpdateDto();
         dto.setId(id);
@@ -116,6 +119,13 @@ public class AccountController {
             return "/admin/account/account-update";
         }
 
+    }
 
+    @PostMapping("/delete")
+    public String deleteAccount(@RequestParam(name = "id") Long id,
+                                RedirectAttributes redirectAttributes) {
+        userService.deleteUser(id);
+        redirectAttributes.addFlashAttribute("message", "Deleted successfully");
+        return "redirect:/accounts";
     }
 }

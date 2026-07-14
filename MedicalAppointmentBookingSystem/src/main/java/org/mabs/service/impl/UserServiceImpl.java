@@ -4,6 +4,7 @@ import org.mabs.dto.UserProfileUpdateDto;
 import org.mabs.dto.UserRegistrationDto;
 import org.mabs.entity.User;
 import org.mabs.exception.DuplicateEmailException;
+import org.mabs.exception.ResourceNotFoundException;
 import org.mabs.repository.UserRepository;
 import org.mabs.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +67,13 @@ public class UserServiceImpl implements UserService {
 
         user.setUpdatedAt(LocalDateTime.now());
         return userRepository.save(user);
+    }
+
+    @Override
+    public void deleteUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy người dùng"));
+        userRepository.deleteById(id);
     }
 
     @Override
