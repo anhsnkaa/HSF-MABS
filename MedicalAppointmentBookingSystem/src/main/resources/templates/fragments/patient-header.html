@@ -18,7 +18,7 @@
             <div class="d-flex align-items-center gap-2">
                 <div class="d-flex align-items-center gap-2">
                     <span class="text-white small">
-                        Xin chào, <strong sec:authentication="name">User</strong>
+                        Xin chào, <strong sec:authentication="principal.fullName">User</strong>
                     </span>
                     <a href="/profile" class="btn btn-light text-primary btn-sm">Hồ sơ</a>
                     <form th:action="@{/logout}" method="post" class="m-0">

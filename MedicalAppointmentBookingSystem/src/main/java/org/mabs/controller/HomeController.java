@@ -16,7 +16,7 @@ public class HomeController {
 
     @GetMapping("/home/admin")
     public String homeAdmin() {
-        return "admin/admin-home";
+        return "redirect:/admin/dashboard";
     }
 
     @GetMapping("/about")

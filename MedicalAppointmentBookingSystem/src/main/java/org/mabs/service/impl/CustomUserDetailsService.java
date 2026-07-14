@@ -36,10 +36,11 @@ public class CustomUserDetailsService implements UserDetailsService {
                 ? roleName.toUpperCase()
                 : "ROLE_" + roleName.toUpperCase();
 
-        return new org.springframework.security.core.userdetails.User(
+        return new CustomUserDetails(
                 user.getEmail(),
                 user.getPasswordHash(),
-                Collections.singletonList(new SimpleGrantedAuthority(authority))
+                Collections.singletonList(new SimpleGrantedAuthority(authority)),
+                user.getFullName()
         );
     }
 }
