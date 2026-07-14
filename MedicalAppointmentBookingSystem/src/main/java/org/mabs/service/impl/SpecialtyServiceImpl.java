@@ -46,4 +46,5 @@ public class SpecialtyServiceImpl implements SpecialtyService {
         }
         repository.deleteById(id);
     }
+
 }

@@ -30,7 +30,7 @@ public class TestResult {
     @Column(name = "file_url", length = 500, nullable = false)
     private String fileUrl;
 
-    @Column(name = "file_type", length = 20)
+    @Column(name = "file_type", length = 200)
     private String fileType;
 
     @Column(name = "uploaded_at")
