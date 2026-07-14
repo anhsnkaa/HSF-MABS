@@ -1,0 +1,219 @@
+<mxfile host="Electron" modified="2023-10-27T10:00:00.000Z" agent="Mozilla/5.0" version="22.0.4" type="device">
+  <diagram id="directory_structure" name="Directory Structure">
+    <mxGraphModel dx="1000" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- src folder as root container -->
+        <mxCell id="src_main" value="src/main/..." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="10" y="10" width="150" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- org.mabs -->
+        <mxCell id="org_mabs" value="org.mabs" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=80;tabHeight=16;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="120" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Main java files -->
+        <mxCell id="app_java" value="Medical...Application.java" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="120" y="100" width="180" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_app" edge="1" parent="1" source="org_mabs" target="app_java" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;">
+           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- config folder -->
+        <mxCell id="config_folder" value="config" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=50;tabHeight=14;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="120" y="160" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_config" edge="1" parent="1" source="org_mabs" target="config_folder" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
+           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="config_files" value="SecurityConfig.java&#10;CloudinaryConfig.java&#10;WebConfig.java" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#fff2cc;strokeColor=#d6b656;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="260" y="150" width="150" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_config_f" edge="1" parent="1" source="config_folder" target="config_files" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;">
+           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- controller folder -->
+        <mxCell id="controller_folder" value="controller" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=65;tabHeight=14;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="120" y="240" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_ctrl" edge="1" parent="1" source="org_mabs" target="controller_folder" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
+           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ctrl_files" value="AuthController.java&#10;HomeController.java&#10;UserController.java&#10;MedicalController.java" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#fff2cc;strokeColor=#d6b656;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="260" y="225" width="150" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_ctrl_f" edge="1" parent="1" source="controller_folder" target="ctrl_files" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;">
+           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- dto folder -->
+        <mxCell id="dto_folder" value="dto" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=40;tabHeight=14;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="120" y="320" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_dto" edge="1" parent="1" source="org_mabs" target="dto_folder" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
+           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="dto_files" value="MedicalRecordDto.java&#10;PrescriptionDto.java&#10;...RegistrationDto.java" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#fff2cc;strokeColor=#d6b656;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="260" y="310" width="150" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_dto_f" edge="1" parent="1" source="dto_folder" target="dto_files" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;">
+           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- entity folder -->
+        <mxCell id="entity_folder" value="entity" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=50;tabHeight=14;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="120" y="400" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_entity" edge="1" parent="1" source="org_mabs" target="entity_folder" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
+           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="entity_files" value="Account.java, User.java&#10;Appointment.java...&#10;MedicalRecord.java..." style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#fff2cc;strokeColor=#d6b656;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="260" y="390" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_entity_f" edge="1" parent="1" source="entity_folder" target="entity_files" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;">
+           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- repository folder -->
+        <mxCell id="repo_folder" value="repository" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=65;tabHeight=14;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="120" y="480" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_repo" edge="1" parent="1" source="org_mabs" target="repo_folder" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
+           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="repo_files" value="DoctorRepository.java&#10;MedicalRecordRepo...&#10;UserRepository.java..." style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#fff2cc;strokeColor=#d6b656;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="260" y="470" width="170" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_repo_f" edge="1" parent="1" source="repo_folder" target="repo_files" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;">
+           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- service folder -->
+        <mxCell id="service_folder" value="service" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=55;tabHeight=14;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="120" y="560" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_service" edge="1" parent="1" source="org_mabs" target="service_folder" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
+           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="service_files" value="CustomUserDetails.java&#10;MedicalService.java&#10;UserService.java..." style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#fff2cc;strokeColor=#d6b656;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="260" y="550" width="170" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_srv_f" edge="1" parent="1" source="service_folder" target="service_files" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;">
+           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="impl_folder" value="impl" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=40;tabHeight=14;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="260" y="630" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_impl" edge="1" parent="1" source="service_folder" target="impl_folder" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
+           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="impl_files" value="UserServiceImpl.java..." style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#fff2cc;strokeColor=#d6b656;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="380" y="630" width="150" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_impl_f" edge="1" parent="1" source="impl_folder" target="impl_files" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;">
+           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Resources section -->
+        <mxCell id="resources_folder" value="resources" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=70;tabHeight=14;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="40" y="720" width="120" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- application.properties -->
+        <mxCell id="app_props" value="application.properties" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#fff2cc;strokeColor=#d6b656;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="120" y="780" width="140" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_props" edge="1" parent="1" source="resources_folder" target="app_props" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;">
+           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- static -->
+        <mxCell id="static_folder" value="static" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=50;tabHeight=14;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="120" y="840" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_static" edge="1" parent="1" source="resources_folder" target="static_folder" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
+           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="static_sub" value="medical-records/&#10;css/medical-records.css" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#fff2cc;strokeColor=#d6b656;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="260" y="830" width="160" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_static_sub" edge="1" parent="1" source="static_folder" target="static_sub" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;">
+           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- templates -->
+        <mxCell id="templates_folder" value="templates" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=65;tabHeight=14;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="120" y="910" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_templates" edge="1" parent="1" source="resources_folder" target="templates_folder" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
+           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="templates_files" value="layout.html&#10;home.html, login.html...&#10;medical-records.html" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#fff2cc;strokeColor=#d6b656;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="260" y="900" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_temp_f" edge="1" parent="1" source="templates_folder" target="templates_files" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;">
+           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="fragments_folder" value="fragments" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=60;tabHeight=14;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="260" y="980" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_frag" edge="1" parent="1" source="templates_folder" target="fragments_folder" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
+           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="frag_files" value="header, footer, sidebar" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#fff2cc;strokeColor=#d6b656;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="400" y="980" width="150" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_frag_f" edge="1" parent="1" source="fragments_folder" target="frag_files" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;">
+           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+
+        <!-- Add explanations/labels to the right -->
+        <mxCell id="label_config" value="// Cấu hình hệ thống&#10;(Security, Web, Upload)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=2;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="440" y="160" width="150" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="label_ctrl" value="// Tầng Controller&#10;(Spring MVC Routing)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=2;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="440" y="240" width="180" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="label_dto" value="// Data Transfer Object&#10;(Giao tiếp Client-Server)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=2;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="440" y="320" width="150" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="label_entity" value="// Tầng Entity&#10;(Mapping Database tables)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=2;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="440" y="400" width="180" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="label_repo" value="// Tầng Repository&#10;(Spring Data JpaRepository)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=2;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="450" y="480" width="190" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="label_srv" value="// Tầng Service&#10;(Business Logic)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=2;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="450" y="560" width="150" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="label_temp" value="// Thymeleaf Views&#10;(Giao diện HTML)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=2;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="440" y="910" width="170" height="40" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

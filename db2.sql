@@ -1,11 +1,86 @@
 USE [master]
 GO
-/****** Object:  Database [MABS]    Script Date: 6/28/2026 4:40:18 PM ******/
+/****** Object:  Database [MABS]    Script Date: 14/07/2026 13:47:54 ******/
 CREATE DATABASE [MABS]
+ CONTAINMENT = NONE
+ ON  PRIMARY 
+( NAME = N'MABS', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\DATA\MABS.mdf' , SIZE = 8192KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
+ LOG ON 
+( NAME = N'MABS_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\DATA\MABS_log.ldf' , SIZE = 8192KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
+ WITH CATALOG_COLLATION = DATABASE_DEFAULT
+GO
+ALTER DATABASE [MABS] SET COMPATIBILITY_LEVEL = 150
+GO
+IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
+begin
+EXEC [MABS].[dbo].[sp_fulltext_database] @action = 'enable'
+end
+GO
+ALTER DATABASE [MABS] SET ANSI_NULL_DEFAULT OFF 
+GO
+ALTER DATABASE [MABS] SET ANSI_NULLS OFF 
+GO
+ALTER DATABASE [MABS] SET ANSI_PADDING OFF 
+GO
+ALTER DATABASE [MABS] SET ANSI_WARNINGS OFF 
+GO
+ALTER DATABASE [MABS] SET ARITHABORT OFF 
+GO
+ALTER DATABASE [MABS] SET AUTO_CLOSE ON 
+GO
+ALTER DATABASE [MABS] SET AUTO_SHRINK OFF 
+GO
+ALTER DATABASE [MABS] SET AUTO_UPDATE_STATISTICS ON 
+GO
+ALTER DATABASE [MABS] SET CURSOR_CLOSE_ON_COMMIT OFF 
+GO
+ALTER DATABASE [MABS] SET CURSOR_DEFAULT  GLOBAL 
+GO
+ALTER DATABASE [MABS] SET CONCAT_NULL_YIELDS_NULL OFF 
+GO
+ALTER DATABASE [MABS] SET NUMERIC_ROUNDABORT OFF 
+GO
+ALTER DATABASE [MABS] SET QUOTED_IDENTIFIER OFF 
+GO
+ALTER DATABASE [MABS] SET RECURSIVE_TRIGGERS OFF 
+GO
+ALTER DATABASE [MABS] SET  ENABLE_BROKER 
+GO
+ALTER DATABASE [MABS] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+GO
+ALTER DATABASE [MABS] SET DATE_CORRELATION_OPTIMIZATION OFF 
+GO
+ALTER DATABASE [MABS] SET TRUSTWORTHY OFF 
+GO
+ALTER DATABASE [MABS] SET ALLOW_SNAPSHOT_ISOLATION OFF 
+GO
+ALTER DATABASE [MABS] SET PARAMETERIZATION SIMPLE 
+GO
+ALTER DATABASE [MABS] SET READ_COMMITTED_SNAPSHOT OFF 
+GO
+ALTER DATABASE [MABS] SET HONOR_BROKER_PRIORITY OFF 
+GO
+ALTER DATABASE [MABS] SET RECOVERY SIMPLE 
+GO
+ALTER DATABASE [MABS] SET  MULTI_USER 
+GO
+ALTER DATABASE [MABS] SET PAGE_VERIFY CHECKSUM  
+GO
+ALTER DATABASE [MABS] SET DB_CHAINING OFF 
+GO
+ALTER DATABASE [MABS] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
+GO
+ALTER DATABASE [MABS] SET TARGET_RECOVERY_TIME = 60 SECONDS 
+GO
+ALTER DATABASE [MABS] SET DELAYED_DURABILITY = DISABLED 
+GO
+ALTER DATABASE [MABS] SET ACCELERATED_DATABASE_RECOVERY = OFF  
+GO
+ALTER DATABASE [MABS] SET QUERY_STORE = OFF
 GO
 USE [MABS]
 GO
-/****** Object:  Table [dbo].[account_status_log]    Script Date: 6/28/2026 4:40:18 PM ******/
+/****** Object:  Table [dbo].[account_status_log]    Script Date: 14/07/2026 13:47:54 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -23,7 +98,7 @@ CREATE TABLE [dbo].[account_status_log](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[appointment]    Script Date: 6/28/2026 4:40:18 PM ******/
+/****** Object:  Table [dbo].[appointment]    Script Date: 14/07/2026 13:47:55 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -45,7 +120,7 @@ CREATE TABLE [dbo].[appointment](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[doctor]    Script Date: 6/28/2026 4:40:18 PM ******/
+/****** Object:  Table [dbo].[doctor]    Script Date: 14/07/2026 13:47:55 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -56,17 +131,15 @@ CREATE TABLE [dbo].[doctor](
 	[specialty_id] [bigint] NOT NULL,
 	[title] [nvarchar](100) NULL,
 	[bio] [nvarchar](max) NULL,
-	[consultation_fee] [decimal](12, 0) NOT NULL,
-	[rating_avg] [decimal](3, 2) NOT NULL,
-	[rating_count] [int] NOT NULL,
-	[experience_years] [int] NOT NULL,
+	[consultation_fee] [decimal](12, 0) NULL,
+	[experience_years] [int] NULL,
  CONSTRAINT [pk_doctor] PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[medical_record]    Script Date: 6/28/2026 4:40:18 PM ******/
+/****** Object:  Table [dbo].[medical_record]    Script Date: 14/07/2026 13:47:55 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -87,7 +160,7 @@ CREATE TABLE [dbo].[medical_record](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[medicine]    Script Date: 6/28/2026 4:40:18 PM ******/
+/****** Object:  Table [dbo].[medicine]    Script Date: 14/07/2026 13:47:55 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -104,7 +177,7 @@ CREATE TABLE [dbo].[medicine](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[notification]    Script Date: 6/28/2026 4:40:18 PM ******/
+/****** Object:  Table [dbo].[notification]    Script Date: 14/07/2026 13:47:55 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -122,7 +195,7 @@ CREATE TABLE [dbo].[notification](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[password_reset_tokens]    Script Date: 6/28/2026 4:40:18 PM ******/
+/****** Object:  Table [dbo].[password_reset_tokens]    Script Date: 14/07/2026 13:47:55 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -139,7 +212,7 @@ CREATE TABLE [dbo].[password_reset_tokens](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[prescription]    Script Date: 6/28/2026 4:40:18 PM ******/
+/****** Object:  Table [dbo].[prescription]    Script Date: 14/07/2026 13:47:55 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -159,7 +232,7 @@ CREATE TABLE [dbo].[prescription](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[review]    Script Date: 6/28/2026 4:40:18 PM ******/
+/****** Object:  Table [dbo].[review]    Script Date: 14/07/2026 13:47:55 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -178,7 +251,7 @@ CREATE TABLE [dbo].[review](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[specialty]    Script Date: 6/28/2026 4:40:18 PM ******/
+/****** Object:  Table [dbo].[specialty]    Script Date: 14/07/2026 13:47:55 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -193,7 +266,7 @@ CREATE TABLE [dbo].[specialty](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[test_result]    Script Date: 6/28/2026 4:40:18 PM ******/
+/****** Object:  Table [dbo].[test_result]    Script Date: 14/07/2026 13:47:55 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -211,7 +284,7 @@ CREATE TABLE [dbo].[test_result](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[users]    Script Date: 6/28/2026 4:40:18 PM ******/
+/****** Object:  Table [dbo].[users]    Script Date: 14/07/2026 13:47:55 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -236,7 +309,7 @@ CREATE TABLE [dbo].[users](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[working_schedule]    Script Date: 6/28/2026 4:40:18 PM ******/
+/****** Object:  Table [dbo].[working_schedule]    Script Date: 14/07/2026 13:47:55 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -258,17 +331,23 @@ GO
 SET IDENTITY_INSERT [dbo].[appointment] ON 
 
 INSERT [dbo].[appointment] ([id], [patient_id], [doctor_id], [schedule_id], [appointment_time], [status], [reason], [cancel_reason], [created_at], [updated_at]) VALUES (1, 4, 1, 1, CAST(N'2026-06-28T08:00:00.0000000' AS DateTime2), N'confirmed', N'Đau ngực, khó thở khi gắng sức', NULL, CAST(N'2026-06-28T06:05:56.9199186' AS DateTime2), NULL)
+INSERT [dbo].[appointment] ([id], [patient_id], [doctor_id], [schedule_id], [appointment_time], [status], [reason], [cancel_reason], [created_at], [updated_at]) VALUES (2, 6, 1, 1, CAST(N'2026-07-01T01:48:00.0000000' AS DateTime2), N'cancelled', N'', N'cbm', CAST(N'2026-06-30T01:48:36.6076251' AS DateTime2), CAST(N'2026-06-30T02:05:39.4021489' AS DateTime2))
+INSERT [dbo].[appointment] ([id], [patient_id], [doctor_id], [schedule_id], [appointment_time], [status], [reason], [cancel_reason], [created_at], [updated_at]) VALUES (3, 6, 1, 1, CAST(N'2026-07-15T22:42:00.0000000' AS DateTime2), N'confirmed', N'đau tim', NULL, CAST(N'2026-07-13T22:42:21.6161290' AS DateTime2), NULL)
+INSERT [dbo].[appointment] ([id], [patient_id], [doctor_id], [schedule_id], [appointment_time], [status], [reason], [cancel_reason], [created_at], [updated_at]) VALUES (4, 6, 4, 10, CAST(N'2026-07-15T23:50:00.0000000' AS DateTime2), N'completed', N'nổi mụn', NULL, CAST(N'2026-07-13T23:50:50.8282680' AS DateTime2), CAST(N'2026-07-13T23:52:43.9582727' AS DateTime2))
 SET IDENTITY_INSERT [dbo].[appointment] OFF
 GO
 SET IDENTITY_INSERT [dbo].[doctor] ON 
 
-INSERT [dbo].[doctor] ([id], [user_id], [specialty_id], [title], [bio], [consultation_fee], [rating_avg], [rating_count], [experience_years]) VALUES (1, 2, 1, N'ThS.BS', N'Chuyên gia tim mạch hơn 10 năm kinh nghiệm', CAST(300000 AS Decimal(12, 0)), CAST(0.00 AS Decimal(3, 2)), 0, 10)
-INSERT [dbo].[doctor] ([id], [user_id], [specialty_id], [title], [bio], [consultation_fee], [rating_avg], [rating_count], [experience_years]) VALUES (2, 3, 2, N'BS.CKI', N'Bác sĩ da liễu tận tâm', CAST(250000 AS Decimal(12, 0)), CAST(0.00 AS Decimal(3, 2)), 0, 7)
+INSERT [dbo].[doctor] ([id], [user_id], [specialty_id], [title], [bio], [consultation_fee], [experience_years]) VALUES (1, 2, 1, N'ThS.BS', N'Chuyên gia tim mạch hơn 10 năm kinh nghiệm', CAST(300000 AS Decimal(12, 0)), 10)
+INSERT [dbo].[doctor] ([id], [user_id], [specialty_id], [title], [bio], [consultation_fee], [experience_years]) VALUES (2, 3, 2, N'BS.CKI', N'Bác sĩ da liễu tận tâm', CAST(250000 AS Decimal(12, 0)), 7)
+INSERT [dbo].[doctor] ([id], [user_id], [specialty_id], [title], [bio], [consultation_fee], [experience_years]) VALUES (3, 8, 5, N'lol', N'', NULL, NULL)
+INSERT [dbo].[doctor] ([id], [user_id], [specialty_id], [title], [bio], [consultation_fee], [experience_years]) VALUES (4, 10, 2, N'ThS.BS', N'Chuyên gia tim mạch hơn 7 năm kinh nghiệm', CAST(200000 AS Decimal(12, 0)), 7)
 SET IDENTITY_INSERT [dbo].[doctor] OFF
 GO
 SET IDENTITY_INSERT [dbo].[medical_record] ON 
 
 INSERT [dbo].[medical_record] ([id], [appointment_id], [doctor_id], [patient_id], [symptoms], [diagnosis], [notes], [visit_date], [created_at]) VALUES (1, 1, 1, 4, N'Đau ngực, khó thở khi gắng sức', N'Thiếu máu cơ tim nhẹ, theo dõi huyết áp', N'Hạn chế vận động mạnh, tái khám sau 2 tuần', CAST(N'2026-06-28' AS Date), CAST(N'2026-06-28T06:05:56.9199186' AS DateTime2))
+INSERT [dbo].[medical_record] ([id], [appointment_id], [doctor_id], [patient_id], [symptoms], [diagnosis], [notes], [visit_date], [created_at]) VALUES (2, 4, 4, 6, N'nổi mụn', N'bị dị ứng', N'uống thuốc đầy đủ', CAST(N'2026-07-13' AS Date), CAST(N'2026-07-13T23:52:43.9316177' AS DateTime2))
 SET IDENTITY_INSERT [dbo].[medical_record] OFF
 GO
 SET IDENTITY_INSERT [dbo].[medicine] ON 
@@ -283,6 +362,8 @@ SET IDENTITY_INSERT [dbo].[prescription] ON
 
 INSERT [dbo].[prescription] ([id], [medical_record_id], [medicine_id], [quantity], [dosage], [frequency], [duration_days], [note]) VALUES (1, 1, 1, 20, N'1 viên/lần', N'2 lần/ngày', 10, N'Uống sau ăn')
 INSERT [dbo].[prescription] ([id], [medical_record_id], [medicine_id], [quantity], [dosage], [frequency], [duration_days], [note]) VALUES (2, 1, 3, 30, N'1 viên/lần', N'1 lần/ngày', 30, N'Uống buổi sáng')
+INSERT [dbo].[prescription] ([id], [medical_record_id], [medicine_id], [quantity], [dosage], [frequency], [duration_days], [note]) VALUES (3, 2, 3, 10, N'1', N'2', 5, N'uống sau ăn')
+INSERT [dbo].[prescription] ([id], [medical_record_id], [medicine_id], [quantity], [dosage], [frequency], [duration_days], [note]) VALUES (4, 2, 1, 5, N'2', N'1', 2, N'uống trước ăn 30 phút')
 SET IDENTITY_INSERT [dbo].[prescription] OFF
 GO
 SET IDENTITY_INSERT [dbo].[specialty] ON 
@@ -291,6 +372,7 @@ INSERT [dbo].[specialty] ([id], [name], [description]) VALUES (1, N'Tim mạch',
 INSERT [dbo].[specialty] ([id], [name], [description]) VALUES (2, N'Da liễu', N'Khám và điều trị các bệnh về da')
 INSERT [dbo].[specialty] ([id], [name], [description]) VALUES (3, N'Nhi khoa', N'Khám và điều trị cho trẻ em')
 INSERT [dbo].[specialty] ([id], [name], [description]) VALUES (4, N'Thần kinh', N'Khám và điều trị các bệnh về thần kinh')
+INSERT [dbo].[specialty] ([id], [name], [description]) VALUES (5, N'asdasasd', N'asdasdasdasdasd')
 SET IDENTITY_INSERT [dbo].[specialty] OFF
 GO
 SET IDENTITY_INSERT [dbo].[users] ON 
@@ -300,6 +382,10 @@ INSERT [dbo].[users] ([id], [full_name], [email], [phone], [password_hash], [rol
 INSERT [dbo].[users] ([id], [full_name], [email], [phone], [password_hash], [role], [status], [gender], [date_of_birth], [address], [created_at], [updated_at], [avatar_url]) VALUES (3, N'BS. Trần Thị Bình', N'binh.doctor@mabs.vn', N'0900000002', N'$2b$10$y3rzRbhPJwYOFnD4a0z5t.5l2ei4v8/1DRmxYZkFBtHb2tR/wHp9u', N'doctor', N'active', N'female', NULL, NULL, CAST(N'2026-06-28T06:05:56.9189182' AS DateTime2), NULL, NULL)
 INSERT [dbo].[users] ([id], [full_name], [email], [phone], [password_hash], [role], [status], [gender], [date_of_birth], [address], [created_at], [updated_at], [avatar_url]) VALUES (4, N'Lê Thị Cẩm', N'cam.patient@mabs.vn', N'0911111111', N'$2b$10$y3rzRbhPJwYOFnD4a0z5t.5l2ei4v8/1DRmxYZkFBtHb2tR/wHp9u', N'patient', N'active', N'female', CAST(N'1995-04-20' AS Date), NULL, CAST(N'2026-06-28T06:05:56.9189182' AS DateTime2), NULL, NULL)
 INSERT [dbo].[users] ([id], [full_name], [email], [phone], [password_hash], [role], [status], [gender], [date_of_birth], [address], [created_at], [updated_at], [avatar_url]) VALUES (5, N'Trần Gia Bảo', N'giabao_patient@gmail.com', NULL, N'$2a$10$K/SNPKobBmfhOEqFVl48beryPE0D1zhKUZ37BzlhEiuWcC5FMau7O', N'patient', N'active', NULL, NULL, NULL, CAST(N'2026-06-28T16:11:26.8706470' AS DateTime2), NULL, NULL)
+INSERT [dbo].[users] ([id], [full_name], [email], [phone], [password_hash], [role], [status], [gender], [date_of_birth], [address], [created_at], [updated_at], [avatar_url]) VALUES (6, N'Nguyễn Thị Thúy Quỳnh', N'nt.thuyquynh1802@gmail.com', NULL, N'$2a$10$hSsX0LQU5Fc0SrBuNEyrMucO.mkWH9ZhAsd8bFvFwvqFjdNpLy74a', N'patient', N'active', NULL, NULL, NULL, CAST(N'2026-06-30T01:39:42.9103562' AS DateTime2), NULL, NULL)
+INSERT [dbo].[users] ([id], [full_name], [email], [phone], [password_hash], [role], [status], [gender], [date_of_birth], [address], [created_at], [updated_at], [avatar_url]) VALUES (7, N'abc', N'test@gmail.com', NULL, N'$2a$10$ed7EIXCIUTqFdtlvUMaOd.qgq9khQ.ta7PT1QRkmuGXiBACaOBjsq', N'admin', N'active', NULL, NULL, NULL, CAST(N'2026-06-30T15:28:27.6012274' AS DateTime2), NULL, NULL)
+INSERT [dbo].[users] ([id], [full_name], [email], [phone], [password_hash], [role], [status], [gender], [date_of_birth], [address], [created_at], [updated_at], [avatar_url]) VALUES (8, N'agc', N'test123@gmail.com', N'', N'', N'doctor', N'active', N'other', NULL, N'', CAST(N'2026-06-30T15:29:46.7315837' AS DateTime2), CAST(N'2026-06-30T15:30:40.1125997' AS DateTime2), N'')
+INSERT [dbo].[users] ([id], [full_name], [email], [phone], [password_hash], [role], [status], [gender], [date_of_birth], [address], [created_at], [updated_at], [avatar_url]) VALUES (10, N'BS. Nguyễn Văn A', N'nguyenvana@gmail.com', N'0912354686', N'$2y$10$fpS05f.bwa5E5oMZGTELk.bHouN65AwEaNQsA..0ms3c9kezT8RRu', N'doctor', N'active', N'male', CAST(N'1997-02-13' AS Date), NULL, CAST(N'2026-07-13T15:53:28.9257505' AS DateTime2), NULL, NULL)
 SET IDENTITY_INSERT [dbo].[users] OFF
 GO
 SET IDENTITY_INSERT [dbo].[working_schedule] ON 
@@ -307,29 +393,31 @@ SET IDENTITY_INSERT [dbo].[working_schedule] ON
 INSERT [dbo].[working_schedule] ([id], [doctor_id], [work_date], [start_time], [end_time], [slot_minutes], [status]) VALUES (1, 1, CAST(N'2026-06-28' AS Date), CAST(N'08:00:00' AS Time), CAST(N'11:30:00' AS Time), 30, N'open')
 INSERT [dbo].[working_schedule] ([id], [doctor_id], [work_date], [start_time], [end_time], [slot_minutes], [status]) VALUES (2, 1, CAST(N'2026-06-29' AS Date), CAST(N'08:00:00' AS Time), CAST(N'11:30:00' AS Time), 30, N'open')
 INSERT [dbo].[working_schedule] ([id], [doctor_id], [work_date], [start_time], [end_time], [slot_minutes], [status]) VALUES (3, 2, CAST(N'2026-06-28' AS Date), CAST(N'13:30:00' AS Time), CAST(N'17:00:00' AS Time), 30, N'open')
+INSERT [dbo].[working_schedule] ([id], [doctor_id], [work_date], [start_time], [end_time], [slot_minutes], [status]) VALUES (9, 4, CAST(N'2026-07-13' AS Date), CAST(N'08:00:00' AS Time), CAST(N'17:00:00' AS Time), 30, N'open')
+INSERT [dbo].[working_schedule] ([id], [doctor_id], [work_date], [start_time], [end_time], [slot_minutes], [status]) VALUES (10, 4, CAST(N'2026-07-15' AS Date), CAST(N'08:00:00' AS Time), CAST(N'17:00:00' AS Time), 30, N'open')
 SET IDENTITY_INSERT [dbo].[working_schedule] OFF
 GO
-/****** Object:  Index [ix_appointment_doctor]    Script Date: 6/28/2026 4:40:18 PM ******/
+/****** Object:  Index [ix_appointment_doctor]    Script Date: 14/07/2026 13:47:55 ******/
 CREATE NONCLUSTERED INDEX [ix_appointment_doctor] ON [dbo].[appointment]
 (
 	[doctor_id] ASC,
 	[appointment_time] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [ix_appointment_patient]    Script Date: 6/28/2026 4:40:18 PM ******/
+/****** Object:  Index [ix_appointment_patient]    Script Date: 14/07/2026 13:47:55 ******/
 CREATE NONCLUSTERED INDEX [ix_appointment_patient] ON [dbo].[appointment]
 (
 	[patient_id] ASC,
 	[appointment_time] DESC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [ix_appointment_schedule]    Script Date: 6/28/2026 4:40:18 PM ******/
+/****** Object:  Index [ix_appointment_schedule]    Script Date: 14/07/2026 13:47:55 ******/
 CREATE NONCLUSTERED INDEX [ix_appointment_schedule] ON [dbo].[appointment]
 (
 	[schedule_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [uq_appt_doctor_active_slot]    Script Date: 6/28/2026 4:40:18 PM ******/
+/****** Object:  Index [uq_appt_doctor_active_slot]    Script Date: 14/07/2026 13:47:55 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [uq_appt_doctor_active_slot] ON [dbo].[appointment]
 (
 	[doctor_id] ASC,
@@ -338,25 +426,25 @@ CREATE UNIQUE NONCLUSTERED INDEX [uq_appt_doctor_active_slot] ON [dbo].[appointm
 WHERE ([status] IN ('pending', 'confirmed'))
 WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [uq_doctor_user]    Script Date: 6/28/2026 4:40:18 PM ******/
+/****** Object:  Index [uq_doctor_user]    Script Date: 14/07/2026 13:47:55 ******/
 ALTER TABLE [dbo].[doctor] ADD  CONSTRAINT [uq_doctor_user] UNIQUE NONCLUSTERED 
 (
 	[user_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [ix_doctor_specialty]    Script Date: 6/28/2026 4:40:18 PM ******/
+/****** Object:  Index [ix_doctor_specialty]    Script Date: 14/07/2026 13:47:55 ******/
 CREATE NONCLUSTERED INDEX [ix_doctor_specialty] ON [dbo].[doctor]
 (
 	[specialty_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [uq_mr_appointment]    Script Date: 6/28/2026 4:40:18 PM ******/
+/****** Object:  Index [uq_mr_appointment]    Script Date: 14/07/2026 13:47:55 ******/
 ALTER TABLE [dbo].[medical_record] ADD  CONSTRAINT [uq_mr_appointment] UNIQUE NONCLUSTERED 
 (
 	[appointment_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [ix_record_patient]    Script Date: 6/28/2026 4:40:18 PM ******/
+/****** Object:  Index [ix_record_patient]    Script Date: 14/07/2026 13:47:55 ******/
 CREATE NONCLUSTERED INDEX [ix_record_patient] ON [dbo].[medical_record]
 (
 	[patient_id] ASC,
@@ -365,13 +453,13 @@ CREATE NONCLUSTERED INDEX [ix_record_patient] ON [dbo].[medical_record]
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [uq_medicine_name]    Script Date: 6/28/2026 4:40:18 PM ******/
+/****** Object:  Index [uq_medicine_name]    Script Date: 14/07/2026 13:47:55 ******/
 ALTER TABLE [dbo].[medicine] ADD  CONSTRAINT [uq_medicine_name] UNIQUE NONCLUSTERED 
 (
 	[name] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [ix_notification_user_read]    Script Date: 6/28/2026 4:40:18 PM ******/
+/****** Object:  Index [ix_notification_user_read]    Script Date: 14/07/2026 13:47:55 ******/
 CREATE NONCLUSTERED INDEX [ix_notification_user_read] ON [dbo].[notification]
 (
 	[user_id] ASC,
@@ -380,25 +468,25 @@ CREATE NONCLUSTERED INDEX [ix_notification_user_read] ON [dbo].[notification]
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [uq_prt_token]    Script Date: 6/28/2026 4:40:18 PM ******/
+/****** Object:  Index [uq_prt_token]    Script Date: 14/07/2026 13:47:55 ******/
 ALTER TABLE [dbo].[password_reset_tokens] ADD  CONSTRAINT [uq_prt_token] UNIQUE NONCLUSTERED 
 (
 	[token] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [ix_prescription_record]    Script Date: 6/28/2026 4:40:18 PM ******/
+/****** Object:  Index [ix_prescription_record]    Script Date: 14/07/2026 13:47:55 ******/
 CREATE NONCLUSTERED INDEX [ix_prescription_record] ON [dbo].[prescription]
 (
 	[medical_record_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [uq_review_appointment]    Script Date: 6/28/2026 4:40:18 PM ******/
+/****** Object:  Index [uq_review_appointment]    Script Date: 14/07/2026 13:47:55 ******/
 ALTER TABLE [dbo].[review] ADD  CONSTRAINT [uq_review_appointment] UNIQUE NONCLUSTERED 
 (
 	[appointment_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [ix_review_doctor]    Script Date: 6/28/2026 4:40:18 PM ******/
+/****** Object:  Index [ix_review_doctor]    Script Date: 14/07/2026 13:47:55 ******/
 CREATE NONCLUSTERED INDEX [ix_review_doctor] ON [dbo].[review]
 (
 	[doctor_id] ASC
@@ -406,7 +494,7 @@ CREATE NONCLUSTERED INDEX [ix_review_doctor] ON [dbo].[review]
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [uq_specialty_name]    Script Date: 6/28/2026 4:40:18 PM ******/
+/****** Object:  Index [uq_specialty_name]    Script Date: 14/07/2026 13:47:55 ******/
 ALTER TABLE [dbo].[specialty] ADD  CONSTRAINT [uq_specialty_name] UNIQUE NONCLUSTERED 
 (
 	[name] ASC
@@ -414,13 +502,13 @@ ALTER TABLE [dbo].[specialty] ADD  CONSTRAINT [uq_specialty_name] UNIQUE NONCLUS
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [uq_users_email]    Script Date: 6/28/2026 4:40:18 PM ******/
+/****** Object:  Index [uq_users_email]    Script Date: 14/07/2026 13:47:55 ******/
 ALTER TABLE [dbo].[users] ADD  CONSTRAINT [uq_users_email] UNIQUE NONCLUSTERED 
 (
 	[email] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [uq_ws_doctor_slot]    Script Date: 6/28/2026 4:40:18 PM ******/
+/****** Object:  Index [uq_ws_doctor_slot]    Script Date: 14/07/2026 13:47:55 ******/
 ALTER TABLE [dbo].[working_schedule] ADD  CONSTRAINT [uq_ws_doctor_slot] UNIQUE NONCLUSTERED 
 (
 	[doctor_id] ASC,
@@ -428,7 +516,7 @@ ALTER TABLE [dbo].[working_schedule] ADD  CONSTRAINT [uq_ws_doctor_slot] UNIQUE 
 	[start_time] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [ix_schedule_doctor_date]    Script Date: 6/28/2026 4:40:18 PM ******/
+/****** Object:  Index [ix_schedule_doctor_date]    Script Date: 14/07/2026 13:47:55 ******/
 CREATE NONCLUSTERED INDEX [ix_schedule_doctor_date] ON [dbo].[working_schedule]
 (
 	[doctor_id] ASC,
@@ -442,10 +530,6 @@ GO
 ALTER TABLE [dbo].[appointment] ADD  CONSTRAINT [df_appt_created]  DEFAULT (sysutcdatetime()) FOR [created_at]
 GO
 ALTER TABLE [dbo].[doctor] ADD  CONSTRAINT [df_doctor_fee]  DEFAULT ((0)) FOR [consultation_fee]
-GO
-ALTER TABLE [dbo].[doctor] ADD  CONSTRAINT [df_doctor_rating]  DEFAULT ((0)) FOR [rating_avg]
-GO
-ALTER TABLE [dbo].[doctor] ADD  CONSTRAINT [df_doctor_rcount]  DEFAULT ((0)) FOR [rating_count]
 GO
 ALTER TABLE [dbo].[doctor] ADD  CONSTRAINT [df_doctor_exp]  DEFAULT ((0)) FOR [experience_years]
 GO
@@ -594,10 +678,6 @@ GO
 ALTER TABLE [dbo].[doctor]  WITH CHECK ADD  CONSTRAINT [ck_doctor_fee] CHECK  (([consultation_fee]>=(0)))
 GO
 ALTER TABLE [dbo].[doctor] CHECK CONSTRAINT [ck_doctor_fee]
-GO
-ALTER TABLE [dbo].[doctor]  WITH CHECK ADD  CONSTRAINT [ck_doctor_rating] CHECK  (([rating_avg]>=(0) AND [rating_avg]<=(5)))
-GO
-ALTER TABLE [dbo].[doctor] CHECK CONSTRAINT [ck_doctor_rating]
 GO
 ALTER TABLE [dbo].[prescription]  WITH CHECK ADD  CONSTRAINT [ck_pre_days] CHECK  (([duration_days]>(0)))
 GO

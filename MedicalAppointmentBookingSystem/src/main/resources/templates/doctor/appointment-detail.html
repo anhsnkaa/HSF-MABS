@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chi tiết lịch hẹn - MABS Doctor</title>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+</head>
+<body>
+
+<div th:replace="~{fragments/doctor-header :: navbar}"></div>
+<main class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Chi tiết lịch hẹn #<span th:text="${appointment.id}"></span></h2>
+        <a th:href="@{/doctor/schedule}" class="btn btn-outline-secondary btn-sm">
+            &larr; Quay lại lịch khám
+        </a>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-light">
+            <strong>Thông tin bệnh nhân</strong>
+        </div>
+        <div class="card-body row">
+            <div class="col-md-6 mb-2">
+                <span class="text-muted">Họ tên:</span>
+                <strong th:text="${appointment.patientName}">Nguyễn Văn A</strong>
+            </div>
+            <div class="col-md-3 mb-2">
+                <span class="text-muted">SĐT:</span>
+                <strong th:text="${appointment.patientPhone}">0901234567</strong>
+            </div>
+            <div class="col-md-3 mb-2">
+                <span class="text-muted">Email:</span>
+                <strong th:text="${appointment.patientEmail}">a@b.c</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-light">
+            <strong>Thông tin khám</strong>
+        </div>
+        <div class="card-body row">
+            <div class="col-md-6 mb-3">
+                <span class="text-muted d-block">Bác sĩ</span>
+                <strong>
+                    <span th:text="${appointment.doctorTitle}"></span>
+                    <span th:text="${appointment.doctorName}"></span>
+                </strong>
+            </div>
+            <div class="col-md-3 mb-3">
+                <span class="text-muted d-block">Trạng thái</span>
+                <span th:switch="${appointment.status}">
+                    <span th:case="'pending'" class="badge bg-warning text-dark">Chờ xác nhận</span>
+                    <span th:case="'confirmed'" class="badge bg-info">Đã xác nhận</span>
+                    <span th:case="'completed'" class="badge bg-success">Đã khám</span>
+                    <span th:case="'cancelled'" class="badge bg-secondary">Đã hủy</span>
+                    <span th:case="*" class="badge bg-light text-dark" th:text="${appointment.status}"></span>
+                </span>
+            </div>
+            <div class="col-md-3 mb-3">
+                <span class="text-muted d-block">Slot</span>
+                <strong th:text="${appointment.slotTimeRange}">08:00 - 11:00</strong>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <span class="text-muted d-block">Giờ khám</span>
+                <strong th:text="${#temporals.format(appointment.appointmentTime, 'HH:mm dd/MM/yyyy')}">
+                    09:00 30/06/2026
+                </strong>
+            </div>
+            <div class="col-md-6 mb-3">
+                <span class="text-muted d-block">Lý do khám</span>
+                <strong th:text="${appointment.reason}">Khám tổng quát</strong>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

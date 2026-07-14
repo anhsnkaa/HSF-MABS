@@ -58,15 +58,6 @@
                                        th:value="${doctorSearch.keyword}"/>
                             </div>
                         </div>
-                        <div class="col-md-5 d-flex justify-content-md-end align-items-center mt-3 mt-md-0">
-                            <span class="text-muted small text-uppercase me-2">Sắp xếp:</span>
-                            <select name="sortBy" class="form-select form-select-sm border-0 fw-bold text-primary w-auto"
-                                    onchange="this.form.submit()">
-                                <option value="">Mặc định</option>
-                                <option value="experience" th:selected="${doctorSearch.sortBy == 'experience'}">Kinh nghiệm</option>
-                                <option value="fee" th:selected="${doctorSearch.sortBy == 'fee'}">Giá: Thấp đến Cao</option>
-                            </select>
-                        </div>
                         <input type="hidden" name="specialtyId" th:value="${doctorSearch.specialtyId}"/>
                     </form>
                 </div>

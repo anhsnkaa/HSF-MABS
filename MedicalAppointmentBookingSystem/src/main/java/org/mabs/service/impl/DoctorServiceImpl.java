@@ -8,7 +8,6 @@ import org.mabs.repository.DoctorRepository;
 import org.mabs.service.DoctorService;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -20,7 +19,7 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     public List<Doctor> getAllDoctors() {
-        return repository.findAllDoctors();
+        return repository.findAll();
     }
 
     @Override
@@ -46,27 +45,17 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     public List<Doctor> searchDoctors(DoctorSearch search) {
-        List<Doctor> doctors = repository.findAllDoctors();
+        List<Doctor> doctors = repository.findAll();
 
-        if (search.getSpecialtyId() != null) {
-            List<Doctor> specialtyFiltered = new ArrayList<>();
-            for (Doctor doctor : doctors) {
-                if (doctor.getSpecialty().getId().equals(search.getSpecialtyId())) {
-                    specialtyFiltered.add(doctor);
-                }
-            }
-            doctors = specialtyFiltered;
-        }
-
-        if (search.getKeyword() != null && !search.getKeyword().trim().isEmpty()) {
-            String keyword = search.getKeyword().toLowerCase().trim();
-            List<Doctor> keywordFiltered = new ArrayList<>();
-            for (Doctor doctor : doctors) {
-                if (doctor.getUser().getFullName().toLowerCase().contains(keyword)) {
-                    keywordFiltered.add(doctor);
-                }
-            }
-            doctors = keywordFiltered;
+        List<Doctor> doctors;
+        if (hasSpecialty && hasKeyword) {
+            doctors = repository.findBySpecialtyIdAndUserFullNameContaining(search.getSpecialtyId(), search.getKeyword().trim());
+        } else if (hasSpecialty) {
+            doctors = repository.findBySpecialtyId(search.getSpecialtyId());
+        } else if (hasKeyword) {
+            doctors = repository.findByUserFullNameContaining(search.getKeyword().trim());
+        } else {
+            doctors = repository.findAll();
         }
 
         if (search.getSortBy() != null) {

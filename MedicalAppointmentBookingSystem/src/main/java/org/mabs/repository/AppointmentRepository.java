@@ -13,21 +13,35 @@ import java.util.Optional;
 
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
-    @EntityGraph(attributePaths = {"doctor", "doctor.user", "doctor.specialty"})
-    List<Appointment> findByPatientIdAndAppointmentTimeAfterAndStatusNotOrderByAppointmentTimeAsc(
-            Long patientId,
-            LocalDateTime currentTime,
-            String status
-    );
+    List<Appointment> findByPatientIdAndAppointmentTimeAfterAndStatusNotOrderByAppointmentTimeAsc( Long patientId, LocalDateTime currentTime, String status);
 
-    @EntityGraph(attributePaths = {"doctor", "doctor.user", "doctor.specialty"})
     Optional<Appointment> findByIdAndPatientId(Long id, Long patientId);
 
-    @EntityGraph(attributePaths = {"doctor", "doctor.user", "doctor.specialty"})
     List<Appointment> findByPatientIdOrderByAppointmentTimeDesc(Long patientId);
 
-    @Query("from Appointment ap where ap.patient.id = :id")
     List<Appointment> findByPatientId(@Param("id") Long id);
 
     boolean existsByDoctorIdAndAppointmentTimeAndStatusIn(Long doctorId, LocalDateTime appointmentTime, List<String> statuses);
+
+
+    @Query("""
+        FROM Appointment a 
+        WHERE a.doctor.id = :doctorId
+            and a.appointmentTime BETWEEN :start and :end
+                order by a.appointmentTime asc
+    """)
+    List<Appointment> findByDoctorAndDateRange(
+            @Param("doctorId") Long doctorId,
+            @Param("start") LocalDateTime start,
+            @Param("end") LocalDateTime end
+            );
+
+    @Query("""
+    from Appointment a
+    where a.patient.id = :patientId
+    and a.status = 'completed'
+    order by a.appointmentTime desc
+""")
+    List<Appointment> findCompletedByPatient(@Param("patientId") Long patientId);
+
 }

@@ -16,11 +16,11 @@ public class AccountStatusLog {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "changed_by", nullable = false, unique = true)
+    @JoinColumn(name = "changed_by", nullable = false)
     private User changedBy;
 
     private String action;

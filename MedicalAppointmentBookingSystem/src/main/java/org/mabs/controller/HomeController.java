@@ -16,12 +16,12 @@ public class HomeController {
 
     @GetMapping("/home/admin")
     public String homeAdmin() {
-        return "admin/admin-home";
+        return "redirect:/admin/dashboard";
     }
 
     @GetMapping("/about")
     public String about() {
-        return "about";
+        return "redirect:/home";
     }
 
     @GetMapping("/home")
@@ -41,7 +41,7 @@ public class HomeController {
             case "admin":
                 return "redirect:/admin/dashboard";
             case "doctor":
-                return "redirect:/doctor/dashboard";
+                return "redirect:/doctors/dashboard";
             case "patient":
                 return "redirect:/patient/dashboard";
 

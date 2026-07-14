@@ -36,7 +36,7 @@ public class AccountController {
     }
 
     @PostMapping("/add")
-    public String addAccount(@Valid @ModelAttribute("dto") AccountUpdateDto dto,
+    public String addAccount(@Valid @ModelAttribute("dto") AccountCreationDto dto,
                              BindingResult bindingResult,
                              RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
