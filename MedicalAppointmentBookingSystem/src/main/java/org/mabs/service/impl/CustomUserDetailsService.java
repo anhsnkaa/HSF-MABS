@@ -33,8 +33,8 @@ public class CustomUserDetailsService implements UserDetailsService {
             roleName = "patient";
         }
         String authority = roleName.toUpperCase().startsWith("ROLE_")
-                ? roleName
-                : "ROLE_" + roleName;
+                ? roleName.toUpperCase()
+                : "ROLE_" + roleName.toUpperCase();
 
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),

@@ -3,6 +3,7 @@ package org.mabs.service.impl;
 import org.mabs.dto.UserProfileUpdateDto;
 import org.mabs.dto.UserRegistrationDto;
 import org.mabs.entity.User;
+import org.mabs.exception.DuplicateEmailException;
 import org.mabs.repository.UserRepository;
 import org.mabs.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -18,6 +20,51 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    @Override
+    public List<User> getRoleDoctor() {
+        return userRepository.findByRole("doctor");
+    }
+
+    @Override
+    public User addUser(User user) {
+        if (existsByEmail(user.getEmail())) {
+            throw new DuplicateEmailException(user.getEmail());
+        }
+        user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
+        if (user.getCreatedAt() == null) {
+            user.setCreatedAt(LocalDateTime.now());
+        }
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User updateUser(User user) {
+        User existing = userRepository.findByEmail(user.getEmail()).orElse(null);
+        if (existing != null && !existing.getId().equals(user.getId())) {
+            throw new DuplicateEmailException(user.getEmail());
+        }
+        if (user.getPasswordHash() != null && !user.getPasswordHash().isBlank()) {
+            user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
+        }
+        user.setUpdatedAt(LocalDateTime.now());
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User findById(Long id) {
+        return userRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
 
     @Override
     public void saveUser(UserRegistrationDto dto) {
@@ -47,5 +94,11 @@ public class UserServiceImpl implements UserService {
         user.setAddress(dto.getAddress());
 
         userRepository.save(user);
+    }
+
+    @Override
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
     }
 }

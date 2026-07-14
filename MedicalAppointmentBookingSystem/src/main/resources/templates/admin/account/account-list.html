@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Danh sach tai khoan</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <button><a th:href="@{/accounts/add}">Add account</a></button>
+        <table>
+            <thead>
+                <th>#</th>
+                <th>Avatar</th>
+                <th>Full name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Gender</th>
+                <th>Date of birth</th>
+                <th>Address</th>
+                <th>Created at</th>
+                <th>Updated at</th>
+                <th>Edit</th>
+            </thead>
+            <tbody>
+                <tr th:each="account : ${accountList}">
+                    <td th:text="${account.id}"></td>
+                    <td th:text="${account.avatarUrl}"></td>
+                    <td th:text="${account.fullName}"></td>
+                    <td th:text="${account.email}"></td>
+                    <td th:text="${account.phone}"></td>
+                    <td th:text="${account.role}"></td>
+                    <td th:text="${account.status}"></td>
+                    <td th:text="${account.gender}"></td>
+                    <td th:text="${account.dateOfBirth}"></td>
+                    <td th:text="${account.address}"></td>
+                    <td th:text="${account.createdAt}"></td>
+                    <td th:text="${account.updatedAt}"></td>
+                    <td><a th:href="@{/accounts/update/{id}(id = ${account.id})}">Edit</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="" async defer></script>
+</body>
+
+</html>

@@ -15,13 +15,28 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/home", "/login", "/register", "/css/**", "/js/**").permitAll().requestMatchers("/doctor/**").hasRole("doctor")
+                        .requestMatchers("/", "/home", "/login", "/register", "/css/**", "/js/**").permitAll()
                         .requestMatchers("/profile").authenticated() // Only authenticated users can access /profile
+                        .requestMatchers("/home/admin").hasRole("ADMIN")
+                        .requestMatchers("/accounts/**").hasRole("ADMIN")
+                        .requestMatchers("/specialties/**").hasRole("ADMIN")
+                        .requestMatchers("/doctors").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login") // Use own login page(not spring security login default)
-                        .defaultSuccessUrl("/home", true)
+                        .successHandler((request, response, authentication) -> {
+                            String role = authentication.getAuthorities().stream()
+                                    .map(a -> a.getAuthority())
+                                    .filter(a -> a.startsWith("ROLE_"))
+                                    .findFirst().orElse("ROLE_PATIENT");
+                            String redirectUrl = switch (role) {
+                                case "ROLE_ADMIN" -> "/home/admin";
+                                // add other cases
+                                default -> "/home";
+                            };
+                            response.sendRedirect(redirectUrl);
+                        })
                         .permitAll()
                 )
                 .logout(logout -> logout

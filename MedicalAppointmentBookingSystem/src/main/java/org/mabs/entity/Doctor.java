@@ -43,5 +43,4 @@ public class Doctor{
         if (this.consultationFee == null) this.consultationFee = BigDecimal.ZERO;
         if (this.experienceYears == null) this.experienceYears = 0;
     }
-
 }
