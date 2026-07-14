@@ -1,0 +1,90 @@
+<mxfile host="Electron" modified="2023-10-27T10:00:00.000Z" agent="Mozilla/5.0" version="22.0.4" type="device">
+  <diagram id="layered_architecture" name="MABS Architecture">
+    <mxGraphModel dx="1000" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- Layers Containers -->
+        <mxCell id="layer_presentation" value="Presentation Layer (Thymeleaf &amp; Static Resources)" style="swimlane;whiteSpace=wrap;html=1;startSize=23;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="120" y="100" width="600" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="layer_controller" value="Controller Layer (Spring MVC)" style="swimlane;whiteSpace=wrap;html=1;startSize=23;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="120" y="240" width="600" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="layer_service" value="Service Layer (Business Logic)" style="swimlane;whiteSpace=wrap;html=1;startSize=23;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="120" y="380" width="600" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="layer_repository" value="Repository Layer (Spring Data JPA)" style="swimlane;whiteSpace=wrap;html=1;startSize=23;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="120" y="520" width="600" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="database" value="Database&#10;(SQL Server)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="370" y="660" width="100" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Components -->
+        <mxCell id="views" value="Views (Thymeleaf)&#10;layout, home, profile" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="layer_presentation">
+          <mxGeometry x="100" y="40" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="statics" value="Static Resources&#10;(CSS, JS, Images)" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="layer_presentation">
+          <mxGeometry x="340" y="40" width="160" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="controllers" value="Controllers&#10;(Auth, Home, Medical, User)" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="layer_controller">
+          <mxGeometry x="220" y="40" width="160" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="services" value="Services &amp; Impl&#10;(User, Medical, Auth)" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="layer_service">
+          <mxGeometry x="220" y="40" width="160" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="repositories" value="Repositories&#10;(UserRepo, DoctorRepo, etc)" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="layer_repository">
+          <mxGeometry x="220" y="40" width="160" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Cross cutting -->
+        <mxCell id="cross_cutting" value="Cross-Cutting / Shared Components" style="swimlane;whiteSpace=wrap;html=1;startSize=23;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="760" y="100" width="200" height="520" as="geometry" />
+        </mxCell>
+        <mxCell id="config" value="Configurations&#10;(Security, Cloudinary, Web)" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="cross_cutting">
+          <mxGeometry x="20" y="60" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dto" value="DTOs&#10;(Data Transfer Objects)" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="cross_cutting">
+          <mxGeometry x="20" y="220" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="entity" value="Entities&#10;(JPA / DB Models)" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="cross_cutting">
+          <mxGeometry x="20" y="400" width="160" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Arrows (Main flow) -->
+        <mxCell id="edge1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="layer_presentation" target="layer_controller">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="layer_controller" target="layer_service">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="layer_service" target="layer_repository">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="layer_repository" target="database">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Dependency Arrows to DTO/Entity -->
+        <mxCell id="edge_ctrl_dto" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;dashed=1;" edge="1" parent="1" source="controllers" target="dto">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_srv_dto" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.75;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;dashed=1;" edge="1" parent="1" source="services" target="dto">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_srv_entity" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.25;entryDx=0;entryDy=0;exitX=1;exitY=0.75;exitDx=0;exitDy=0;dashed=1;" edge="1" parent="1" source="services" target="entity">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_repo_entity" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.75;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;dashed=1;" edge="1" parent="1" source="repositories" target="entity">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
