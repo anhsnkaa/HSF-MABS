@@ -39,25 +39,6 @@ public class DoctorController {
         return "/admin/doctor/doctor-add";
     }
 
-    @GetMapping("/update/{id}")
-    public String updateDoctor(@PathVariable(name = "id") Long id,
-                               Model model) {
-        Doctor doctor = doctorService.findById(id);
-        DoctorUpdateDto dto = new DoctorUpdateDto();
-        dto.setId(doctor.getId());
-        dto.setUserId(doctor.getUser().getId());
-        dto.setSpecialtyId(doctor.getSpecialty().getId());
-        dto.setTitle(doctor.getTitle());
-        dto.setBio(doctor.getBio());
-        dto.setConsultationFee(doctor.getConsultationFee());
-        dto.setExperienceYears(doctor.getExperienceYears());
-
-        model.addAttribute("dto", dto);
-        model.addAttribute("doctorRoleList", userService.getRoleDoctor());
-        model.addAttribute("specialtyList", specialtyService.getALlSpecialties());
-        return "/admin/doctor/doctor-update";
-    }
-
     @PostMapping("/add")
     public String addDoctor(@Valid @ModelAttribute("dto") DoctorCreationDto dto,
                             BindingResult bindingResult,
@@ -82,9 +63,27 @@ public class DoctorController {
         return "redirect:/doctors";
     }
 
-    @PostMapping("/update/{id}")
-    public String updateDoctor(@PathVariable(name = "id") Long id,
-                               @Valid @ModelAttribute(name = "dto") DoctorUpdateDto dto,
+    @PostMapping("/update-form")
+    public String updateDoctorForm(@RequestParam(name = "id") Long id,
+                               Model model) {
+        Doctor doctor = doctorService.findById(id);
+        DoctorUpdateDto dto = new DoctorUpdateDto();
+        dto.setId(doctor.getId());
+        dto.setUserId(doctor.getUser().getId());
+        dto.setSpecialtyId(doctor.getSpecialty().getId());
+        dto.setTitle(doctor.getTitle());
+        dto.setBio(doctor.getBio());
+        dto.setConsultationFee(doctor.getConsultationFee());
+        dto.setExperienceYears(doctor.getExperienceYears());
+
+        model.addAttribute("dto", dto);
+        model.addAttribute("doctorRoleList", userService.getRoleDoctor());
+        model.addAttribute("specialtyList", specialtyService.getALlSpecialties());
+        return "/admin/doctor/doctor-update";
+    }
+
+    @PostMapping("/update")
+    public String updateDoctor(@Valid @ModelAttribute(name = "dto") DoctorUpdateDto dto,
                                BindingResult bindingResult,
                                Model model,
                                RedirectAttributes redirectAttributes) {
@@ -94,7 +93,7 @@ public class DoctorController {
             return "/admin/doctor/doctor-update";
         }
 
-        Doctor doctor = doctorService.findById(id);
+        Doctor doctor = doctorService.findById(dto.getId());
         doctor.setUser(userService.findById(dto.getUserId()));
         doctor.setSpecialty(specialtyService.findById(dto.getSpecialtyId()));
         doctor.setTitle(dto.getTitle());

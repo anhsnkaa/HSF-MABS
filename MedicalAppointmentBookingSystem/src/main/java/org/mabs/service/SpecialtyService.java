@@ -13,5 +13,7 @@ public interface SpecialtyService {
 
     Specialty updateSpecialty(Specialty specialty);
 
+    void deleteSpecialty(Specialty specialty);
+
     Specialty findById(Long id);
 }

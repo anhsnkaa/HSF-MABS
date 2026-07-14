@@ -32,4 +32,9 @@ public class SpecialtyServiceImpl implements SpecialtyService {
     public Specialty findById(Long id) {
         return repository.findById(id).orElse(null);
     }
+
+    @Override
+    public void deleteSpecialty(Specialty specialty) {
+        repository.delete(specialty);
+    }
 }
