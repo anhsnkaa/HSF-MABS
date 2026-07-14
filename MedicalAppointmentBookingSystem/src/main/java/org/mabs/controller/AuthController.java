@@ -2,6 +2,7 @@ package org.mabs.controller;
 
 import jakarta.validation.Valid;
 import org.mabs.dto.UserRegistrationDto; // DTO bạn tạo
+import org.mabs.exception.DuplicateEmailException;
 import org.mabs.service.UserService;     // Bạn nên tạo Service để xử lý logic lưu user
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,7 +34,12 @@ public class AuthController {
         if (bindingResult.hasErrors()) {
             return "register";
         }
-        userService.saveUser(registrationDto);
+        try {
+            userService.saveUser(registrationDto);
+        } catch (DuplicateEmailException e) {
+            bindingResult.rejectValue("email", "error.user", e.getMessage());
+            return "register";
+        }
         return "redirect:/login?success";
     }
 }

@@ -35,27 +35,8 @@ public class AccountController {
         return "/admin/account/add-account";
     }
 
-    @GetMapping("/update/{id}")
-    public String updateAccount(@PathVariable(name = "id") Long id,
-                                Model model) {
-        User user = userService.findById(id);
-        AccountUpdateDto dto = new AccountUpdateDto();
-        dto.setId(id);
-        dto.setFullName(user.getFullName());
-        dto.setEmail(user.getEmail());
-        dto.setPhone(user.getPhone());
-        dto.setRole(user.getRole());
-        dto.setStatus(user.getStatus());
-        dto.setGender(user.getGender());
-        dto.setDateOfBirth(user.getDateOfBirth());
-        dto.setAddress(user.getAddress());
-        dto.setAvatarUrl(user.getAvatarUrl());
-        model.addAttribute("dto", dto);
-        return "/admin/account/account-update";
-    }
-
     @PostMapping("/add")
-    public String addAccount(@Valid @ModelAttribute("dto") AccountUpdateDto dto,
+    public String addAccount(@Valid @ModelAttribute("dto") AccountCreationDto dto,
                              BindingResult bindingResult,
                              RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
@@ -85,16 +66,34 @@ public class AccountController {
 
     }
 
-    @PostMapping("/update/{id}")
-    public String updateAccount(@PathVariable(name = "id") Long id,
-                                @Valid @ModelAttribute(name = "dto") AccountUpdateDto dto,
+    @PostMapping("/update-form")
+    public String updateAccountForm(@RequestParam(name = "id") Long id,
+                                Model model) {
+        User user = userService.findById(id);
+        AccountUpdateDto dto = new AccountUpdateDto();
+        dto.setId(id);
+        dto.setFullName(user.getFullName());
+        dto.setEmail(user.getEmail());
+        dto.setPhone(user.getPhone());
+        dto.setRole(user.getRole());
+        dto.setStatus(user.getStatus());
+        dto.setGender(user.getGender());
+        dto.setDateOfBirth(user.getDateOfBirth());
+        dto.setAddress(user.getAddress());
+        dto.setAvatarUrl(user.getAvatarUrl());
+        model.addAttribute("dto", dto);
+        return "/admin/account/account-update";
+    }
+
+    @PostMapping("/update")
+    public String updateAccount(@Valid @ModelAttribute(name = "dto") AccountUpdateDto dto,
                                 BindingResult bindingResult,
                                 RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             return "/admin/account/account-update";
         }
 
-        User user = userService.findById(id);
+        User user = userService.findById(dto.getId());
         user.setFullName(dto.getFullName());
         user.setEmail(dto.getEmail());
         user.setPhone(dto.getPhone());
