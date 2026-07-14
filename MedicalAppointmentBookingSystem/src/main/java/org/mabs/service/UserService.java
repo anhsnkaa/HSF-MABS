@@ -3,6 +3,7 @@ package org.mabs.service;
 import org.mabs.dto.UserProfileUpdateDto;
 import org.mabs.dto.UserRegistrationDto;
 import org.mabs.entity.User;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -17,6 +18,8 @@ public interface UserService {
     User updateUser(User user);
 
     User findById(Long id);
+
+    boolean existsByEmail(String email);
 
 //    String registerUser(@ModelAttribute("user") UserRegistrationDto registrationDto);
     void saveUser(UserRegistrationDto registrationDto);

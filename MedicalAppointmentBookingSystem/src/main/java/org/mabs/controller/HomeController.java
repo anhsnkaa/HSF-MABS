@@ -41,7 +41,7 @@ public class HomeController {
             case "admin":
                 return "redirect:/admin/dashboard";
             case "doctor":
-                return "redirect:/doctor/dashboard";
+                return "redirect:/doctors/dashboard";
             case "patient":
                 return "redirect:/patient/dashboard";
 

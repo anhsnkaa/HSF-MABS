@@ -22,15 +22,62 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     private final MedicalRecordRepository medicalRecordRepository;
     private final PrescriptionRepository prescriptionRepository;
     private final AppointmentRepository appointmentRepository;
-    private final DoctorRepository doctorRepository;
+
+
+    @Override
+    @Transactional
+    public MedicalRecordDto createRecord(Long appointmentId, Long doctorId,
+                                         String symptoms, String diagnosis, String notes) {
+        // 1. Check duplicate
+        if (medicalRecordRepository.existsByAppointment_Id(appointmentId)) {
+            throw new IllegalStateException(
+                    "Hồ sơ bệnh án cho lịch hẹn này đã tồn tại");
+        }
+
+        // 2. Load appointment
+        Appointment appt = null;
+        if (appointmentRepository.findById(appointmentId).isPresent()) {
+            appt = appointmentRepository.findById(appointmentId).get();
+        }
+        if (appt == null) {
+            throw new IllegalArgumentException("Không tìm thấy lịch hẹn với ID: " + appointmentId);
+        }
+
+        // 3. Create MedicalRecord
+        MedicalRecord record = new MedicalRecord();
+        record.setAppointment(appt);
+        record.setDoctor(appt.getDoctor());
+        record.setPatient(appt.getPatient());
+        record.setSymptoms(symptoms);
+        record.setDiagnosis(diagnosis);
+        record.setNotes(notes);
+        record.setVisitDate(LocalDate.now());
+        record.setCreatedAt(LocalDateTime.now());
+        MedicalRecord saved = medicalRecordRepository.save(record);
+
+        appt.setStatus("completed");
+        appt.setUpdatedAt(LocalDateTime.now());
+        appointmentRepository.save(appt);
+
+        return new MedicalRecordDto(
+                saved.getId(),
+                saved.getSymptoms(),
+                saved.getDiagnosis(),
+                saved.getNotes(),
+                saved.getVisitDate(),
+                new ArrayList<>()
+        );
+    }
 
     @Override
     @Transactional(readOnly = true)
     public List<MedicalRecordDto> getMedicalRecordsByPatient(Long patientId) {
-        return medicalRecordRepository.findByPatientIdOrderByVisitDate(patientId)
-                .stream()
-                .map(this::toDto)
-                .toList();
+        List<MedicalRecord> entities = medicalRecordRepository.findByPatientIdOrderByVisitDate(patientId);
+        List<MedicalRecordDto> dtos = new ArrayList<>();
+        for (MedicalRecord mr : entities) {
+            dtos.add(this.toDto(mr));
+        }
+        return dtos;
     }
 
     @Override
@@ -63,11 +110,11 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     }
 
     private MedicalRecordDto toDto(MedicalRecord mr) {
-        List<PrescriptionDto> prescriptionDtos = prescriptionRepository
-                .findByMedicalRecordId(mr.getId())
-                .stream()
-                .map(this::toPrescriptionDto)
-                .toList();
+        List<Prescription> prescriptions = prescriptionRepository.findByMedicalRecordId(mr.getId());
+        List<PrescriptionDto> prescriptionDtos = new ArrayList<>();
+        for (Prescription p : prescriptions) {
+            prescriptionDtos.add(this.toPrescriptionDto(p));
+        }
         return new MedicalRecordDto(
                 mr.getId(), mr.getSymptoms(), mr.getDiagnosis(),
                 mr.getNotes(), mr.getVisitDate(), prescriptionDtos
@@ -79,6 +126,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
         String medicineName = (medicine != null) ? medicine.getName() : "Medicine name not available !";
         String unit = (medicine != null) ? medicine.getUnit() : "Unit name not available !";
         return new PrescriptionDto(
+                p.getId(),
                 medicineName, unit, p.getQuantity(), p.getDosage(),
                 p.getFrequency(), p.getDurationDays(), p.getNote()
         );

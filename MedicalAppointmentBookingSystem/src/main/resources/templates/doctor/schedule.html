@@ -8,8 +8,7 @@
 </head>
 <body>
 
-<div th:replace="~{fragments/header :: navbar}"></div>
-
+<div th:replace="~{fragments/doctor-header :: navbar}"></div>
 <main class="container my-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="mb-0">Lịch khám ngày <span th:text="${date}"></span></h2>
@@ -84,7 +83,7 @@
                         <a th:href="@{/doctor/schedule(action='detail', id=${appt.id})}"
                            class="btn btn-sm btn-outline-secondary">Chi tiết</a>
 
-                        <a th:if="${appt.status == 'confirmed'}"
+                        <a th:if="${appt.status == 'confirmed' or appt.status == 'pending'}"
                            th:href="@{/doctor/record(action='create', appointmentId=${appt.id})}"
                            class="btn btn-sm btn-primary">Ghi chẩn đoán</a>
 

@@ -44,8 +44,7 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     public List<Doctor> searchDoctors(DoctorSearch search) {
-        boolean hasSpecialty = search.getSpecialtyId() != null;
-        boolean hasKeyword = search.getKeyword() != null && !search.getKeyword().trim().isEmpty();
+        List<Doctor> doctors = repository.findAll();
 
         List<Doctor> doctors;
         if (hasSpecialty && hasKeyword) {

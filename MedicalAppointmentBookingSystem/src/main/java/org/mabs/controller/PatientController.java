@@ -1,7 +1,6 @@
 package org.mabs.controller;
 
 import org.mabs.dto.DoctorSearch;
-import org.mabs.entity.Appointment;
 import org.mabs.entity.Doctor;
 import org.mabs.entity.Specialty;
 import org.mabs.entity.User;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.security.Principal;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -47,17 +45,10 @@ public class PatientController {
         boolean isProfileComplete = (user.getPhone() != null && !user.getPhone().isEmpty())
                 && user.getDateOfBirth() != null;
 
-        List<Appointment> upcomingAppointments = appointmentRepository.findByPatientIdAndAppointmentTimeAfterAndStatusNotOrderByAppointmentTimeAsc(
-                user.getId(),
-                LocalDateTime.now(),
-                "cancelled"
-        );
-
         List<Specialty> specialties = specialtyService.getALlSpecialties();
 
         model.addAttribute("user", user);
         model.addAttribute("isProfileComplete", isProfileComplete);
-        model.addAttribute("appointments", upcomingAppointments);
         model.addAttribute("specialties", specialties);
 
         return "patient-dashboard";
