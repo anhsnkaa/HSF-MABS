@@ -20,6 +20,7 @@
     </div>
 
     <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}"   class="alert alert-danger"  th:text="${error}"></div>
 
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-primary text-white">
@@ -29,7 +30,7 @@
             <div class="row mb-2">
                 <div class="col-md-4">
                     <span class="text-muted d-block">Ngày khám</span>
-                    <strong th:text="${record.visitDate}">2026-06-30</strong>
+                    <strong th:text="${#temporals.format(record.visitDate, 'dd/MM/yyyy')}">14/07/2026</strong>
                 </div>
             </div>
 

@@ -31,7 +31,12 @@ public class PatientHistoryController {
                        Model model,
                        RedirectAttributes ra) {
         // 1. Verify doctor role
-        resolveDoctorId(auth);
+        try {
+            resolveDoctorId(auth);
+        } catch (IllegalStateException ex) {
+            ra.addFlashAttribute("error", "Tài khoản của bạn chưa được thiết lập hồ sơ bác sĩ");
+            return "redirect:/doctor/schedule";
+        }
 
         // 2. Load patient
         User patient = userRepository.findById(patientId).orElse(null);
