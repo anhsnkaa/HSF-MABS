@@ -39,7 +39,6 @@ public class DoctorRecordController {
                          RedirectAttributes ra) {
         switch (action) {
             case "create": return showCreateForm(appointmentId, auth, model, error);
-            case "save":   // POST only → should not reach here in GET; falls through
             case "detail": return showDetail(id, model, auth);
             default:       return "redirect:/doctor/schedule";
         }
@@ -52,7 +51,6 @@ public class DoctorRecordController {
         return handleSave(form, auth, ra);
     }
 
-    // -------- private actions --------
     private String showCreateForm(Long appointmentId, Authentication auth,
                                   Model model, String error) {
         Long doctorId = resolveDoctorId(auth);
