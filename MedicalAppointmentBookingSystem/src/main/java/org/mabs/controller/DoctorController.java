@@ -7,9 +7,11 @@ import org.mabs.dto.DoctorCreationDto;
 import org.mabs.dto.DoctorUpdateDto;
 import org.mabs.entity.Doctor;
 import org.mabs.entity.User;
-import org.mabs.repository.AppointmentRepository;
+import org.mabs.exception.DoctorNotFoundException;
+import org.mabs.exception.ScheduleAccessDeniedException;
 import org.mabs.repository.DoctorRepository;
 import org.mabs.repository.UserRepository;
+
 import org.mabs.service.DoctorScheduleService;
 import org.mabs.service.DoctorService;
 import org.mabs.service.SpecialtyService;
@@ -28,7 +30,6 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/doctors")
 public class DoctorController {
     private final DoctorService doctorService;
     private final UserService userService;
@@ -36,15 +37,15 @@ public class DoctorController {
     private final DoctorScheduleService scheduleService;
     private final DoctorRepository doctorRepo;
     private final UserRepository userRepo;
-    private final AppointmentRepository appointmentRepository;
 
-    @GetMapping
+
+    @GetMapping("/admin/doctors")
     public String getAllDoctors(Model model) {
         model.addAttribute("doctorList", doctorService.getAllDoctors());
         return "/admin/doctor/doctor-list";
     }
 
-    @GetMapping("/add")
+    @GetMapping("/admin/doctors/add")
     public String addDoctor(Model model) {
         model.addAttribute("dto", new DoctorCreationDto());
         model.addAttribute("doctorRoleList", userService.getRoleDoctor());
@@ -52,7 +53,7 @@ public class DoctorController {
         return "/admin/doctor/doctor-add";
     }
 
-    @GetMapping("/update/{id}")
+    @GetMapping("/admin/doctors/update/{id}")
     public String updateDoctor(@PathVariable(name = "id") Long id,
                                Model model) {
         Doctor doctor = doctorService.findById(id);
@@ -71,7 +72,7 @@ public class DoctorController {
         return "/admin/doctor/doctor-update";
     }
 
-    @PostMapping("/add")
+    @PostMapping("/admin/doctors/add")
     public String addDoctor(@Valid @ModelAttribute("dto") DoctorCreationDto dto,
                             BindingResult bindingResult,
                             Model model,
@@ -92,10 +93,10 @@ public class DoctorController {
 
         doctorService.createDoctor(doctor);
         redirectAttributes.addFlashAttribute("message", "Added successfully");
-        return "redirect:/doctors";
+        return "redirect:/admin/doctors";
     }
 
-    @PostMapping("/update/{id}")
+    @PostMapping("/admin/doctors/update/{id}")
     public String updateDoctor(@PathVariable(name = "id") Long id,
                                @Valid @ModelAttribute(name = "dto") DoctorUpdateDto dto,
                                BindingResult bindingResult,
@@ -117,23 +118,10 @@ public class DoctorController {
 
         doctorService.updateDoctor(doctor);
         redirectAttributes.addFlashAttribute("message", "Updated successfully");
-        return "redirect:/doctors";
+        return "redirect:/admin/doctors";
     }
 
-    @GetMapping("/dashboard")
-    public String doctorDashboard(Principal principal, Model model) {
-        if (principal == null) {
-            return "redirect:/login";
-        }
-
-        String email = principal.getName();
-        User user = userService.getUserByEmail(email);
-        model.addAttribute("user", user);
-
-        return "doctor-dashboard";
-    }
-
-    @GetMapping("/schedule")
+    @GetMapping("/doctors/schedule")
     public String handleSchedule(
             @RequestParam(defaultValue = "list") String action,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
@@ -152,11 +140,16 @@ public class DoctorController {
 
     private String showScheduleList(LocalDate date, String statusFilter, Authentication auth, Model model) {
         Long doctorId = resolveDoctorId(auth);
-        LocalDate targetDate = (date != null) ? date : LocalDate.now();
-        List<AppointmentDTO> appointments = scheduleService.getAppointmentsByDate(doctorId, targetDate, statusFilter);
+        List<AppointmentDTO> appointments;
+        if (date != null) {
+            appointments = scheduleService.getAppointmentsByDate(doctorId, date, statusFilter);
+        } else {
+            appointments = scheduleService.getAppointments(doctorId, statusFilter);
+        }
         model.addAttribute("appointments", appointments);
-        model.addAttribute("date", targetDate);
+        model.addAttribute("date", date);
         model.addAttribute("status", statusFilter);
+        model.addAttribute("today", LocalDate.now());
 
         return "doctor/schedule";
     }
@@ -164,10 +157,10 @@ public class DoctorController {
     private Long resolveDoctorId(Authentication auth) {
         String email = auth.getName();
         User user = userRepo.findByEmail(email)
-                .orElseThrow(() -> new IllegalStateException("Không tìm thấy user"));
+                .orElseThrow(() -> new DoctorNotFoundException("Không tìm thấy user với email: " + email));
 
         Doctor doctor = doctorRepo.findByUserId(user.getId())
-                .orElseThrow(() -> new IllegalStateException("Tài khoản không phải bác sĩ"));
+                .orElseThrow(() -> new ScheduleAccessDeniedException("Tài khoản không phải bác sĩ"));
 
         return doctor.getId();
     }

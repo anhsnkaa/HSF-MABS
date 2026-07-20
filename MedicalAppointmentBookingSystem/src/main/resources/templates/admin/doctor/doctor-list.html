@@ -12,7 +12,7 @@
 
 <body>
     <div layout:fragment="content">
-        <button><a th:href="@{/doctors/add}">Add doctor</a></button>
+        <button><a th:href="@{/admin/doctors/add}">Add doctor</a></button>
         <table>
             <thead>
                 <th>#</th>
@@ -33,7 +33,7 @@
                     <td th:text="${doctor.bio}"></td>
                     <td th:text="${doctor.consultationFee}"></td>
                     <td th:text="${doctor.experienceYears}"></td>
-                    <td><a th:href="@{/doctors/update/{id}(id = ${doctor.id})}">Edit</a></td>
+                    <td><a th:href="@{/admin/doctors/update/{id}(id = ${doctor.id})}">Edit</a></td>
                 </tr>
             </tbody>
         </table>

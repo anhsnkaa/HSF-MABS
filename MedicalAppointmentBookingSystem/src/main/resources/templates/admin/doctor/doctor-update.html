@@ -14,7 +14,7 @@
 <body>
     <div layout:fragment="content" class="container py-5">
         <div class="card col-md-8 mx-auto p-4">
-            <form th:action="@{/doctors/update/{id}(id = ${dto.id})}" th:object="${dto}" method="post">
+            <form th:action="@{/admin/doctors/update/{id}(id = ${dto.id})}" th:object="${dto}" method="post">
                 <div class="mb-3">
                     <label>User</label>
                     <select th:field="*{userId}" class="form-control">
