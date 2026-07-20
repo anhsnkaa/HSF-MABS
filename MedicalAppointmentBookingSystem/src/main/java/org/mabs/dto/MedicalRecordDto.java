@@ -17,6 +17,7 @@ public class MedicalRecordDto {
     private String symptom;
     private String diagnosis;
     private String note;
+    private String doctorName;
     private LocalDate visitDate;
     private List<PrescriptionDto> prescriptions;
 }

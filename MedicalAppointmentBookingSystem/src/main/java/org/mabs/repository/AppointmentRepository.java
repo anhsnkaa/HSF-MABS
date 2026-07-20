@@ -23,6 +23,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     boolean existsByDoctorIdAndAppointmentTimeAndStatusIn(Long doctorId, LocalDateTime appointmentTime, List<String> statuses);
 
+    @Query("Select count (a) > 0 from Appointment a where a.workingSchedule.id = :id ")
+    boolean existsByWorkingScheduleId(@Param("id") Long id);
 
     @Query("""
         FROM Appointment a 
