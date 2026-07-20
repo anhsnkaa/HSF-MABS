@@ -16,10 +16,10 @@
     <div th:if="${error}"   class="alert alert-danger"  th:text="${error}"></div>
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="mb-0">Lịch khám ngày <span th:text="${date}"></span></h2>
-        <a href="/doctor/schedule" class="btn btn-outline-primary btn-sm">Hôm nay</a>
+        <a href="/doctors/schedule" class="btn btn-outline-primary btn-sm">Hôm nay</a>
     </div>
 
-    <form th:action="@{/doctor/schedule}" method="get" class="row g-3 mb-4">
+    <form th:action="@{/doctors/schedule}" method="get" class="row g-3 mb-4">
         <div class="col-md-3">
             <label class="form-label">Ngày khám</label>
             <input type="date" name="date" class="form-control" th:value="${date}">
@@ -84,7 +84,7 @@
                             </span>
                     </td>
                     <td>
-                        <a th:href="@{/doctor/schedule(action='detail', id=${appt.id})}"
+                        <a th:href="@{/doctors/schedule(action='detail', id=${appt.id})}"
                            class="btn btn-sm btn-outline-secondary">Chi tiết</a>
 
                         <a th:if="${appt.status == 'confirmed' or appt.status == 'pending'}"

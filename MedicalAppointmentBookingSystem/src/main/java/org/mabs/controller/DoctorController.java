@@ -2,13 +2,20 @@ package org.mabs.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.mabs.dto.AppointmentDTO;
 import org.mabs.dto.DoctorCreationDto;
 import org.mabs.dto.DoctorUpdateDto;
 import org.mabs.entity.Doctor;
 import org.mabs.entity.User;
+import org.mabs.repository.AppointmentRepository;
+import org.mabs.repository.DoctorRepository;
+import org.mabs.repository.UserRepository;
+import org.mabs.service.DoctorScheduleService;
 import org.mabs.service.DoctorService;
 import org.mabs.service.SpecialtyService;
 import org.mabs.service.UserService;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,6 +23,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
+import java.time.LocalDate;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -24,6 +33,10 @@ public class DoctorController {
     private final DoctorService doctorService;
     private final UserService userService;
     private final SpecialtyService specialtyService;
+    private final DoctorScheduleService scheduleService;
+    private final DoctorRepository doctorRepo;
+    private final UserRepository userRepo;
+    private final AppointmentRepository appointmentRepository;
 
     @GetMapping
     public String getAllDoctors(Model model) {
@@ -106,6 +119,7 @@ public class DoctorController {
         redirectAttributes.addFlashAttribute("message", "Updated successfully");
         return "redirect:/doctors";
     }
+
     @GetMapping("/dashboard")
     public String doctorDashboard(Principal principal, Model model) {
         if (principal == null) {
@@ -117,6 +131,45 @@ public class DoctorController {
         model.addAttribute("user", user);
 
         return "doctor-dashboard";
+    }
+
+    @GetMapping("/schedule")
+    public String handleSchedule(
+            @RequestParam(defaultValue = "list") String action,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) Long id,
+            Authentication auth,
+            Model model
+    ) {
+        if ("detail".equals(action)) {
+            AppointmentDTO dto = scheduleService.getAppointmentDetail(id);
+            model.addAttribute("appointment", dto);
+            return "doctor/appointment-detail";
+        }
+        return showScheduleList(date, status, auth, model);
+    }
+
+    private String showScheduleList(LocalDate date, String statusFilter, Authentication auth, Model model) {
+        Long doctorId = resolveDoctorId(auth);
+        LocalDate targetDate = (date != null) ? date : LocalDate.now();
+        List<AppointmentDTO> appointments = scheduleService.getAppointmentsByDate(doctorId, targetDate, statusFilter);
+        model.addAttribute("appointments", appointments);
+        model.addAttribute("date", targetDate);
+        model.addAttribute("status", statusFilter);
+
+        return "doctor/schedule";
+    }
+
+    private Long resolveDoctorId(Authentication auth) {
+        String email = auth.getName();
+        User user = userRepo.findByEmail(email)
+                .orElseThrow(() -> new IllegalStateException("Không tìm thấy user"));
+
+        Doctor doctor = doctorRepo.findByUserId(user.getId())
+                .orElseThrow(() -> new IllegalStateException("Tài khoản không phải bác sĩ"));
+
+        return doctor.getId();
     }
 
 }
