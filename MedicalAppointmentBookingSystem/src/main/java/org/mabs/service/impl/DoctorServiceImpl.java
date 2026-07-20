@@ -46,7 +46,9 @@ public class DoctorServiceImpl implements DoctorService {
     public List<Doctor> searchDoctors(DoctorSearch search) {
         List<Doctor> doctors = repository.findAll();
 
-        List<Doctor> doctors;
+        boolean hasSpecialty = search.getSpecialtyId() != null;
+        boolean hasKeyword = search.getKeyword() != null && !search.getKeyword().isBlank();
+
         if (hasSpecialty && hasKeyword) {
             doctors = repository.findBySpecialtyIdAndUserFullNameContaining(search.getSpecialtyId(), search.getKeyword().trim());
         } else if (hasSpecialty) {

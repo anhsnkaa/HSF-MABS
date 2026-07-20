@@ -10,7 +10,10 @@ import java.util.Optional;
 
 public interface MedicalRecordRepository extends JpaRepository<MedicalRecord, Long> {
 
-    @Query("from MedicalRecord mr where mr.patient.id =:id order by mr.visitDate desc")
+    @Query("select mr from MedicalRecord mr "
+           + "left join fetch mr.doctor d "
+           + "left join fetch d.user "
+           + "where mr.patient.id = :id order by mr.visitDate desc")
     List<MedicalRecord> findByPatientIdOrderByVisitDate(@Param("id") Long id);
 
     boolean existsByAppointment_Id(Long appointmentId);

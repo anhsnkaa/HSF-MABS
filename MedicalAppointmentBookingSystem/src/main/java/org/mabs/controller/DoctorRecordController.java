@@ -66,7 +66,7 @@ public class DoctorRecordController {
             return "redirect:/doctor/schedule?error=appointment_not_found";
         }
         // block nếu record đã tồn tại
-        if (medicalRecordRepository.existsByAppointmentId(appointmentId)) {
+        if (medicalRecordRepository.existsByAppointment_Id(appointmentId)) {
             return "redirect:/doctor/schedule?error=record_already_exists";
         }
 

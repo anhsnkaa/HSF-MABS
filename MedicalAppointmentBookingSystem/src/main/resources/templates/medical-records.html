@@ -17,7 +17,10 @@
 
     <div class="card mb-4 shadow-sm" th:each="record : ${records}">
         <div class="card-header d-flex justify-content-between align-items-center bg-light">
-            <strong>Lần khám</strong>
+            <strong>Lần khám
+                <span th:if="${record.doctorName != null and record.doctorName != 'N/A'}"
+                      th:text="' - Bác sĩ: ' + ${record.doctorName}"> - Bác sĩ: ...</span>
+            </strong>
             <span class="badge bg-primary rounded-pill" th:text="${record.visitDate}">2026-01-01</span>
         </div>
         <div class="card-body">

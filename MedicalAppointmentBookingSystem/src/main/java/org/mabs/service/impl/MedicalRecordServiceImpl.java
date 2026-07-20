@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -22,52 +23,10 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     private final MedicalRecordRepository medicalRecordRepository;
     private final PrescriptionRepository prescriptionRepository;
     private final AppointmentRepository appointmentRepository;
+    private final DoctorRepository doctorRepository;
 
 
-    @Override
-    @Transactional
-    public MedicalRecordDto createRecord(Long appointmentId, Long doctorId,
-                                         String symptoms, String diagnosis, String notes) {
-        // 1. Check duplicate
-        if (medicalRecordRepository.existsByAppointment_Id(appointmentId)) {
-            throw new IllegalStateException(
-                    "Hồ sơ bệnh án cho lịch hẹn này đã tồn tại");
-        }
 
-        // 2. Load appointment
-        Appointment appt = null;
-        if (appointmentRepository.findById(appointmentId).isPresent()) {
-            appt = appointmentRepository.findById(appointmentId).get();
-        }
-        if (appt == null) {
-            throw new IllegalArgumentException("Không tìm thấy lịch hẹn với ID: " + appointmentId);
-        }
-
-        // 3. Create MedicalRecord
-        MedicalRecord record = new MedicalRecord();
-        record.setAppointment(appt);
-        record.setDoctor(appt.getDoctor());
-        record.setPatient(appt.getPatient());
-        record.setSymptoms(symptoms);
-        record.setDiagnosis(diagnosis);
-        record.setNotes(notes);
-        record.setVisitDate(LocalDate.now());
-        record.setCreatedAt(LocalDateTime.now());
-        MedicalRecord saved = medicalRecordRepository.save(record);
-
-        appt.setStatus("completed");
-        appt.setUpdatedAt(LocalDateTime.now());
-        appointmentRepository.save(appt);
-
-        return new MedicalRecordDto(
-                saved.getId(),
-                saved.getSymptoms(),
-                saved.getDiagnosis(),
-                saved.getNotes(),
-                saved.getVisitDate(),
-                new ArrayList<>()
-        );
-    }
 
     @Override
     @Transactional(readOnly = true)
@@ -91,7 +50,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
         if (!appointment.getDoctor().getId().equals(doctorId)) {
             throw new IllegalStateException("Bác sĩ không khớp với lịch hẹn");
         }
-        if (medicalRecordRepository.existsByAppointmentId(appointmentId)) {
+        if (medicalRecordRepository.existsByAppointment_Id(appointmentId)) {
             throw new IllegalStateException("Hồ sơ khám đã tồn tại cho lịch hẹn này");
         }
 
@@ -115,9 +74,12 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
         for (Prescription p : prescriptions) {
             prescriptionDtos.add(this.toPrescriptionDto(p));
         }
+        String doctorName = (mr.getDoctor() != null && mr.getDoctor().getUser() != null)
+                ? mr.getDoctor().getUser().getFullName()
+                : "N/A";
         return new MedicalRecordDto(
                 mr.getId(), mr.getSymptoms(), mr.getDiagnosis(),
-                mr.getNotes(), mr.getVisitDate(), prescriptionDtos
+                mr.getNotes(), doctorName, mr.getVisitDate(), prescriptionDtos
         );
     }
 

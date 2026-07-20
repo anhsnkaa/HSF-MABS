@@ -21,6 +21,8 @@ public class SecurityConfig {
                         .requestMatchers("/accounts/**").hasRole("ADMIN")
                         .requestMatchers("/specialties/**").hasRole("ADMIN")
                         .requestMatchers("/doctors").hasRole("ADMIN")
+                        .requestMatchers("/medical-records/**").hasRole("PATIENT")
+                        .requestMatchers("/test-results/**").hasRole("PATIENT")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

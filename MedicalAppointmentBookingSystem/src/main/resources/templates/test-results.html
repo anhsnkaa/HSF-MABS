@@ -11,6 +11,15 @@
 <div layout:fragment="content" class="container py-4">
     <h1 class="text-primary mb-4 border-bottom pb-2">Kết quả xét nghiệm</h1>
 
+    <div class="alert alert-success alert-dismissible fade show" th:if="${success}" role="alert">
+        <span th:text="${success}">Success</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <div class="alert alert-danger alert-dismissible fade show" th:if="${error}" role="alert">
+        <span th:text="${error}">Error</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-primary text-white">
             <strong>Tải lên kết quả xét nghiệm</strong>
