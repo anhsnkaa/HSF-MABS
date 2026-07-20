@@ -6,6 +6,7 @@ import org.mabs.dto.AccountCreationDto;
 import org.mabs.dto.AccountUpdateDto;
 import org.mabs.entity.User;
 import org.mabs.exception.DuplicateEmailException;
+import org.mabs.service.DoctorService;
 import org.mabs.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 @RequestMapping("/accounts")
 public class AccountController {
     private final UserService userService;
+    private final DoctorService doctorService;
 
     @GetMapping
     public String viewAllAccounts(Model model) {
@@ -38,8 +40,10 @@ public class AccountController {
     @PostMapping("/add")
     public String addAccount(@Valid @ModelAttribute("dto") AccountCreationDto dto,
                              BindingResult bindingResult,
-                             RedirectAttributes redirectAttributes) {
+                             RedirectAttributes redirectAttributes,
+                             Model model) {
         if (bindingResult.hasErrors()) {
+            model.addAttribute("dto", dto);
             return "/admin/account/add-account";
         }
 
@@ -61,6 +65,7 @@ public class AccountController {
             return "redirect:/accounts";
         } catch (DuplicateEmailException e) {
             bindingResult.rejectValue("email", "error.email", e.getMessage());
+            model.addAttribute("dto", dto);
             return "/admin/account/add-account";
         }
 
@@ -68,7 +73,7 @@ public class AccountController {
 
     @PostMapping("/update-form")
     public String updateAccountForm(@RequestParam(name = "id") Long id,
-                                Model model) {
+                                    Model model) {
         User user = userService.findById(id);
         AccountUpdateDto dto = new AccountUpdateDto();
         dto.setId(id);
@@ -97,9 +102,6 @@ public class AccountController {
         user.setFullName(dto.getFullName());
         user.setEmail(dto.getEmail());
         user.setPhone(dto.getPhone());
-        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
-            user.setPasswordHash(dto.getPassword());
-        }
         user.setRole(dto.getRole());
         user.setStatus(dto.getStatus());
         user.setGender(dto.getGender());
@@ -108,7 +110,7 @@ public class AccountController {
         user.setAvatarUrl(dto.getAvatarUrl());
 
         try {
-            userService.updateUser(user);
+            userService.updateUser(user, dto.getPassword());
             redirectAttributes.addFlashAttribute("message", "Updated successfully!");
             return "redirect:/accounts";
         } catch (DuplicateEmailException e) {
@@ -116,6 +118,12 @@ public class AccountController {
             return "/admin/account/account-update";
         }
 
+    }
 
+    @PostMapping("/delete")
+    public String deleteAccount(@RequestParam(name = "id") Long id,
+                                RedirectAttributes redirectAttributes) {
+        userService.deleteUser(id);
+        return "redirect:/accounts";
     }
 }

@@ -13,9 +13,13 @@ public interface UserService {
 
     List<User> getRoleDoctor();
 
+    List<User> getRoleDoctorWithNoProfile();
+
     User addUser(User user);
 
-    User updateUser(User user);
+    User updateUser(User user, String newPassword);
+
+    void deleteUser(Long id);
 
     User findById(Long id);
 

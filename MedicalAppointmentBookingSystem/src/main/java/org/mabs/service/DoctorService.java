@@ -3,6 +3,7 @@ package org.mabs.service;
 import org.mabs.dto.DoctorSearch;
 import org.mabs.entity.Doctor;
 import org.mabs.entity.Specialty;
+import org.mabs.entity.User;
 
 import java.util.List;
 
@@ -20,6 +21,8 @@ public interface DoctorService {
     void deleteDoctor(Long id);
 
     Doctor findById(Long id);
+
+    Doctor findByUserId(Long id);
 
     boolean existsBySpecialty(Specialty specialty);
 }

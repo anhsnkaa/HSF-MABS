@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.mabs.dto.DoctorSearch;
 import org.mabs.entity.Doctor;
 import org.mabs.entity.Specialty;
+import org.mabs.entity.User;
 import org.mabs.exception.ResourceNotFoundException;
 import org.mabs.repository.DoctorRepository;
 import org.mabs.service.DoctorService;
@@ -79,6 +80,11 @@ public class DoctorServiceImpl implements DoctorService {
         }
 
         return doctors;
+    }
+
+    @Override
+    public Doctor findByUserId(Long id) {
+        return repository.findByUserId(id).orElse(null);
     }
 
     @Override
