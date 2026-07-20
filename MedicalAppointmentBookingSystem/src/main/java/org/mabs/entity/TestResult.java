@@ -18,28 +18,21 @@ public class TestResult {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "appointment_id", nullable = false)
     private Appointment appointment;
 
     @Column(name = "file_name", length = 255)
     private String fileName;
 
-    @Column(name = "file_url", nullable = false, length = 500)
+    @Column(name = "file_url", length = 500, nullable = false)
     private String fileUrl;
 
     @Column(name = "file_type", length = 20)
     private String fileType;
 
-    @Column(name = "uploaded_at", nullable = false, updatable = false)
+    @Column(name = "uploaded_at")
     private LocalDateTime uploadedAt;
-
-    @PrePersist
-    protected void onCreate() {
-        if (this.uploadedAt == null) this.uploadedAt = LocalDateTime.now();
-    }
-
 }

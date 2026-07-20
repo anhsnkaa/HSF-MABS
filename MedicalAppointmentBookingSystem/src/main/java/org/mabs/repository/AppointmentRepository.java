@@ -13,7 +13,6 @@ import java.util.Optional;
 
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
-
     List<Appointment> findByPatientIdAndAppointmentTimeAfterAndStatusNotOrderByAppointmentTimeAsc( Long patientId, LocalDateTime currentTime, String status);
 
     Optional<Appointment> findByIdAndPatientId(Long id, Long patientId);

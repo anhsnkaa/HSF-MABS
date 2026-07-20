@@ -18,48 +18,42 @@ import java.time.LocalDateTime;
 public class Appointment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id", nullable = false)
     private User patient;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doctor_id", nullable = false)
     private Doctor doctor;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "schedule_id", nullable = false)
     private WorkingSchedule workingSchedule;
 
-    @Column(name = "appointment_time", nullable = false)
     private LocalDateTime appointmentTime;
-
-    @Column(name = "status", nullable = false)
     private String status;
-
-    @Column(name = "reason", columnDefinition = "nvarchar(500)")
+    @Column(columnDefinition = "nvarchar(500)")
     private String reason;
-
-    @Column(name = "cancel_reason", columnDefinition = "nvarchar(500)")
+    @Column(columnDefinition = "nvarchar(500)")
     private String cancelReason;
-
-    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
 
     @PrePersist
     protected void onCreate() {
-        if (this.createdAt == null) this.createdAt = LocalDateTime.now();
-        if (this.status == null) this.status = "pending";
+        this.createdAt = LocalDateTime.now();
+        if (this.status == null) {
+            this.status = "active";
+        }
     }
 
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
+
 
 }
