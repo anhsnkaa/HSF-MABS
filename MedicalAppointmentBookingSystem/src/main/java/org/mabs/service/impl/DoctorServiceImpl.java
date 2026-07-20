@@ -3,10 +3,14 @@ package org.mabs.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.mabs.dto.DoctorSearch;
 import org.mabs.entity.Doctor;
+import org.mabs.entity.Specialty;
+import org.mabs.entity.User;
+import org.mabs.exception.ResourceNotFoundException;
 import org.mabs.repository.DoctorRepository;
 import org.mabs.service.DoctorService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -46,17 +50,25 @@ public class DoctorServiceImpl implements DoctorService {
     public List<Doctor> searchDoctors(DoctorSearch search) {
         List<Doctor> doctors = repository.findAll();
 
-        boolean hasSpecialty = search.getSpecialtyId() != null;
-        boolean hasKeyword = search.getKeyword() != null && !search.getKeyword().isBlank();
+        if (search.getSpecialtyId() != null) {
+            List<Doctor> specialtyFiltered = new ArrayList<>();
+            for (Doctor doctor : doctors) {
+                if (doctor.getSpecialty().getId().equals(search.getSpecialtyId())) {
+                    specialtyFiltered.add(doctor);
+                }
+            }
+            doctors = specialtyFiltered;
+        }
 
-        if (hasSpecialty && hasKeyword) {
-            doctors = repository.findBySpecialtyIdAndUserFullNameContaining(search.getSpecialtyId(), search.getKeyword().trim());
-        } else if (hasSpecialty) {
-            doctors = repository.findBySpecialtyId(search.getSpecialtyId());
-        } else if (hasKeyword) {
-            doctors = repository.findByUserFullNameContaining(search.getKeyword().trim());
-        } else {
-            doctors = repository.findAll();
+        if (search.getKeyword() != null && !search.getKeyword().trim().isEmpty()) {
+            String keyword = search.getKeyword().toLowerCase().trim();
+            List<Doctor> keywordFiltered = new ArrayList<>();
+            for (Doctor doctor : doctors) {
+                if (doctor.getUser().getFullName().toLowerCase().contains(keyword)) {
+                    keywordFiltered.add(doctor);
+                }
+            }
+            doctors = keywordFiltered;
         }
 
         if (search.getSortBy() != null) {
@@ -69,4 +81,21 @@ public class DoctorServiceImpl implements DoctorService {
 
         return doctors;
     }
-        }
+
+    @Override
+    public Doctor findByUserId(Long id) {
+        return repository.findByUserId(id).orElse(null);
+    }
+
+    @Override
+    public boolean existsBySpecialty(Specialty specialty) {
+        return repository.existsBySpecialtyId(specialty.getId());
+    }
+
+    @Override
+    public void deleteDoctor(Long id) {
+        Doctor doctor = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy bác sĩ"));
+        repository.deleteById(id);
+    }
+}

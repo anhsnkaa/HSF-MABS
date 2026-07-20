@@ -3,6 +3,7 @@ package org.mabs.controller;
 import lombok.RequiredArgsConstructor;
 import org.mabs.dto.AppointmentDTO;
 import org.mabs.entity.Doctor;
+import org.mabs.entity.User;
 import org.mabs.repository.AppointmentRepository;
 import org.mabs.repository.DoctorRepository;
 import org.mabs.repository.UserRepository;
@@ -61,7 +62,12 @@ public class DoctorScheduleController {
 
     private Long resolveDoctorId(Authentication auth) {
         String email = auth.getName();
-        return userRepo.findByEmail(email).flatMap(u -> doctorRepo.findByUserId(u.getId())).map(Doctor::getId).orElseThrow(() -> new IllegalStateException("Tài khoản không phải bác sĩ: " + email));
-    }
+        User user = userRepo.findByEmail(email)
+                .orElseThrow(() -> new IllegalStateException("Không tìm thấy user"));
+
+        Doctor doctor = doctorRepo.findByUserId(user.getId())
+                .orElseThrow(() -> new IllegalStateException("Tài khoản không phải bác sĩ"));
+
+        return doctor.getId();    }
 
 }

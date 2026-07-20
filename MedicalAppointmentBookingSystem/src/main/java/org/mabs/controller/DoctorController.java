@@ -34,28 +34,9 @@ public class DoctorController {
     @GetMapping("/add")
     public String addDoctor(Model model) {
         model.addAttribute("dto", new DoctorCreationDto());
-        model.addAttribute("doctorRoleList", userService.getRoleDoctor());
+        model.addAttribute("doctorRoleList", userService.getRoleDoctorWithNoProfile());
         model.addAttribute("specialtyList", specialtyService.getALlSpecialties());
         return "/admin/doctor/doctor-add";
-    }
-
-    @GetMapping("/update/{id}")
-    public String updateDoctor(@PathVariable(name = "id") Long id,
-                               Model model) {
-        Doctor doctor = doctorService.findById(id);
-        DoctorUpdateDto dto = new DoctorUpdateDto();
-        dto.setId(doctor.getId());
-        dto.setUserId(doctor.getUser().getId());
-        dto.setSpecialtyId(doctor.getSpecialty().getId());
-        dto.setTitle(doctor.getTitle());
-        dto.setBio(doctor.getBio());
-        dto.setConsultationFee(doctor.getConsultationFee());
-        dto.setExperienceYears(doctor.getExperienceYears());
-
-        model.addAttribute("dto", dto);
-        model.addAttribute("doctorRoleList", userService.getRoleDoctor());
-        model.addAttribute("specialtyList", specialtyService.getALlSpecialties());
-        return "/admin/doctor/doctor-update";
     }
 
     @PostMapping("/add")
@@ -64,7 +45,7 @@ public class DoctorController {
                             Model model,
                             RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("doctorRoleList", userService.getRoleDoctor());
+            model.addAttribute("doctorRoleList", userService.getRoleDoctorWithNoProfile());
             model.addAttribute("specialtyList", specialtyService.getALlSpecialties());
             return "/admin/doctor/doctor-add";
         }
@@ -82,9 +63,27 @@ public class DoctorController {
         return "redirect:/doctors";
     }
 
-    @PostMapping("/update/{id}")
-    public String updateDoctor(@PathVariable(name = "id") Long id,
-                               @Valid @ModelAttribute(name = "dto") DoctorUpdateDto dto,
+    @PostMapping("/update-form")
+    public String updateDoctorForm(@RequestParam(name = "id") Long id,
+                               Model model) {
+        Doctor doctor = doctorService.findById(id);
+        DoctorUpdateDto dto = new DoctorUpdateDto();
+        dto.setId(doctor.getId());
+        dto.setUserId(doctor.getUser().getId());
+        dto.setSpecialtyId(doctor.getSpecialty().getId());
+        dto.setTitle(doctor.getTitle());
+        dto.setBio(doctor.getBio());
+        dto.setConsultationFee(doctor.getConsultationFee());
+        dto.setExperienceYears(doctor.getExperienceYears());
+
+        model.addAttribute("dto", dto);
+        model.addAttribute("doctorRoleList", userService.getRoleDoctor());
+        model.addAttribute("specialtyList", specialtyService.getALlSpecialties());
+        return "/admin/doctor/doctor-update";
+    }
+
+    @PostMapping("/update")
+    public String updateDoctor(@Valid @ModelAttribute(name = "dto") DoctorUpdateDto dto,
                                BindingResult bindingResult,
                                Model model,
                                RedirectAttributes redirectAttributes) {
@@ -94,7 +93,7 @@ public class DoctorController {
             return "/admin/doctor/doctor-update";
         }
 
-        Doctor doctor = doctorService.findById(id);
+        Doctor doctor = doctorService.findById(dto.getId());
         doctor.setUser(userService.findById(dto.getUserId()));
         doctor.setSpecialty(specialtyService.findById(dto.getSpecialtyId()));
         doctor.setTitle(dto.getTitle());
@@ -106,6 +105,7 @@ public class DoctorController {
         redirectAttributes.addFlashAttribute("message", "Updated successfully");
         return "redirect:/doctors";
     }
+
     @GetMapping("/dashboard")
     public String doctorDashboard(Principal principal, Model model) {
         if (principal == null) {
@@ -117,6 +117,14 @@ public class DoctorController {
         model.addAttribute("user", user);
 
         return "doctor-dashboard";
+    }
+
+    @PostMapping("/delete")
+    public String deleteDoctor(@RequestParam(name = "id") Long id,
+                               RedirectAttributes redirectAttributes) {
+        doctorService.deleteDoctor(id);
+        redirectAttributes.addFlashAttribute("message", "Deleted successfully");
+        return "redirect:/doctors";
     }
 
 }

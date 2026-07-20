@@ -42,7 +42,13 @@ public class DoctorPrescriptionController {
                        Authentication auth,
                        Model model,
                        RedirectAttributes ra) {
-        Long doctorId = resolveDoctorId(auth);
+        Long doctorId;
+        try {
+            doctorId = resolveDoctorId(auth);
+        } catch (IllegalStateException ex) {
+            ra.addFlashAttribute("error", "Tài khoản của bạn chưa được thiết lập hồ sơ bác sĩ");
+            return "redirect:/doctor/schedule";
+        }
 
         MedicalRecord record = medicalRecordRepository.findByIdWithDetails(recordId).orElse(null);
         if (record == null) {

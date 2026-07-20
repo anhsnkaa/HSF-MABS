@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Tìm bác sĩ - MABS</title>
+</head>
+<body>
+<main layout:fragment="content" class="container py-5">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">Bộ lọc</h5>
+                    <form th:action="@{/patient/doctors}" method="get">
+                        <div class="mb-3">
+                            <label class="form-label">Chuyên khoa</label>
+                            <select name="specialtyId" class="form-select">
+                                <option value="">Tất cả</option>
+                                <option th:each="s : ${specialties}"
+                                        th:value="${s.id}"
+                                        th:text="${s.name}"
+                                        th:selected="${criteria.specialtyId != null && criteria.specialtyId == s.id}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tên bác sĩ</label>
+                            <input type="text" name="keyword" class="form-control"
+                                   th:value="${criteria.keyword}" placeholder="Nhập tên...">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Tìm kiếm</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div th:if="${#lists.isEmpty(doctors)}" class="text-center py-5 text-muted">
+                <p class="fs-5">Không tìm thấy bác sĩ phù hợp.</p>
+            </div>
+
+            <div class="row g-2">
+                <div class="col-md-12" th:each="doctor : ${doctors}">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <div>
+                                    <h5 class="mb-0">
+                                        <a th:href="@{/patient/doctors/{id}(id=${doctor.id})}" class="text-decoration-none text-dark"
+                                           th:text="${doctor.title != null ? doctor.title + ' ' + doctor.user.fullName : doctor.user.fullName}">BS. Name</a>
+                                    </h5>
+                                    <small class="text-muted" th:text="${doctor.specialty.name}">Chuyên khoa</small>
+                                </div>
+                            </div>
+
+                            <p class="text-muted small mb-2" th:if="${doctor.bio != null}" th:text="${doctor.bio}">Bio</p>
+
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="text-muted small" th:if="${doctor.experienceYears != null}" th:text="${doctor.experienceYears + ' năm kinh nghiệm'}"></span>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-bold" th:if="${doctor.consultationFee != null}" th:text="${#numbers.formatDecimal(doctor.consultationFee, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}"></span></span>
+                                <a th:href="@{/book-appointment(doctorId=${doctor.id})}" class="btn btn-primary btn-sm">Đặt lịch</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Đặt lịch khám - MABS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+</head>
+<body>
+<main layout:fragment="content" class="container py-5">
+
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show shadow-sm mb-4" role="alert">
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="row g-4">
+        
+        <div class="col-lg-12">
+            <div class="mb-3">
+                <h2 class="fw-bold mb-1">Hoàn tất đặt lịch hẹn</h2>
+                <p class="text-muted">Vui lòng kiểm tra thông tin chi tiết bên dưới trước khi xác nhận.</p>
+            </div>
+
+            
+            <div class="card border rounded-3 shadow-sm">
+                <div class="card-body p-4">
+                    <form th:action="@{/book-appointment}" method="post" th:object="${bookingRequest}" id="bookingForm">
+                        
+                        <section class="mb-4">
+                            <h5 class="fw-semibold mb-3 d-flex align-items-center gap-2">
+                                Thông tin đặt lịch
+                            </h5>
+                            <div class="mb-3">
+                                <label class="form-label">Bác sĩ</label>
+                                <select th:field="*{doctorId}" class="form-select" id="doctorSelect" required>
+                                    <option value="">-- Chọn bác sĩ --</option>
+                                    <option th:each="doctor : ${doctors}"
+                                            th:value="${doctor.id}"
+                                            th:text="${doctor.title + ' ' + doctor.user.fullName + ' - ' + doctor.specialty.name}">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Ngày khám</label>
+                                    <select th:field="*{scheduleId}" class="form-select" id="scheduleSelect">
+                                        <option value="">-- Chọn ngày --</option>
+                                        <option th:each="schedule : ${schedules}"
+                                                th:value="${schedule.id}"
+                                                th:text="${#temporals.format(schedule.workDate, 'dd/MM/yyyy') + ' (' + #temporals.format(schedule.startTime, 'HH:mm') + ' - ' + #temporals.format(schedule.endTime, 'HH:mm') + ')'}">
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Giờ khám</label>
+                                    <input type="time" id="timePicker" class="form-control" required>
+                                    <input type="hidden" th:field="*{appointmentTime}" id="hiddenDateTime">
+                                </div>
+                            </div>
+                        </section>
+                        <section class="mb-4">
+                            <h5 class="fw-semibold mb-3 d-flex align-items-center gap-2">
+                                Lý do thăm khám
+                            </h5>
+                            <div class="mb-3">
+                                <label class="form-label">Triệu chứng hoặc yêu cầu</label>
+                                <textarea th:field="*{reason}" class="form-control" rows="3" placeholder="Mô tả ngắn gọn tình trạng sức khỏe của bạn"></textarea>
+                            </div>
+                        </section>
+                        <button type="submit" class="btn btn-primary w-100 py-3 fw-semibold d-flex align-items-center justify-content-center gap-2 rounded-3">
+                            Đặt lịch ngay
+                            <span class="material-symbols-outlined">chevron_right</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script>
+        document.getElementById('doctorSelect').addEventListener('change', function() {
+            if (this.value) {
+                window.location.href = '/book-appointment?doctorId=' + this.value;
+            }
+        });
+
+        document.getElementById('scheduleSelect').addEventListener('change', function() {
+            if (this.value) {
+                var match = this.options[this.selectedIndex].text.match(/(\d{2}\/\d{2}\/\d{4})\s*\((\d{2}:\d{2})/);
+                if (match) document.getElementById('timePicker').value = match[2];
+            }
+        });
+
+        document.getElementById('bookingForm').addEventListener('submit', function() {
+            var s = document.getElementById('scheduleSelect');
+            var t = document.getElementById('timePicker');
+            if (s.value && t.value) {
+                var m = s.options[s.selectedIndex].text.match(/(\d{2}\/\d{2}\/\d{4})/);
+                if (m) {
+                    var p = m[1].split('/');
+                    document.getElementById('hiddenDateTime').value = p[2] + '-' + p[1] + '-' + p[0] + 'T' + t.value;
+                }
+            }
+        });
+    </script>
+</main>
+</body>
+</html>
+

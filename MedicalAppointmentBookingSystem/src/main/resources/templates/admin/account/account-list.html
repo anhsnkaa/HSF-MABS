@@ -43,7 +43,18 @@
                     <td th:text="${account.address}"></td>
                     <td th:text="${account.createdAt}"></td>
                     <td th:text="${account.updatedAt}"></td>
-                    <td><a th:href="@{/accounts/update/{id}(id = ${account.id})}">Edit</a></td>
+                    <td>
+                        <form th:action="@{/accounts/update-form}" method="post">
+                            <input type="hidden" name="id" th:value="${account.id}">
+                            <button>Edit</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form th:if="${#authentication.principal.username != account.email}" th:action="@{/accounts/delete}" method="post">
+                            <input type="hidden" name="id" th:value="${account.id}">
+                            <button>Delete</button>
+                        </form>
+                    </td>
                 </tr>
             </tbody>
         </table>

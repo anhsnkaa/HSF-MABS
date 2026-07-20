@@ -30,18 +30,6 @@ public class SpecialtyController {
         return "/admin/specialty/specialty-add";
     }
 
-    @GetMapping("/update/{id}")
-    public String updateSpecialty(@PathVariable(name = "id") Long id,
-                                  Model model) {
-        SpecialtyUpdateDto dto = new SpecialtyUpdateDto();
-        Specialty specialty = specialtyService.findById(id);
-        dto.setId(id);
-        dto.setName(specialty.getName());
-        dto.setDescription(specialty.getDescription());
-        model.addAttribute("dto", dto);
-        return "/admin/specialty/specialty-update";
-    }
-
     @PostMapping("/add")
     public String createSpecialty(@Valid @ModelAttribute("dto") SpecialtyCreationDto dto,
                                   BindingResult bindingResult,
@@ -59,9 +47,20 @@ public class SpecialtyController {
         return "redirect:/specialties";
     }
 
-    @PostMapping("/update/{id}")
-    public String updateSpecialty(@PathVariable(name = "id") Long id,
-                                   @Valid @ModelAttribute(name = "dto") SpecialtyUpdateDto dto,
+    @PostMapping("/update-form")
+    public String updateSpecialtyForm(@RequestParam(name = "id") Long id,
+                                      Model model) {
+        SpecialtyUpdateDto dto = new SpecialtyUpdateDto();
+        Specialty specialty = specialtyService.findById(id);
+        dto.setId(id);
+        dto.setName(specialty.getName());
+        dto.setDescription(specialty.getDescription());
+        model.addAttribute("dto", dto);
+        return "/admin/specialty/specialty-update";
+    }
+
+    @PostMapping("/update")
+    public String updateSpecialty(@Valid @ModelAttribute(name = "dto") SpecialtyUpdateDto dto,
                                    BindingResult bindingResult,
                                    RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
@@ -69,12 +68,20 @@ public class SpecialtyController {
         }
 
         Specialty specialty = new Specialty();
-        specialty.setId(id);
+        specialty.setId(dto.getId());
         specialty.setName(dto.getName());
         specialty.setDescription(dto.getDescription());
 
         specialtyService.updateSpecialty(specialty);
         redirectAttributes.addFlashAttribute("message", "Updated successfully");
+        return "redirect:/specialties";
+    }
+
+    @PostMapping("/delete")
+    public String deleteSpecialty(@RequestParam(name = "id") Long id,
+                                  RedirectAttributes redirectAttributes) {
+        specialtyService.deleteSpecialty(id);
+        redirectAttributes.addFlashAttribute("message", "Deleted successfully");
         return "redirect:/specialties";
     }
 
