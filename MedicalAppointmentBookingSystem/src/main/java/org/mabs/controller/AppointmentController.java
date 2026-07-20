@@ -26,6 +26,7 @@ public class AppointmentController {
     private final AppointmentService appointmentService;
     private final UserService userService;
     private final DoctorService doctorService;
+    private final org.mabs.service.ReviewService reviewService;
 
     @GetMapping("/book-appointment")
     public String showBookForm(@RequestParam(required = false) Long doctorId, Model model) {
@@ -64,9 +65,14 @@ public class AppointmentController {
         if (principal == null) return "redirect:/login";
         User user = userService.getUserByEmail(principal.getName());
         List<Appointment> appointments = appointmentService.getPatientAppointments(user.getId());
+        List<Long> reviewedAppointmentIds = reviewService.getReviewedAppointmentIds(user.getId());
+
         model.addAttribute("appointments", appointments);
+        model.addAttribute("reviewedAppointmentIds", reviewedAppointmentIds);
         return "patient/appointments";
     }
+
+
 
     @PostMapping("/appointments/{id}/cancel")
     public String cancelAppointment(@PathVariable Long id,
