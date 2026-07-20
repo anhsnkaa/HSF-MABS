@@ -47,17 +47,17 @@ public class DoctorPrescriptionController {
             doctorId = resolveDoctorId(auth);
         } catch (IllegalStateException ex) {
             ra.addFlashAttribute("error", "Tài khoản của bạn chưa được thiết lập hồ sơ bác sĩ");
-            return "redirect:/doctor/schedule";
+            return "redirect:/doctors/schedule";
         }
 
         MedicalRecord record = medicalRecordRepository.findByIdWithDetails(recordId).orElse(null);
         if (record == null) {
             ra.addFlashAttribute("error", "Không tìm thấy hồ sơ");
-            return "redirect:/doctor/schedule";
+            return "redirect:/doctors/schedule";
         }
         if (record.getDoctor() == null || !record.getDoctor().getId().equals(doctorId)) {
             ra.addFlashAttribute("error", "Bạn không có quyền truy cập hồ sơ này");
-            return "redirect:/doctor/schedule";
+            return "redirect:/doctors/schedule";
         }
 
         List<PrescriptionDto> currentPrescriptions =

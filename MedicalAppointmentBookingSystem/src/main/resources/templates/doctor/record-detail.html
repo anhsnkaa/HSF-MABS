@@ -14,7 +14,7 @@
         <h2 class="mb-0">
             Hồ sơ khám #<span th:text="${record.id}"></span>
         </h2>
-        <a th:href="@{/doctor/schedule}" class="btn btn-outline-secondary btn-sm">
+        <a th:href="@{/doctors/schedule}" class="btn btn-outline-secondary btn-sm">
             &larr; Về lịch khám
         </a>
     </div>
@@ -104,7 +104,7 @@
            th:href="@{/doctor/prescription(action='form', recordId=${record.id})}">
             Kê đơn thuốc
         </a>
-        <a class="btn btn-outline-secondary" th:href="@{/doctor/schedule}">
+        <a class="btn btn-outline-secondary" th:href="@{/doctors/schedule}">
             Về lịch khám
         </a>
     </div>

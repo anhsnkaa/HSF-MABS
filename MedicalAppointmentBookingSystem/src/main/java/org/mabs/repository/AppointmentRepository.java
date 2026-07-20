@@ -27,7 +27,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     boolean existsByWorkingScheduleId(@Param("id") Long id);
 
     @Query("""
-        FROM Appointment a 
+        FROM Appointment a
         WHERE a.doctor.id = :doctorId
             and a.appointmentTime BETWEEN :start and :end
                 order by a.appointmentTime asc
@@ -37,6 +37,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             @Param("start") LocalDateTime start,
             @Param("end") LocalDateTime end
             );
+
+    List<Appointment> findByDoctorIdOrderByAppointmentTimeAsc(Long doctorId);
 
     @Query("""
     from Appointment a

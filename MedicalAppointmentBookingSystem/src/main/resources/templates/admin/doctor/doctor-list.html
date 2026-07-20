@@ -13,7 +13,7 @@
 
 <body>
     <div layout:fragment="content">
-        <button><a th:href="@{/doctors/add}">Add doctor</a></button>
+        <button><a th:href="@{/admin/doctors/add}">Add doctor</a></button>
         <table>
             <thead>
                 <th>#</th>
@@ -34,18 +34,7 @@
                     <td th:text="${doctor.bio}"></td>
                     <td th:text="${doctor.consultationFee}"></td>
                     <td th:text="${doctor.experienceYears}"></td>
-                    <td>
-                        <form th:action="@{/doctors/update-form}" method="post">
-                            <input type="hidden" name="id" th:value="${doctor.id}">
-                            <button>Edit</button>
-                        </form>
-                    </td>
-                    <td>
-                        <form th:action="@{/doctors/delete}" method="post">
-                            <input type="hidden" name="id" th:value="${doctor.id}">
-                            <button>Delete</button>
-                        </form>
-                    </td>
+                    <td><a th:href="@{/admin/doctors/update/{id}(id = ${doctor.id})}">Edit</a></td>
                 </tr>
             </tbody>
         </table>
