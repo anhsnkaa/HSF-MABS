@@ -34,7 +34,7 @@ public class DoctorController {
     @GetMapping("/add")
     public String addDoctor(Model model) {
         model.addAttribute("dto", new DoctorCreationDto());
-        model.addAttribute("doctorRoleList", userService.getRoleDoctor());
+        model.addAttribute("doctorRoleList", userService.getRoleDoctorWithNoProfile());
         model.addAttribute("specialtyList", specialtyService.getALlSpecialties());
         return "/admin/doctor/doctor-add";
     }
@@ -45,7 +45,7 @@ public class DoctorController {
                             Model model,
                             RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("doctorRoleList", userService.getRoleDoctor());
+            model.addAttribute("doctorRoleList", userService.getRoleDoctorWithNoProfile());
             model.addAttribute("specialtyList", specialtyService.getALlSpecialties());
             return "/admin/doctor/doctor-add";
         }

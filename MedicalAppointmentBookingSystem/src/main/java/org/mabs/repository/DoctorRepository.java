@@ -1,6 +1,7 @@
 package org.mabs.repository;
 
 import org.mabs.entity.Doctor;
+import org.mabs.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
