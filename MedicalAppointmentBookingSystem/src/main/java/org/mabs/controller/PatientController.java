@@ -8,11 +8,14 @@ import org.mabs.entity.User;
 import org.mabs.service.DoctorService;
 import org.mabs.service.SpecialtyService;
 import org.mabs.service.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
 import java.util.List;
@@ -47,12 +50,18 @@ public class PatientController {
     }
 
     @GetMapping("/doctors")
-    public String listDoctors(DoctorSearch doctorSearch, Model model) {
+    public String listDoctors(DoctorSearch doctorSearch,
+                              @RequestParam(defaultValue = "0") int page,
+                              @RequestParam(defaultValue = "6") int size,
+                              Model model) {
         List<Specialty> specialties = specialtyService.getALlSpecialties();
-        List<Doctor> doctors = doctorService.searchDoctors(doctorSearch);
+        Page<Doctor> doctorPage = doctorService.searchDoctors(doctorSearch, PageRequest.of(page, size));
 
         model.addAttribute("specialties", specialties);
-        model.addAttribute("doctors", doctors);
+        model.addAttribute("doctors", doctorPage.getContent());
+        model.addAttribute("currentPage", doctorPage.getNumber());
+        model.addAttribute("totalPages", doctorPage.getTotalPages());
+        model.addAttribute("totalItems", doctorPage.getTotalElements());
         model.addAttribute("criteria", doctorSearch);
         return "patient/doctors";
     }

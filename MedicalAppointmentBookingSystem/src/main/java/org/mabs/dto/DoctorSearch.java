@@ -9,4 +9,5 @@ public class DoctorSearch {
     private Long specialtyId;
     private String keyword;
     private String sortBy;
+    private int page;
 }

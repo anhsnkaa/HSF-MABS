@@ -6,10 +6,14 @@ import org.mabs.entity.Doctor;
 import org.mabs.entity.Specialty;
 import org.mabs.repository.DoctorRepository;
 import org.mabs.service.DoctorService;
+import org.mabs.specification.DoctorSpecification;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -45,39 +49,18 @@ public class DoctorServiceImpl implements DoctorService {
 
 
     @Override
-    public List<Doctor> searchDoctors(DoctorSearch search) {
-        List<Doctor> doctors = repository.findAll();
+    public Page<Doctor> searchDoctors(DoctorSearch search, Pageable pageable) {
+        Specification<Doctor> spec = DoctorSpecification.from(search);
 
-        if (search.getSpecialtyId() != null) {
-            List<Doctor> specialtyFiltered = new ArrayList<>();
-            for (Doctor doctor : doctors) {
-                if (doctor.getSpecialty().getId().equals(search.getSpecialtyId())) {
-                    specialtyFiltered.add(doctor);
-                }
-            }
-            doctors = specialtyFiltered;
+        if ("experience".equals(search.getSortBy())) {
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+                    Sort.by(Sort.Direction.DESC, "experienceYears"));
+        } else if ("fee".equals(search.getSortBy())) {
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+                    Sort.by(Sort.Direction.ASC, "consultationFee"));
         }
 
-        if (search.getKeyword() != null && !search.getKeyword().trim().isEmpty()) {
-            String keyword = search.getKeyword().toLowerCase().trim();
-            List<Doctor> keywordFiltered = new ArrayList<>();
-            for (Doctor doctor : doctors) {
-                if (doctor.getUser().getFullName().toLowerCase().contains(keyword)) {
-                    keywordFiltered.add(doctor);
-                }
-            }
-            doctors = keywordFiltered;
-        }
-
-        if (search.getSortBy() != null) {
-            if (search.getSortBy().equals("experience")) {
-                doctors.sort(Comparator.comparing(Doctor::getExperienceYears, Comparator.reverseOrder()));
-            } else if (search.getSortBy().equals("fee")) {
-                doctors.sort(Comparator.comparing(Doctor::getConsultationFee));
-            }
-        }
-
-        return doctors;
+        return repository.findAll(spec, pageable);
     }
 
     @Override
