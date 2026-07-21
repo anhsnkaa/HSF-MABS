@@ -45,7 +45,15 @@ public class SecurityConfig {
                 .invalidateHttpSession(true) // Xóa session trong server
                 .clearAuthentication(true)  // Xóa context bảo mật
                 .deleteCookies("JSESSIONID") // Xóa cookie của trình duyệt
-                .permitAll());
+                .permitAll())
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((req, res, auth) -> {
+                            res.sendRedirect(req.getContextPath() + "/login?notLogged");
+                        })
+                        .accessDeniedHandler((req, res, auth) -> {
+                            res.sendRedirect(req.getContextPath() + "/login?accessDenied");
+                        })
+                );
 
         return http.build();
     }
