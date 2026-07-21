@@ -32,8 +32,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="specialty : ${specialtyList}">
-                                <td th:text="${specialty.id}"></td>
+                            <tr th:each="specialty, iter : ${specialtyList}">
+                                <td th:text="${iter.count}"></td>
                                 <td>
                                     <div class="d-flex align-items-center gap-2">
                                         <div class="bg-success bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center" style="width:32px;height:32px;">

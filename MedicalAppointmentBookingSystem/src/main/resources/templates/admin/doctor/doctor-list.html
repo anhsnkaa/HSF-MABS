@@ -35,8 +35,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="doctor : ${doctorList}">
-                                <td th:text="${doctor.id}"></td>
+                            <tr th:each="doctor, iter : ${doctorList}">
+                                <td th:text="${iter.count}"></td>
                                 <td>
                                     <div class="d-flex align-items-center gap-2">
                                         <div class="bg-info bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center" style="width:32px;height:32px;">
