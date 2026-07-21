@@ -1,12 +1,60 @@
 <!DOCTYPE html>
-<html
-        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        layout:decorate="~{layout}">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
 <body>
-<div layout:fragment="content">
-    <div class="container mt-5">
-        <h1>Admin Dashboard</h1>
-        <p>Quản lí hệ thống</p>
+<div layout:fragment="content" class="container py-5">
+    <div class="mb-4">
+        <h2 class="fw-bold">Xin chào, Admin!</h2>
+        <p class="text-muted">Quản lý hệ thống đặt lịch khám bệnh MABS</p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <a href="/accounts" class="text-decoration-none">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body d-flex align-items-center gap-3">
+                        <div class="bg-primary bg-opacity-10 rounded-3 p-3">
+                            <i class="bi bi-people-fill text-primary fs-2"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold mb-1 text-dark">Quản lý tài khoản</h5>
+                            <p class="text-muted small mb-0">Quản lý tài khoản người dùng</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="/specialties" class="text-decoration-none">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body d-flex align-items-center gap-3">
+                        <div class="bg-success bg-opacity-10 rounded-3 p-3">
+                            <i class="bi bi-clipboard2-pulse-fill text-success fs-2"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold mb-1 text-dark">Quản lý chuyên khoa</h5>
+                            <p class="text-muted small mb-0">Quản lý các chuyên khoa</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="/doctors" class="text-decoration-none">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body d-flex align-items-center gap-3">
+                        <div class="bg-info bg-opacity-10 rounded-3 p-3">
+                            <i class="bi bi-person-badge-fill text-info fs-2"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold mb-1 text-dark">Quản lý bác sĩ</h5>
+                            <p class="text-muted small mb-0">Quản lý hồ sơ bác sĩ</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
     </div>
 </div>
 </body>
