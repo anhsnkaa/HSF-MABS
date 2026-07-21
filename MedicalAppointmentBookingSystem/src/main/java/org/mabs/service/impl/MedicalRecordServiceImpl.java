@@ -8,6 +8,8 @@ import org.mabs.entity.Doctor;
 import org.mabs.entity.MedicalRecord;
 import org.mabs.entity.Medicine;
 import org.mabs.entity.Prescription;
+import org.mabs.exception.ConflictException;
+import org.mabs.exception.ResourceNotFoundException;
 import org.mabs.repository.AppointmentRepository;
 import org.mabs.repository.MedicalRecordRepository;
 import org.mabs.repository.PrescriptionRepository;
@@ -62,14 +64,14 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     @Transactional
     public MedicalRecordDto createRecord(Long appointmentId, Long doctorId, String symptoms, String diagnosis, String notes) {
         Appointment appointment = appointmentRepository.findById(appointmentId)
-                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy lịch hẹn"));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy lịch hẹn"));
 
         if (!appointment.getDoctor().getId().equals(doctorId)) {
             throw new IllegalArgumentException("Lịch hẹn không thuộc về bác sĩ này");
         }
 
         if (medicalRecordRepository.existsByAppointment_Id(appointmentId)) {
-            throw new IllegalStateException("Hồ sơ khám cho lịch hẹn này đã được tạo");
+            throw new ConflictException("Hồ sơ khám cho lịch hẹn này đã được tạo");
         }
 
         MedicalRecord record = new MedicalRecord();

@@ -1,5 +1,6 @@
 package org.mabs.exception;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -9,52 +10,76 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(AppointmentNotFoundException.class)
-    public String handleAppointmentNotFound(AppointmentNotFoundException ex, RedirectAttributes redirectAttributes) {
-        log.warn("AppointmentNotFoundException: {}", ex.getMessage());
-        redirectAttributes.addFlashAttribute("error", ex.getMessage());
-        return "redirect:/doctors/schedule";
+    @ExceptionHandler({
+            ResourceNotFoundException.class,
+            ConflictException.class,
+            IllegalArgumentException.class,
+            IllegalStateException.class,
+            AppointmentNotFoundException.class,
+            DoctorNotFoundException.class
+    })
+    public String handleBusiness(RuntimeException ex,
+                                 RedirectAttributes ra,
+                                 HttpServletRequest request) {
+        log.warn("{}: {}", ex.getClass().getSimpleName(), ex.getMessage());
+        ra.addFlashAttribute("error", ex.getMessage());
+        return "redirect:" + resolveRedirect(request.getRequestURI());
     }
 
     @ExceptionHandler(ScheduleAccessDeniedException.class)
-    public String handleScheduleAccessDenied(ScheduleAccessDeniedException ex, RedirectAttributes redirectAttributes) {
+    public String handleScheduleAccessDenied(ScheduleAccessDeniedException ex, RedirectAttributes ra) {
         log.warn("ScheduleAccessDeniedException: {}", ex.getMessage());
-        redirectAttributes.addFlashAttribute("error", ex.getMessage());
+        ra.addFlashAttribute("error", ex.getMessage());
         return "redirect:/login";
     }
 
-    @ExceptionHandler(DoctorNotFoundException.class)
-    public String handleDoctorNotFound(DoctorNotFoundException ex, RedirectAttributes redirectAttributes) {
-        log.warn("DoctorNotFoundException: {}", ex.getMessage());
-        redirectAttributes.addFlashAttribute("error", ex.getMessage());
-        return "redirect:/admin/doctors";
-    }
-
-    @ExceptionHandler(IllegalStateException.class)
-    public String handleIllegalState(IllegalStateException ex, RedirectAttributes redirectAttributes) {
-        log.warn("IllegalStateException: {}", ex.getMessage());
-        redirectAttributes.addFlashAttribute("error", ex.getMessage());
-        return "redirect:/doctors/schedule";
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public String handleIllegalArgument(IllegalArgumentException ex, RedirectAttributes redirectAttributes) {
-        log.warn("IllegalArgumentException: {}", ex.getMessage());
-        redirectAttributes.addFlashAttribute("error", ex.getMessage());
-        return "redirect:/doctors/schedule";
-    }
-
     @ExceptionHandler(DuplicateEmailException.class)
-    public String handleDuplicateEmail(DuplicateEmailException ex, RedirectAttributes redirectAttributes) {
+    public String handleDuplicateEmail(DuplicateEmailException ex, RedirectAttributes ra) {
         log.warn("DuplicateEmailException: {}", ex.getMessage());
-        redirectAttributes.addFlashAttribute("error", ex.getMessage());
+        ra.addFlashAttribute("error", ex.getMessage());
         return "redirect:/accounts";
     }
 
     @ExceptionHandler(Exception.class)
-    public String handleGeneric(Exception ex, RedirectAttributes redirectAttributes) {
+    public String handleGeneric(Exception ex,
+                                RedirectAttributes ra,
+                                HttpServletRequest request) {
         log.error("Unhandled exception", ex);
-        redirectAttributes.addFlashAttribute("error", "Đã xảy ra lỗi hệ thống: " + ex.getMessage());
-        return "redirect:/home";
+        ra.addFlashAttribute("error", "Đã xảy ra lỗi hệ thống.");
+        return "redirect:" + resolveRedirect(request.getRequestURI());
+    }
+
+    private String resolveRedirect(String uri) {
+        if (uri == null || uri.isBlank()) {
+            return "/home";
+        }
+        if (uri.startsWith("/schedules")) {
+            return "/schedules";
+        }
+        if (uri.startsWith("/test-results")) {
+            return "/test-results";
+        }
+        if (uri.startsWith("/medical-records")) {
+            return "/medical-records";
+        }
+        if (uri.startsWith("/doctor/record")
+                || uri.startsWith("/doctor/prescription")
+                || uri.startsWith("/doctor/patient-history")
+                || uri.startsWith("/doctors/schedule")) {
+            return "/doctors/schedule";
+        }
+        if (uri.startsWith("/admin/doctors")) {
+            return "/admin/doctors";
+        }
+        if (uri.startsWith("/accounts")) {
+            return "/accounts";
+        }
+        if (uri.startsWith("/specialties")) {
+            return "/specialties";
+        }
+        if (uri.startsWith("/book-appointment") || uri.startsWith("/appointments")) {
+            return "/appointments";
+        }
+        return "/home";
     }
 }

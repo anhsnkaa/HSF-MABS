@@ -85,22 +85,12 @@ public class DoctorRecordController {
             ra.addAttribute("error", "Vui lòng nhập chẩn đoán");
             return "redirect:/doctor/record?action=create";
         }
-        try {
-            Long doctorId = resolveDoctorId(auth);
-            MedicalRecordDto saved = medicalRecordService.createRecord(
-                    form.getAppointmentId(), doctorId,
-                    form.getSymptoms(), form.getDiagnosis(), form.getNotes());
-            ra.addFlashAttribute("success", "Đã lưu hồ sơ khám");
-            return "redirect:/doctor/record?action=detail&id=" + saved.getId();
-        } catch (IllegalStateException ex) {
-            ra.addAttribute("appointmentId", form.getAppointmentId());
-            ra.addAttribute("error", ex.getMessage());
-            return "redirect:/doctor/record?action=create";
-        } catch (IllegalArgumentException ex) {
-            ra.addAttribute("appointmentId", form.getAppointmentId());
-            ra.addAttribute("error", ex.getMessage());
-            return "redirect:/doctor/record?action=create";
-        }
+        Long doctorId = resolveDoctorId(auth);
+        MedicalRecordDto saved = medicalRecordService.createRecord(
+                form.getAppointmentId(), doctorId,
+                form.getSymptoms(), form.getDiagnosis(), form.getNotes());
+        ra.addFlashAttribute("success", "Đã lưu hồ sơ khám");
+        return "redirect:/doctor/record?action=detail&id=" + saved.getId();
     }
 
     private String showDetail(Long id, Model model, Authentication auth, RedirectAttributes ra) {

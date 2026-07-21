@@ -11,8 +11,8 @@
 <div layout:fragment="content" class="container py-4">
     <h1 class="text-primary mb-4 border-bottom pb-2">Kết quả xét nghiệm</h1>
 
-    <div class="alert alert-success alert-dismissible fade show" th:if="${success}" role="alert">
-        <span th:text="${success}">Success</span>
+    <div class="alert alert-success alert-dismissible fade show" th:if="${success != null or message != null}" role="alert">
+        <span th:text="${success != null ? success : message}">Success</span>
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
     <div class="alert alert-danger alert-dismissible fade show" th:if="${error}" role="alert">
