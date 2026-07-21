@@ -1,16 +1,9 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="~{layout}">
-
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Danh sach bac si</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="">
+    <title>Quản lý bác sĩ</title>
 </head>
-
 <body>
     <div layout:fragment="content">
         <button><a th:href="@{/admin/doctors/add}">Add doctor</a></button>
@@ -39,8 +32,5 @@
             </tbody>
         </table>
     </div>
-
-    <script src="" async defer></script>
 </body>
-
 </html>
