@@ -57,10 +57,21 @@ public class UserController {
         try{
             userService.updateProfile(principal.getName(), dto);
 
+            // Lấy role để redirect trực tiếp, tránh bị double redirect làm mất successMessage
+            User user = userService.getUserByEmail(principal.getName());
+            String role = user.getRole().toLowerCase();
+
             //Notification: "Update succcess"
             redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thông tin thành công!");
 
-            return "redirect:/home";
+            switch (role) {
+                case "admin":
+                    return "redirect:/admin/dashboard";
+                case "doctor":
+                    return "redirect:/doctors/dashboard";
+                default:
+                    return "redirect:/patient/dashboard";
+            }
         } catch (Exception e){
             //Notification: "Update failed"
             model.addAttribute("error", "Có lỗi xảy ra, vui lòng thử lại sau!");
@@ -68,3 +79,4 @@ public class UserController {
         }
     }
 }
+
