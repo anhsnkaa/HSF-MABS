@@ -1,6 +1,8 @@
 package org.mabs.repository;
 
 import org.mabs.entity.Appointment;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,6 +22,17 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     List<Appointment> findByPatientIdOrderByAppointmentTimeDesc(Long patientId);
 
     List<Appointment> findByPatientId(@Param("id") Long id);
+
+    @Query(value = """
+        SELECT a FROM Appointment a
+        JOIN FETCH a.doctor d
+        JOIN FETCH d.user
+        JOIN FETCH d.specialty
+        WHERE a.patient.id = :patientId
+        ORDER BY a.appointmentTime DESC
+        """,
+        countQuery = "SELECT COUNT(a) FROM Appointment a WHERE a.patient.id = :patientId")
+    Page<Appointment> findPatientAppointmentsPaged(@Param("patientId") Long patientId, Pageable pageable);
 
     boolean existsByDoctorIdAndAppointmentTimeAndStatusIn(Long doctorId, LocalDateTime appointmentTime, List<String> statuses);
 

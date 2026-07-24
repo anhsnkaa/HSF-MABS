@@ -8,6 +8,10 @@ import org.mabs.entity.User;
 import org.mabs.exception.ResourceNotFoundException;
 import org.mabs.repository.DoctorRepository;
 import org.mabs.service.DoctorService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -47,39 +51,21 @@ public class DoctorServiceImpl implements DoctorService {
 
 
     @Override
-    public List<Doctor> searchDoctors(DoctorSearch search) {
-        List<Doctor> doctors = repository.findAll();
-
-        if (search.getSpecialtyId() != null) {
-            List<Doctor> specialtyFiltered = new ArrayList<>();
-            for (Doctor doctor : doctors) {
-                if (doctor.getSpecialty().getId().equals(search.getSpecialtyId())) {
-                    specialtyFiltered.add(doctor);
-                }
-            }
-            doctors = specialtyFiltered;
-        }
-
-        if (search.getKeyword() != null && !search.getKeyword().trim().isEmpty()) {
-            String keyword = search.getKeyword().toLowerCase().trim();
-            List<Doctor> keywordFiltered = new ArrayList<>();
-            for (Doctor doctor : doctors) {
-                if (doctor.getUser().getFullName().toLowerCase().contains(keyword)) {
-                    keywordFiltered.add(doctor);
-                }
-            }
-            doctors = keywordFiltered;
-        }
-
+    public Page<Doctor> searchDoctors(DoctorSearch search, Pageable pageable) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "experienceYears");
         if (search.getSortBy() != null) {
-            if (search.getSortBy().equals("experience")) {
-                doctors.sort(Comparator.comparing(Doctor::getExperienceYears, Comparator.reverseOrder()));
-            } else if (search.getSortBy().equals("fee")) {
-                doctors.sort(Comparator.comparing(Doctor::getConsultationFee));
+            if (search.getSortBy().equalsIgnoreCase("experience")) {
+                sort = Sort.by(Sort.Direction.DESC, "experienceYears");
+            } else if (search.getSortBy().equalsIgnoreCase("fee")) {
+                sort = Sort.by(Sort.Direction.ASC, "consultationFee");
             }
         }
 
-        return doctors;
+        String keyword = (search.getKeyword() != null && !search.getKeyword().trim().isEmpty())
+                ? search.getKeyword().trim() : null;
+
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+        return repository.searchDoctors(search.getSpecialtyId(), keyword, sortedPageable);
     }
 
     @Override

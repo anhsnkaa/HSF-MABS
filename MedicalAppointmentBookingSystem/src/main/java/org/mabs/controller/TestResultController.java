@@ -29,7 +29,7 @@ public class TestResultController {
     public String showTestResults(Model model, Principal principal) {
         User patient = userService.getUserByEmail(principal.getName());
 
-        List<Appointment> appointments = appointmentService.getPatientAppointments(patient.getId());
+        List<Appointment> appointments = appointmentService.getAllPatientAppointments(patient.getId());
         List<Appointment> validAppointments = appointments.stream()
                 .filter(a -> List.of("confirmed", "completed").contains(a.getStatus()))
                 .toList();

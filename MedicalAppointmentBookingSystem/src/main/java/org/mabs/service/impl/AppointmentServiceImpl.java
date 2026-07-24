@@ -14,6 +14,8 @@ import org.mabs.repository.UserRepository;
 import org.mabs.repository.WorkingScheduleRepository;
 import org.mabs.service.AppointmentService;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,7 +78,12 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<Appointment> getPatientAppointments(Long patientId) {
+    public Page<Appointment> getPatientAppointments(Long patientId, Pageable pageable) {
+        return appointmentRepository.findPatientAppointmentsPaged(patientId, pageable);
+    }
+
+    @Override
+    public List<Appointment> getAllPatientAppointments(Long patientId) {
         return appointmentRepository.findByPatientIdOrderByAppointmentTimeDesc(patientId);
     }
 
