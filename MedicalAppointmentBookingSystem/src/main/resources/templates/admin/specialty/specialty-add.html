@@ -1,36 +1,37 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="~{layout}">
-
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Tạo chuyên khoa mới</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="">
+    <title>Thêm chuyên khoa</title>
 </head>
-
 <body>
     <div layout:fragment="content" class="container py-5">
-        <div class="card col-md-8 mx-auto p-4">
-            <form th:action="@{/specialties/add}" th:object="${dto}" method="post">
-                <div class="mb-3">
-                    <label>Name</label>
-                    <input type="text" th:field="*{name}" class="form-control">
-                    <p class="text-danger small mt-1 mb-0" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
-                </div>
-                <div class="mb-3">
-                    <label>Description</label>
-                    <input type="text" th:field="*{description}" class="form-control">
-                    <p class="text-danger small mt-1 mb-0" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></p>
-                </div>
-                <button type="submit">Create</button>
-            </form>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold mb-0">Thêm chuyên khoa mới</h2>
+            <a href="/specialties" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Quay lại
+            </a>
+        </div>
+
+        <div class="card col-md-8 mx-auto shadow-sm border-0">
+            <div class="card-body p-4">
+                <form th:action="@{/specialties/add}" th:object="${dto}" method="post">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Tên chuyên khoa <span class="text-danger">*</span></label>
+                        <input type="text" th:field="*{name}" class="form-control" placeholder="Nhập tên chuyên khoa">
+                        <p class="text-danger small mt-1 mb-0" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Mô tả</label>
+                        <input type="text" th:field="*{description}" class="form-control" placeholder="Mô tả về chuyên khoa">
+                        <p class="text-danger small mt-1 mb-0" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></p>
+                    </div>
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="bi bi-plus-lg me-1"></i> Tạo chuyên khoa
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
-
-    <script src="" async defer></script>
 </body>
-
 </html>

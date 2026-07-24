@@ -11,6 +11,8 @@ import org.mabs.entity.Doctor;
 import org.mabs.service.AppointmentService;
 import org.mabs.service.DoctorService;
 import org.mabs.service.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +28,6 @@ public class AppointmentController {
     private final AppointmentService appointmentService;
     private final UserService userService;
     private final DoctorService doctorService;
-    private final org.mabs.service.ReviewService reviewService;
 
     @GetMapping("/book-appointment")
     public String showBookForm(@RequestParam(required = false) Long doctorId, Model model) {
@@ -61,18 +62,20 @@ public class AppointmentController {
     }
 
     @GetMapping("/appointments")
-    public String listAppointments(Principal principal, Model model) {
+    public String listAppointments(Principal principal,
+                                   @RequestParam(defaultValue = "0") int page,
+                                   @RequestParam(defaultValue = "10") int size,
+                                   Model model) {
         if (principal == null) return "redirect:/login";
-        User user = userService.getUserByEmail(principal.getName());
-        List<Appointment> appointments = appointmentService.getPatientAppointments(user.getId());
-        List<Long> reviewedAppointmentIds = reviewService.getReviewedAppointmentIds(user.getId());
+        int pageSize = Math.min(Math.max(size, 5), 20);
+        int pageIndex = Math.max(page, 0);
 
-        model.addAttribute("appointments", appointments);
-        model.addAttribute("reviewedAppointmentIds", reviewedAppointmentIds);
+        User user = userService.getUserByEmail(principal.getName());
+        Page<Appointment> appointmentPage = appointmentService.getPatientAppointments(user.getId(), PageRequest.of(pageIndex, pageSize));
+        model.addAttribute("appointments", appointmentPage.getContent());
+        model.addAttribute("page", appointmentPage);
         return "patient/appointments";
     }
-
-
 
     @PostMapping("/appointments/{id}/cancel")
     public String cancelAppointment(@PathVariable Long id,

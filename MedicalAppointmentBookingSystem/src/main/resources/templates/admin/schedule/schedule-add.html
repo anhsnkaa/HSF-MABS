@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Thêm lịch làm việc</title>
+</head>
+<body>
+<div layout:fragment="content" class="container py-5">
+    <div class="card col-md-8 mx-auto p-4">
+        <h3 class="mb-3">Thêm lịch làm việc</h3>
+        <form th:action="@{/schedules/add}" th:object="${dto}" method="post">
+            <div class="mb-3">
+                <label class="form-label">Bác sĩ</label>
+                <select th:field="*{doctorId}" class="form-select">
+                    <option value="">-- Chọn bác sĩ --</option>
+                    <option th:each="d : ${doctorList}"
+                            th:value="${d.id}"
+                            th:text="${d.user.fullName}"></option>
+                </select>
+                <p class="text-danger small" th:if="${#fields.hasErrors('doctorId')}" th:errors="*{doctorId}"></p>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Ngày làm việc</label>
+                <input type="date" th:field="*{workDate}" class="form-control">
+                <p class="text-danger small" th:if="${#fields.hasErrors('workDate')}" th:errors="*{workDate}"></p>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Giờ bắt đầu</label>
+                <input type="time" th:field="*{startTime}" class="form-control">
+                <p class="text-danger small" th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}"></p>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Giờ kết thúc</label>
+                <input type="time" th:field="*{endTime}" class="form-control">
+                <p class="text-danger small" th:if="${#fields.hasErrors('endTime')}" th:errors="*{endTime}"></p>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Slot (phút)</label>
+                <input type="number" th:field="*{slotMinutes}" class="form-control" min="1">
+                <p class="text-danger small" th:if="${#fields.hasErrors('slotMinutes')}" th:errors="*{slotMinutes}"></p>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Status</label>
+                <select th:field="*{status}" class="form-select">
+                    <option value="open">open</option>
+                    <option value="full">full</option>
+                    <option value="cancelled">cancelled</option>
+                </select>
+                <p class="text-danger small" th:if="${#fields.hasErrors('status')}" th:errors="*{status}"></p>
+            </div>
+            <button type="submit" class="btn btn-primary">Tạo</button>
+            <a th:href="@{/schedules}" class="btn btn-secondary">Hủy</a>
+        </form>
+    </div>
+</div>
+</body>
+</html>
