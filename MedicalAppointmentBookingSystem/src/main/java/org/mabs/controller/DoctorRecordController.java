@@ -1,12 +1,15 @@
 package org.mabs.controller;
 import lombok.RequiredArgsConstructor;
+import org.mabs.dto.AppointmentDTO;
 import org.mabs.dto.DoctorRecordFormDto;
 import org.mabs.dto.MedicalRecordDto;
-import org.mabs.dto.AppointmentDTO;
-import org.mabs.entity.Appointment;
 import org.mabs.entity.Doctor;
 import org.mabs.entity.MedicalRecord;
 import org.mabs.entity.User;
+import org.mabs.exception.AppointmentNotFoundException;
+import org.mabs.exception.MedicalRecordAlreadyExistsException;
+import org.mabs.exception.MedicalRecordNotFoundException;
+import org.mabs.exception.ScheduleAccessDeniedException;
 import org.mabs.repository.*;
 import org.mabs.service.DoctorScheduleService;
 import org.mabs.service.MedicalRecordService;
@@ -33,13 +36,11 @@ public class DoctorRecordController {
     public String handle(@RequestParam(defaultValue = "create") String action,
                          @RequestParam(required = false) Long appointmentId,
                          @RequestParam(required = false) Long id,
-                         @RequestParam(required = false) String error,
                          Authentication auth,
-                         Model model,
-                         RedirectAttributes ra) {
+                         Model model) {
         switch (action) {
-            case "create": return showCreateForm(appointmentId, auth, model, error, ra);
-            case "detail": return showDetail(id, model, auth, ra);
+            case "create": return showCreateForm(appointmentId, auth, model);
+            case "detail": return showDetail(id, model, auth);
             default:       return "redirect:/doctors/schedule";
         }
     }
@@ -51,30 +52,21 @@ public class DoctorRecordController {
         return handleSave(form, auth, ra);
     }
 
-    private String showCreateForm(Long appointmentId, Authentication auth,
-                                  Model model, String error, RedirectAttributes ra) {
+    private String showCreateForm(Long appointmentId, Authentication auth, Model model) {
         Long doctorId = resolveDoctorId(auth);
-        AppointmentDTO apptDto;
-        try {
-            apptDto = doctorScheduleService.getAppointmentDetail(appointmentId);
-        } catch (IllegalArgumentException ex) {
-            ra.addFlashAttribute("error", "Không tìm thấy lịch hẹn");
-            return "redirect:/doctors/schedule";
-        }
+
+        AppointmentDTO apptDto = doctorScheduleService.getAppointmentDetail(appointmentId);
+
         if (apptDto.getDoctorId() == null || !apptDto.getDoctorId().equals(doctorId)) {
-            ra.addFlashAttribute("error", "Không tìm thấy lịch hẹn");
-            return "redirect:/doctors/schedule";
+            throw new AppointmentNotFoundException("Không tìm thấy lịch hẹn");
         }
-        // block nếu record đã tồn tại
         if (medicalRecordRepository.existsByAppointment_Id(appointmentId)) {
-            ra.addFlashAttribute("error", "Hồ sơ khám cho lịch hẹn này đã được tạo");
-            return "redirect:/doctors/schedule";
+            throw new MedicalRecordAlreadyExistsException("Hồ sơ khám cho lịch hẹn này đã được tạo");
         }
 
         model.addAttribute("appointment", apptDto);
         model.addAttribute("form", new DoctorRecordFormDto());
         model.addAttribute("appointmentId", appointmentId);
-        model.addAttribute("error", error);
         return "doctor/record-form";
     }
 
@@ -82,36 +74,27 @@ public class DoctorRecordController {
                               RedirectAttributes ra) {
         if (form.getDiagnosis() == null || form.getDiagnosis().isBlank()) {
             ra.addAttribute("appointmentId", form.getAppointmentId());
-            ra.addAttribute("error", "Vui lòng nhập chẩn đoán");
+            ra.addFlashAttribute("error", "Vui lòng nhập chẩn đoán");
             return "redirect:/doctor/record?action=create";
         }
-        try {
-            Long doctorId = resolveDoctorId(auth);
-            MedicalRecordDto saved = medicalRecordService.createRecord(
-                    form.getAppointmentId(), doctorId,
-                    form.getSymptoms(), form.getDiagnosis(), form.getNotes());
-            ra.addFlashAttribute("success", "Đã lưu hồ sơ khám");
-            return "redirect:/doctor/record?action=detail&id=" + saved.getId();
-        } catch (IllegalStateException ex) {
-            ra.addAttribute("appointmentId", form.getAppointmentId());
-            ra.addAttribute("error", ex.getMessage());
-            return "redirect:/doctor/record?action=create";
-        } catch (IllegalArgumentException ex) {
-            ra.addAttribute("appointmentId", form.getAppointmentId());
-            ra.addAttribute("error", ex.getMessage());
-            return "redirect:/doctor/record?action=create";
-        }
+
+        Long doctorId = resolveDoctorId(auth);
+        MedicalRecordDto saved = medicalRecordService.createRecord(
+                form.getAppointmentId(), doctorId,
+                form.getSymptoms(), form.getDiagnosis(), form.getNotes());
+        ra.addFlashAttribute("success", "Đã lưu hồ sơ khám");
+        return "redirect:/doctor/record?action=detail&id=" + saved.getId();
     }
 
-    private String showDetail(Long id, Model model, Authentication auth, RedirectAttributes ra) {
+    private String showDetail(Long id, Model model, Authentication auth) {
         if (id == null) return "redirect:/doctors/schedule";
         Long doctorId = resolveDoctorId(auth);
-        MedicalRecord mr = medicalRecordRepository.findById(id).orElse(null);
-        if (mr == null || !mr.getDoctor().getId().equals(doctorId)) {
-            ra.addFlashAttribute("error", "Không tìm thấy hồ sơ khám");
-            return "redirect:/doctors/schedule";
+        MedicalRecord mr = medicalRecordRepository.findById(id)
+                .orElseThrow(() -> new MedicalRecordNotFoundException("Không tìm thấy hồ sơ khám"));
+        if (!mr.getDoctor().getId().equals(doctorId)) {
+            throw new MedicalRecordNotFoundException("Không tìm thấy hồ sơ khám");
         }
-        // Tìm record trong danh sách medical_records của bệnh nhân
+
         List<MedicalRecordDto> allRecords = medicalRecordService.getMedicalRecordsByPatient(mr.getPatient().getId());
         MedicalRecordDto targetRecord = null;
         for (MedicalRecordDto r : allRecords) {
@@ -126,14 +109,10 @@ public class DoctorRecordController {
 
     private Long resolveDoctorId(Authentication auth) {
         String email = auth.getName();
-        User user = userRepository.findByEmail(email).orElse(null);
-        if (user == null) {
-            throw new IllegalStateException("Tài khoản không phải bác sĩ: " + email);
-        }
-        Doctor doctor = doctorRepository.findByUserId(user.getId()).orElse(null);
-        if (doctor == null) {
-            throw new IllegalStateException("Tài khoản không phải bác sĩ: " + email);
-        }
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ScheduleAccessDeniedException("Tài khoản của bạn chưa được thiết lập hồ sơ bác sĩ"));
+        Doctor doctor = doctorRepository.findByUserId(user.getId())
+                .orElseThrow(() -> new ScheduleAccessDeniedException("Tài khoản của bạn chưa được thiết lập hồ sơ bác sĩ"));
         return doctor.getId();
     }
 }

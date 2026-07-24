@@ -1,10 +1,13 @@
 package org.mabs.repository;
 
 import org.mabs.entity.MedicalRecord;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,7 +19,15 @@ public interface MedicalRecordRepository extends JpaRepository<MedicalRecord, Lo
            + "where mr.patient.id = :id order by mr.visitDate desc")
     List<MedicalRecord> findByPatientIdOrderByVisitDate(@Param("id") Long id);
 
+    @Query(value = "select mr from MedicalRecord mr "
+           + "where mr.patient.id = :id order by mr.visitDate desc",
+           countQuery = "select count(mr) from MedicalRecord mr where mr.patient.id = :id")
+    Page<MedicalRecord> findPageByPatientId(@Param("id") Long id, Pageable pageable);
+
     boolean existsByAppointment_Id(Long appointmentId);
+
+    @Query("select distinct mr.appointment.id from MedicalRecord mr where mr.appointment.id in :appointmentIds")
+    List<Long> findAppointmentIdsHavingRecord(@Param("appointmentIds") Collection<Long> appointmentIds);
 
     @Query("select mr from MedicalRecord mr " +
            "left join fetch mr.patient " +

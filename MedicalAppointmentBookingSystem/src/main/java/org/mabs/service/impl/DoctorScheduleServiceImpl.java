@@ -6,7 +6,10 @@ import org.mabs.entity.Appointment;
 import org.mabs.entity.WorkingSchedule;
 import org.mabs.exception.AppointmentNotFoundException;
 import org.mabs.repository.AppointmentRepository;
+import org.mabs.repository.MedicalRecordRepository;
 import org.mabs.service.DoctorScheduleService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,13 +17,17 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class DoctorScheduleServiceImpl implements DoctorScheduleService {
 
     private final AppointmentRepository appointmentRepository;
+    private final MedicalRecordRepository medicalRecordRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -44,8 +51,35 @@ public class DoctorScheduleServiceImpl implements DoctorScheduleService {
             return Collections.emptyList();
         }
 
-        List<Appointment> all = appointmentRepository.findByDoctorIdOrderByAppointmentTimeAsc(doctorId);
+        List<Appointment> all = appointmentRepository.findByDoctorIdOrderByAppointmentTimeDesc(doctorId);
         return filterAndConvert(all, statusFilter);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<AppointmentDTO> getAppointmentsPage(Long doctorId, String statusFilter, Pageable pageable) {
+        if (doctorId == null) {
+            return Page.empty(pageable);
+        }
+
+        Page<Appointment> page = (statusFilter == null || statusFilter.isBlank())
+                ? appointmentRepository.findPageByDoctorId(doctorId, pageable)
+                : appointmentRepository.findPageByDoctorIdAndStatus(doctorId, statusFilter, pageable);
+
+        if (page.isEmpty()) {
+            return page.map(a -> AppointmentDTO.fromEntity(a, formatSchedule(a.getWorkingSchedule()), false));
+        }
+
+        Set<Long> withRecord = new HashSet<>(
+                medicalRecordRepository.findAppointmentIdsHavingRecord(
+                        page.getContent().stream()
+                                .map(Appointment::getId)
+                                .collect(Collectors.toList())));
+
+        return page.map(a -> AppointmentDTO.fromEntity(
+                a,
+                formatSchedule(a.getWorkingSchedule()),
+                withRecord.contains(a.getId())));
     }
 
     private List<AppointmentDTO> filterAndConvert(List<Appointment> all, String statusFilter) {
@@ -64,10 +98,17 @@ public class DoctorScheduleServiceImpl implements DoctorScheduleService {
             filtered = all;
         }
 
+        Set<Long> withRecord = new HashSet<>();
+        List<Long> ids = filtered.stream().map(Appointment::getId).collect(Collectors.toList());
+        if (!ids.isEmpty()) {
+            withRecord = new HashSet<>(medicalRecordRepository.findAppointmentIdsHavingRecord(ids));
+        }
+
         List<AppointmentDTO> dtos = new ArrayList<>();
         for (Appointment a : filtered) {
             String slotTimeRange = formatSchedule(a.getWorkingSchedule());
-            dtos.add(AppointmentDTO.fromEntity(a, slotTimeRange));
+            boolean hasRecord = withRecord.contains(a.getId());
+            dtos.add(AppointmentDTO.fromEntity(a, slotTimeRange, hasRecord));
         }
         return dtos;
     }
@@ -78,7 +119,8 @@ public class DoctorScheduleServiceImpl implements DoctorScheduleService {
         Appointment a = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new AppointmentNotFoundException("Không tìm thấy lịch hẹn với ID: " + appointmentId));
 
-        return AppointmentDTO.fromEntity(a, formatSchedule(a.getWorkingSchedule()));
+        boolean hasRecord = medicalRecordRepository.existsByAppointment_Id(appointmentId);
+        return AppointmentDTO.fromEntity(a, formatSchedule(a.getWorkingSchedule()), hasRecord);
     }
 
     private String formatSchedule(WorkingSchedule schedule) {

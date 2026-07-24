@@ -25,7 +25,9 @@ public class AppointmentDTO {
     private String doctorTitle;
     private String slotTimeRange;
 
-    public static AppointmentDTO fromEntity(Appointment a, String slotTimeRange) {
+    private Boolean hasMedicalRecord;
+
+    public static AppointmentDTO fromEntity(Appointment a, String slotTimeRange, boolean hasMedicalRecord) {
         String doctorTitle = a.getDoctor() != null ? a.getDoctor().getTitle() : "";
         Long doctorId = a.getDoctor() != null ? a.getDoctor().getId() : null;
         String doctorName = a.getDoctor() != null && a.getDoctor().getUser() != null ? a.getDoctor().getUser().getFullName() : "";
@@ -46,7 +48,13 @@ public class AppointmentDTO {
                 .patientEmail(patientEmail)
                 .patientId(patientId)
                 .doctorId(doctorId)
-                .build();    }
+                .hasMedicalRecord(hasMedicalRecord)
+                .build();
+    }
+
+    public static AppointmentDTO fromEntity(Appointment a, String slotTimeRange) {
+        return fromEntity(a, slotTimeRange, false);
+    }
 
 
 }

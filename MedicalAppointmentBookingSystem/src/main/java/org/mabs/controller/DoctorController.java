@@ -16,6 +16,9 @@ import org.mabs.service.DoctorScheduleService;
 import org.mabs.service.DoctorService;
 import org.mabs.service.SpecialtyService;
 import org.mabs.service.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -127,6 +130,8 @@ public class DoctorController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @RequestParam(required = false) String status,
             @RequestParam(required = false) Long id,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
             Authentication auth,
             Model model
     ) {
@@ -135,22 +140,38 @@ public class DoctorController {
             model.addAttribute("appointment", dto);
             return "doctor/appointment-detail";
         }
-        return showScheduleList(date, status, auth, model);
+        return showScheduleList(date, status, page, size, auth, model);
     }
 
-    private String showScheduleList(LocalDate date, String statusFilter, Authentication auth, Model model) {
+    private String showScheduleList(LocalDate date, String statusFilter, int page, int size, Authentication auth, Model model) {
         Long doctorId = resolveDoctorId(auth);
-        List<AppointmentDTO> appointments;
+
         if (date != null) {
-            appointments = scheduleService.getAppointmentsByDate(doctorId, date, statusFilter);
-        } else {
-            appointments = scheduleService.getAppointments(doctorId, statusFilter);
+            List<AppointmentDTO> appointments = scheduleService.getAppointmentsByDate(doctorId, date, statusFilter);
+            model.addAttribute("appointments", appointments);
+            model.addAttribute("date", date);
+            model.addAttribute("status", statusFilter);
+            model.addAttribute("today", LocalDate.now());
+            model.addAttribute("currentPage", 0);
+            model.addAttribute("totalPages", 1);
+            model.addAttribute("totalItems", appointments.size());
+            model.addAttribute("pageSize", appointments.size());
+            model.addAttribute("paginated", false);
+            return "doctor/schedule";
         }
-        model.addAttribute("appointments", appointments);
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<AppointmentDTO> appointmentPage = scheduleService.getAppointmentsPage(doctorId, statusFilter, pageable);
+
+        model.addAttribute("appointments", appointmentPage.getContent());
         model.addAttribute("date", date);
         model.addAttribute("status", statusFilter);
         model.addAttribute("today", LocalDate.now());
-
+        model.addAttribute("currentPage", appointmentPage.getNumber());
+        model.addAttribute("totalPages", appointmentPage.getTotalPages());
+        model.addAttribute("totalItems", appointmentPage.getTotalElements());
+        model.addAttribute("pageSize", size);
+        model.addAttribute("paginated", true);
         return "doctor/schedule";
     }
 

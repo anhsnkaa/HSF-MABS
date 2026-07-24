@@ -9,6 +9,8 @@ import org.mabs.repository.DoctorRepository;
 import org.mabs.repository.MedicalRecordRepository;
 import org.mabs.repository.PrescriptionRepository;
 import org.mabs.service.MedicalRecordService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +39,13 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
             dtos.add(this.toDto(mr));
         }
         return dtos;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<MedicalRecordDto> getMedicalRecordsByPatientPage(Long patientId, Pageable pageable) {
+        Page<MedicalRecord> page = medicalRecordRepository.findPageByPatientId(patientId, pageable);
+        return page.map(this::toDto);
     }
 
     @Override

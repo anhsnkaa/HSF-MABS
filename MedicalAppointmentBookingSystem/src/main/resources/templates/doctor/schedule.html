@@ -94,6 +94,7 @@
                            class="btn btn-sm btn-outline-secondary">Chi tiết</a>
 
                         <a th:if="${appt.status == 'confirmed' or appt.status == 'pending'}"
+                           th:unless="${appt.hasMedicalRecord}"
                            th:href="@{/doctor/record(action='create', appointmentId=${appt.id})}"
                            class="btn btn-sm btn-primary">Ghi chẩn đoán</a>
 
@@ -105,6 +106,35 @@
             </table>
         </div>
     </div>
+
+    <!-- Pagination -->
+    <nav th:if="${paginated == true and totalPages > 0}" aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:if="${currentPage > 0}">
+                <a class="page-link"
+                   th:href="@{/doctors/schedule(page=${currentPage - 1}, size=${pageSize}, status=${status})}">
+                    &laquo;
+                </a>
+            </li>
+            <li class="page-item"
+                th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                th:classappend="${i == currentPage ? 'active' : ''}">
+                <a class="page-link"
+                   th:href="@{/doctors/schedule(page=${i}, size=${pageSize}, status=${status})}"
+                   th:text="${i + 1}">1</a>
+            </li>
+            <li class="page-item" th:if="${currentPage < totalPages - 1}">
+                <a class="page-link"
+                   th:href="@{/doctors/schedule(page=${currentPage + 1}, size=${pageSize}, status=${status})}">
+                    &raquo;
+                </a>
+            </li>
+        </ul>
+        <p class="text-center text-muted small mt-2">
+            Trang <span th:text="${currentPage + 1}"></span> / <span th:text="${totalPages}"></span>
+            &nbsp;—&nbsp; Tổng <span th:text="${totalItems}"></span> lịch hẹn
+        </p>
+    </nav>
 </main>
 
 <div th:replace="~{fragments/footer :: footer}"></div>

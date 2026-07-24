@@ -7,6 +7,8 @@ import org.mabs.entity.Doctor;
 import org.mabs.entity.MedicalRecord;
 import org.mabs.entity.Medicine;
 import org.mabs.entity.User;
+import org.mabs.exception.MedicalRecordNotFoundException;
+import org.mabs.exception.ScheduleAccessDeniedException;
 import org.mabs.repository.DoctorRepository;
 import org.mabs.repository.MedicalRecordRepository;
 import org.mabs.repository.UserRepository;
@@ -40,24 +42,14 @@ public class DoctorPrescriptionController {
     @Transactional(readOnly = true)
     public String form(@RequestParam("recordId") Long recordId,
                        Authentication auth,
-                       Model model,
-                       RedirectAttributes ra) {
-        Long doctorId;
-        try {
-            doctorId = resolveDoctorId(auth);
-        } catch (IllegalStateException ex) {
-            ra.addFlashAttribute("error", "Tài khoản của bạn chưa được thiết lập hồ sơ bác sĩ");
-            return "redirect:/doctors/schedule";
-        }
+                       Model model) {
+        Long doctorId = resolveDoctorId(auth);
 
-        MedicalRecord record = medicalRecordRepository.findByIdWithDetails(recordId).orElse(null);
-        if (record == null) {
-            ra.addFlashAttribute("error", "Không tìm thấy hồ sơ");
-            return "redirect:/doctors/schedule";
-        }
+        MedicalRecord record = medicalRecordRepository.findByIdWithDetails(recordId)
+                .orElseThrow(() -> new MedicalRecordNotFoundException("Không tìm thấy hồ sơ"));
+
         if (record.getDoctor() == null || !record.getDoctor().getId().equals(doctorId)) {
-            ra.addFlashAttribute("error", "Bạn không có quyền truy cập hồ sơ này");
-            return "redirect:/doctors/schedule";
+            throw new ScheduleAccessDeniedException("Bạn không có quyền truy cập hồ sơ này");
         }
 
         List<PrescriptionDto> currentPrescriptions =
@@ -77,12 +69,8 @@ public class DoctorPrescriptionController {
                       Authentication auth,
                       RedirectAttributes ra) {
         Long doctorId = resolveDoctorId(auth);
-        try {
-            prescriptionService.addPrescription(form, doctorId);
-            ra.addFlashAttribute("success", "Đã thêm thuốc vào đơn");
-        } catch (IllegalArgumentException | IllegalStateException ex) {
-            ra.addFlashAttribute("error", ex.getMessage());
-        }
+        prescriptionService.addPrescription(form, doctorId);
+        ra.addFlashAttribute("success", "Đã thêm thuốc vào đơn");
         return "redirect:/doctor/prescription?action=form&recordId=" + form.getMedicalRecordId();
     }
 
@@ -92,25 +80,17 @@ public class DoctorPrescriptionController {
                          Authentication auth,
                          RedirectAttributes ra) {
         Long doctorId = resolveDoctorId(auth);
-        try {
-            prescriptionService.removePrescription(prescriptionId, doctorId);
-            ra.addFlashAttribute("success", "Đã xoá thuốc khỏi đơn");
-        } catch (IllegalArgumentException | IllegalStateException ex) {
-            ra.addFlashAttribute("error", ex.getMessage());
-        }
+        prescriptionService.removePrescription(prescriptionId, doctorId);
+        ra.addFlashAttribute("success", "Đã xoá thuốc khỏi đơn");
         return "redirect:/doctor/prescription?action=form&recordId=" + recordId;
     }
 
     private Long resolveDoctorId(Authentication auth) {
         String email = auth.getName();
-        User user = userRepository.findByEmail(email).orElse(null);
-        if (user == null) {
-            throw new IllegalStateException("Tài khoản không phải bác sĩ: " + email);
-        }
-        Doctor doctor = doctorRepository.findByUserId(user.getId()).orElse(null);
-        if (doctor == null) {
-            throw new IllegalStateException("Tài khoản không phải bác sĩ: " + email);
-        }
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ScheduleAccessDeniedException("Tài khoản của bạn chưa được thiết lập hồ sơ bác sĩ"));
+        Doctor doctor = doctorRepository.findByUserId(user.getId())
+                .orElseThrow(() -> new ScheduleAccessDeniedException("Tài khoản của bạn chưa được thiết lập hồ sơ bác sĩ"));
         return doctor.getId();
     }
 }
