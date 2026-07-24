@@ -79,7 +79,66 @@
                                 <a th:href="@{/appointments/{id}/reschedule(id=${appointment.id})}"
                                    class="btn btn-outline-primary btn-sm ms-1">Dời lịch</a>
                             </div>
+
+                            <div th:if="${appointment.status == 'completed'}">
+                                <span th:if="${reviewedAppointmentIds != null and #lists.contains(reviewedAppointmentIds, appointment.id)}"
+                                      class="badge bg-success-subtle text-success border border-success px-2 py-1">
+                                    <i class="bi bi-check-circle-fill me-1"></i>Đã đánh giá
+                                </span>
+
+                                <button th:unless="${reviewedAppointmentIds != null and #lists.contains(reviewedAppointmentIds, appointment.id)}"
+                                        type="button" class="btn btn-outline-warning btn-sm text-dark fw-semibold"
+                                        data-bs-toggle="modal" th:data-bs-target="'#reviewModal' + ${appointment.id}">
+                                    ⭐ Đánh giá
+                                </button>
+                            </div>
+
+                            <!-- Modal Đánh giá bác sĩ -->
+                            <div th:if="${appointment.status == 'completed' and (reviewedAppointmentIds == null or !#lists.contains(reviewedAppointmentIds, appointment.id))}"
+                                 class="modal fade" th:id="'reviewModal' + ${appointment.id}" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content text-start">
+                                        <form th:action="@{/patient/reviews}" method="post">
+                                            <div class="modal-header bg-warning bg-opacity-10">
+                                                <h5 class="modal-title fw-bold text-dark">⭐ Đánh giá Bác sĩ</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <input type="hidden" name="appointmentId" th:value="${appointment.id}"/>
+                                                <input type="hidden" name="doctorId" th:value="${appointment.doctor.id}"/>
+
+                                                <div class="mb-3 p-2 bg-light rounded">
+                                                    <div><strong>Bác sĩ:</strong> <span th:text="${appointment.doctor.title + ' ' + appointment.doctor.user.fullName}">BS. Name</span></div>
+                                                    <div class="small text-muted">Chuyên khoa: <span th:text="${appointment.doctor.specialty.name}">Chuyên khoa</span></div>
+                                                    <div class="small text-muted">Thời gian khám: <span th:text="${#temporals.format(appointment.appointmentTime, 'dd/MM/yyyy HH:mm')}">Time</span></div>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Mức độ hài lòng:</label>
+                                                    <select name="rating" class="form-select" required>
+                                                        <option value="5" selected>⭐⭐⭐⭐⭐ (5 sao - Rất hài lòng)</option>
+                                                        <option value="4">⭐⭐⭐⭐ (4 sao - Hài lòng)</option>
+                                                        <option value="3">⭐⭐⭐ (3 sao - Bình thường)</option>
+                                                        <option value="2">⭐⭐ (2 sao - Chưa hài lòng)</option>
+                                                        <option value="1">⭐ (1 sao - Rất kém)</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Nhận xét / Lời nhắn:</label>
+                                                    <textarea name="comment" class="form-control" rows="3" placeholder="Hãy chia sẻ nhận xét của bạn về bác sĩ và quá trình khám..."></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Đóng</button>
+                                                <button type="submit" class="btn btn-warning btn-sm text-dark fw-bold">Gửi đánh giá</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         </td>
+
                     </tr>
                     </tbody>
                 </table>

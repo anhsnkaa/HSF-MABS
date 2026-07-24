@@ -39,6 +39,4 @@ public class AccountUpdateDto {
     private LocalDate dateOfBirth;
 
     private String address;
-
-    private String avatarUrl;
 }

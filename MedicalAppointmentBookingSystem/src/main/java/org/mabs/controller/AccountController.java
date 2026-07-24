@@ -85,7 +85,6 @@ public class AccountController {
         dto.setGender(user.getGender());
         dto.setDateOfBirth(user.getDateOfBirth());
         dto.setAddress(user.getAddress());
-        dto.setAvatarUrl(user.getAvatarUrl());
         model.addAttribute("dto", dto);
         return "/admin/account/account-update";
     }
@@ -107,7 +106,6 @@ public class AccountController {
         user.setGender(dto.getGender());
         user.setDateOfBirth(dto.getDateOfBirth());
         user.setAddress(dto.getAddress());
-        user.setAvatarUrl(dto.getAvatarUrl());
 
         try {
             userService.updateUser(user, dto.getPassword());
