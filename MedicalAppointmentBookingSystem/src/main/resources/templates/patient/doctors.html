@@ -6,7 +6,7 @@
     <title>Tìm bác sĩ - MABS</title>
 </head>
 <body>
-<main layout:fragment="content" class="container py-5">
+<div layout:fragment="content" class="container py-5">
     <div class="row">
         <div class="col-md-3">
             <div class="card shadow-sm border-0">
@@ -36,6 +36,11 @@
         </div>
 
         <div class="col-md-9">
+            <div class="mb-2 text-muted small"
+                 th:if="${page != null}"
+                 th:text="'Tổng: ' + ${page.totalElements} + ' bác sĩ | Trang ' + (${page.number} + 1) + '/' + (${page.totalPages == 0 ? 1 : page.totalPages})">
+            </div>
+
             <div th:if="${#lists.isEmpty(doctors)}" class="text-center py-5 text-muted">
                 <p class="fs-5">Không tìm thấy bác sĩ phù hợp.</p>
             </div>
@@ -68,8 +73,28 @@
                     </div>
                 </div>
             </div>
+
+            <nav th:if="${page != null and page.totalPages > 1}" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" th:classappend="${page.first} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/patient/doctors(page=${page.number - 1}, size=${page.size}, specialtyId=${criteria.specialtyId}, keyword=${criteria.keyword})}">«</a>
+                    </li>
+                    <li class="page-item"
+                        th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}"
+                        th:classappend="${i == page.number} ? 'active'">
+                        <a class="page-link"
+                           th:href="@{/patient/doctors(page=${i}, size=${page.size}, specialtyId=${criteria.specialtyId}, keyword=${criteria.keyword})}"
+                           th:text="${i + 1}">1</a>
+                    </li>
+                    <li class="page-item" th:classappend="${page.last} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/patient/doctors(page=${page.number + 1}, size=${page.size}, specialtyId=${criteria.specialtyId}, keyword=${criteria.keyword})}">»</a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </div>
-</main>
+</div>
 </body>
 </html>

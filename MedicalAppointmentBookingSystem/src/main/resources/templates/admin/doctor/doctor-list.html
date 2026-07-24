@@ -14,7 +14,7 @@
 
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="fw-bold mb-0">Quản lý bác sĩ</h2>
-            <a th:href="@{/doctors/add}" class="btn btn-primary">
+            <a th:href="@{/admin/doctors/add}" class="btn btn-primary">
                 <i class="bi bi-plus-lg me-1"></i> Thêm bác sĩ
             </a>
         </div>
@@ -28,9 +28,10 @@
                                 <th>#</th>
                                 <th>Họ tên</th>
                                 <th>Chuyên khoa</th>
-                                <th>Chức danh</th>
-                                <th>Phí khám</th>
-                                <th>Kinh nghiệm</th>
+                                <th>Học hàm / Học vị</th>
+                                <th>Giới thiệu</th>
+                                <th>Phí khám (VNĐ)</th>
+                                <th>Kinh nghiệm (năm)</th>
                                 <th class="text-center">Thao tác</th>
                             </tr>
                         </thead>
@@ -45,18 +46,18 @@
                                         <span class="fw-medium" th:text="${doctor.user.fullName}"></span>
                                     </div>
                                 </td>
-                                <td><span class="badge bg-light text-dark" th:text="${doctor.specialty.name}"></span></td>
+                                <td>
+                                    <span class="badge bg-success" th:text="${doctor.specialty.name}"></span>
+                                </td>
                                 <td th:text="${doctor.title}"></td>
-                                <td th:text="${#numbers.formatDecimal(doctor.consultationFee, 0, 'COMMA', 0, 'DEFAULT') + ' VNĐ'}"></td>
-                                <td><span class="badge bg-secondary" th:text="${doctor.experienceYears + ' năm'}"></span></td>
+                                <td class="text-muted" th:text="${doctor.bio}"></td>
+                                <td th:text="${#numbers.formatDecimal(doctor.consultationFee, 0, 'COMMA', 0, 'POINT')}"></td>
+                                <td th:text="${doctor.experienceYears}"></td>
                                 <td class="text-center text-nowrap">
-                                    <form th:action="@{/doctors/update-form}" method="post" class="d-inline">
-                                        <input type="hidden" name="id" th:value="${doctor.id}">
-                                        <button type="submit" class="btn btn-sm btn-outline-primary me-1">
-                                            <i class="bi bi-pencil-square"></i>
-                                        </button>
-                                    </form>
-                                    <form th:action="@{/doctors/delete}" method="post" class="d-inline">
+                                    <a th:href="@{/admin/doctors/update/{id}(id=${doctor.id})}" class="btn btn-sm btn-outline-primary me-1">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <form th:action="@{/delete}" method="post" class="d-inline">
                                         <input type="hidden" name="id" th:value="${doctor.id}">
                                         <button type="submit" class="btn btn-sm btn-outline-danger"
                                                 onclick="return confirm('Bạn có chắc muốn xóa bác sĩ này?')">

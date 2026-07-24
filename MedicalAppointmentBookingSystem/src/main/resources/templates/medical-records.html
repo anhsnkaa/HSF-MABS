@@ -11,6 +11,9 @@
 <div layout:fragment="content" class="container py-4">
     <h1 class="text-primary mb-4 border-bottom pb-2">Hồ sơ bệnh án của tôi</h1>
 
+    <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
+    <div class="alert alert-success" th:if="${message}" th:text="${message}"></div>
+
     <form th:action="@{/medical-records}" method="get" class="card card-body mb-4 shadow-sm">
         <div class="row g-2 align-items-end">
             <div class="col-md-3">
@@ -58,9 +61,11 @@
         Không tìm thấy hồ sơ phù hợp.
     </div>
 
-    <div class="card mb-4 shadow-sm" th:each="record : ${records}">
+    <div class="card mb-4 shadow-sm" th:each="record, iter : ${records}">
         <div class="card-header d-flex justify-content-between align-items-center bg-light">
-            <strong>Lần khám
+            <strong>
+                #<span th:text="${page.number * page.size + iter.count}">1</span>
+                Lần khám
                 <span th:if="${record.doctorName != null and record.doctorName != 'N/A'}"
                       th:text="' - Bác sĩ: ' + ${record.doctorName}"> - Bác sĩ: ...</span>
             </strong>

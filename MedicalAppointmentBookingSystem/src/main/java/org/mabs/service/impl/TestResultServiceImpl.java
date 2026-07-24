@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.mabs.dto.TestResultDto;
 import org.mabs.entity.Appointment;
 import org.mabs.entity.TestResult;
+import org.mabs.exception.ResourceNotFoundException;
 import org.mabs.repository.AppointmentRepository;
 import org.mabs.repository.TestResultRepository;
 import org.mabs.service.TestResultService;
@@ -38,12 +39,12 @@ public class TestResultServiceImpl implements TestResultService {
     @Override
     @Transactional
     public TestResultDto uploadFile(MultipartFile file, Long appointmentId, Long patientId) {
-        if (file.isEmpty()) {
+        if (file == null || file.isEmpty()) {
             throw new IllegalArgumentException("Vui lòng chọn file để tải lên");
         }
 
         Appointment appointment = appointmentRepository.findById(appointmentId)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy lịch hẹn"));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy lịch hẹn"));
 
         if (!appointment.getPatient().getId().equals(patientId)) {
             throw new IllegalArgumentException("Lịch hẹn không thuộc về bạn");
@@ -55,28 +56,28 @@ public class TestResultServiceImpl implements TestResultService {
             extension = originalName.substring(originalName.lastIndexOf(".") + 1).toLowerCase();
         }
         if (!ALLOWED_EXTENSIONS.contains(extension)) {
-            throw new IllegalArgumentException("Định dạng file không được hỗ trợ. Chỉ chấp nhận: " + String.join(", ", ALLOWED_EXTENSIONS));
+            throw new IllegalArgumentException(
+                    "Định dạng file không được hỗ trợ. Chỉ chấp nhận: " + String.join(", ", ALLOWED_EXTENSIONS));
         }
 
         if (file.getSize() > MAX_FILE_SIZE) {
             throw new IllegalArgumentException("File vượt quá dung lượng cho phép (tối đa 10MB)");
         }
 
-        String storedName = UUID.randomUUID().toString() + "." + extension;
-
+        String storedName = UUID.randomUUID() + "." + extension;
         String subDir = "test-results/" + patientId;
         Path targetDir = Paths.get(uploadDir, subDir);
         try {
             Files.createDirectories(targetDir);
         } catch (IOException e) {
-            throw new RuntimeException("Không thể tạo thư mục lưu trữ", e);
+            throw new IllegalArgumentException("Không thể tạo thư mục lưu trữ");
         }
 
         Path targetPath = targetDir.resolve(storedName);
         try {
             Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-            throw new RuntimeException("Lỗi khi lưu file", e);
+            throw new IllegalArgumentException("Lỗi khi lưu file");
         }
 
         String fileUrl = "/uploads/" + subDir + "/" + storedName;

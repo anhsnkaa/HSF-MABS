@@ -89,8 +89,8 @@
         <tr th:if="${#lists.isEmpty(workingSchedules)}">
             <td colspan="8" class="text-center text-muted">Không có lịch làm việc phù hợp.</td>
         </tr>
-        <tr th:each="s : ${workingSchedules}">
-            <td th:text="${s.id}"></td>
+        <tr th:each="s, iter : ${workingSchedules}">
+            <td th:text="${page.number * page.size + iter.count}">1</td>
             <td th:text="${s.doctor != null and s.doctor.user != null ? s.doctor.user.fullName : 'N/A'}"></td>
             <td th:text="${#temporals.format(s.workDate, 'dd/MM/yyyy')}"></td>
             <td th:text="${#temporals.format(s.startTime, 'HH:mm') + ' - ' + #temporals.format(s.endTime, 'HH:mm')}"></td>

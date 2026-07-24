@@ -29,7 +29,7 @@ public class TestResultController {
     public String showTestResults(Model model, Principal principal) {
         User patient = userService.getUserByEmail(principal.getName());
 
-        List<Appointment> appointments = appointmentService.getPatientAppointments(patient.getId());
+        List<Appointment> appointments = appointmentService.getAllPatientAppointments(patient.getId());
         List<Appointment> validAppointments = appointments.stream()
                 .filter(a -> List.of("confirmed", "completed").contains(a.getStatus()))
                 .toList();
@@ -47,16 +47,8 @@ public class TestResultController {
                              Principal principal,
                              RedirectAttributes ra) {
         User patient = userService.getUserByEmail(principal.getName());
-
-        try {
-            testResultService.uploadFile(file, appointmentId, patient.getId());
-            ra.addFlashAttribute("success", "Tải file lên thành công");
-        } catch (IllegalArgumentException e) {
-            ra.addFlashAttribute("error", e.getMessage());
-        } catch (Exception e) {
-            ra.addFlashAttribute("error", "Lỗi khi tải file: " + e.getMessage());
-        }
-
+        testResultService.uploadFile(file, appointmentId, patient.getId());
+        ra.addFlashAttribute("message", "Tải file lên thành công");
         return "redirect:/test-results";
     }
 }

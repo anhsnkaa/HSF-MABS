@@ -35,14 +35,14 @@ public class PatientHistoryController {
             resolveDoctorId(auth);
         } catch (IllegalStateException ex) {
             ra.addFlashAttribute("error", "Tài khoản của bạn chưa được thiết lập hồ sơ bác sĩ");
-            return "redirect:/doctor/schedule";
+            return "redirect:/doctors/schedule";
         }
 
         // 2. Load patient
         User patient = userRepository.findById(patientId).orElse(null);
         if (patient == null || !"patient".equals(patient.getRole())) {
             ra.addFlashAttribute("error", "Không tìm thấy bệnh nhân");
-            return "redirect:/doctor/schedule";
+            return "redirect:/doctors/schedule";
         }
 
         // 3. Load lịch sử

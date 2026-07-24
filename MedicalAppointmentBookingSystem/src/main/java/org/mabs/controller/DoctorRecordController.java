@@ -40,7 +40,7 @@ public class DoctorRecordController {
         switch (action) {
             case "create": return showCreateForm(appointmentId, auth, model, error, ra);
             case "detail": return showDetail(id, model, auth, ra);
-            default:       return "redirect:/doctor/schedule";
+            default:       return "redirect:/doctors/schedule";
         }
     }
 
@@ -59,16 +59,16 @@ public class DoctorRecordController {
             apptDto = doctorScheduleService.getAppointmentDetail(appointmentId);
         } catch (IllegalArgumentException ex) {
             ra.addFlashAttribute("error", "Không tìm thấy lịch hẹn");
-            return "redirect:/doctor/schedule";
+            return "redirect:/doctors/schedule";
         }
         if (apptDto.getDoctorId() == null || !apptDto.getDoctorId().equals(doctorId)) {
             ra.addFlashAttribute("error", "Không tìm thấy lịch hẹn");
-            return "redirect:/doctor/schedule";
+            return "redirect:/doctors/schedule";
         }
         // block nếu record đã tồn tại
         if (medicalRecordRepository.existsByAppointment_Id(appointmentId)) {
             ra.addFlashAttribute("error", "Hồ sơ khám cho lịch hẹn này đã được tạo");
-            return "redirect:/doctor/schedule";
+            return "redirect:/doctors/schedule";
         }
 
         model.addAttribute("appointment", apptDto);
@@ -85,31 +85,21 @@ public class DoctorRecordController {
             ra.addAttribute("error", "Vui lòng nhập chẩn đoán");
             return "redirect:/doctor/record?action=create";
         }
-        try {
-            Long doctorId = resolveDoctorId(auth);
-            MedicalRecordDto saved = medicalRecordService.createRecord(
-                    form.getAppointmentId(), doctorId,
-                    form.getSymptoms(), form.getDiagnosis(), form.getNotes());
-            ra.addFlashAttribute("success", "Đã lưu hồ sơ khám");
-            return "redirect:/doctor/record?action=detail&id=" + saved.getId();
-        } catch (IllegalStateException ex) {
-            ra.addAttribute("appointmentId", form.getAppointmentId());
-            ra.addAttribute("error", ex.getMessage());
-            return "redirect:/doctor/record?action=create";
-        } catch (IllegalArgumentException ex) {
-            ra.addAttribute("appointmentId", form.getAppointmentId());
-            ra.addAttribute("error", ex.getMessage());
-            return "redirect:/doctor/record?action=create";
-        }
+        Long doctorId = resolveDoctorId(auth);
+        MedicalRecordDto saved = medicalRecordService.createRecord(
+                form.getAppointmentId(), doctorId,
+                form.getSymptoms(), form.getDiagnosis(), form.getNotes());
+        ra.addFlashAttribute("success", "Đã lưu hồ sơ khám");
+        return "redirect:/doctor/record?action=detail&id=" + saved.getId();
     }
 
     private String showDetail(Long id, Model model, Authentication auth, RedirectAttributes ra) {
-        if (id == null) return "redirect:/doctor/schedule";
+        if (id == null) return "redirect:/doctors/schedule";
         Long doctorId = resolveDoctorId(auth);
         MedicalRecord mr = medicalRecordRepository.findById(id).orElse(null);
         if (mr == null || !mr.getDoctor().getId().equals(doctorId)) {
             ra.addFlashAttribute("error", "Không tìm thấy hồ sơ khám");
-            return "redirect:/doctor/schedule";
+            return "redirect:/doctors/schedule";
         }
         // Tìm record trong danh sách medical_records của bệnh nhân
         List<MedicalRecordDto> allRecords = medicalRecordService.getMedicalRecordsByPatient(mr.getPatient().getId());
